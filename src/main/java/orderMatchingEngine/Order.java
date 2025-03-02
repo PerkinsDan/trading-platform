@@ -11,8 +11,8 @@ public class Order {
     private final long id;
     private final Type type;
     private final double price;
-    private final int quantity;
     private final long timestamp;
+    private int quantity; // quantity isnt final becuase it can change during partial fills
 
     public Order(Type type, double price, int quantity) {
         this.id = counter.getAndIncrement();
@@ -27,4 +27,8 @@ public class Order {
     public double getPrice() { return price; }
     public int getQuantity() { return quantity; }
     public long getTimestamp() { return timestamp; }
+
+    public void setQuantity(int newQuantity){
+        this.quantity = newQuantity;
+    }
 }
