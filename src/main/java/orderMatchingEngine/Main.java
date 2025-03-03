@@ -4,23 +4,32 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 public class Main {
     public static void main(String[] args) {
-
+        MatchingEngine engine = new MatchingEngine();
         OrderProcessor processor = new OrderProcessor();
-        PriorityBlockingQueue<Order> orderQueue = OrderProcessor.getOrderQueue();
-        MatchingEngine engine = new MatchingEngine(orderQueue);
-        
+        Order[] orders = {
+            new Order(Order.Type.SELL, Order.Ticker.A, 99.0, 575),
+            new Order(Order.Type.SELL, Order.Ticker.A, 100.0, 500),
+            new Order(Order.Type.SELL, Order.Ticker.A, 100.0, 50),
+            new Order(Order.Type.SELL, Order.Ticker.A, 101.5, 150),
+            new Order(Order.Type.BUY, Order.Ticker.A, 98.0, 30),
+            new Order(Order.Type.BUY, Order.Ticker.A, 100.0, 700),
+            new Order(Order.Type.BUY, Order.Ticker.A, 100.0, 300),
+            new Order(Order.Type.BUY, Order.Ticker.A, 102.0, 130)
+            };
+    
+        for(Order order : orders){
+            processor.addOrder(order);
+        }
 
-        // Start matching engine in a separate thread
-        new Thread(engine).start();
+        long startTime = System.currentTimeMillis();
+        MatchingEngine.match(MatchingEngine.getTradeBook("A"));
+        long endTime = System.currentTimeMillis();
 
-        // Simulate incoming orders
-        processor.submitOrder(new Order(Order.Type.BUY, 100.5, 10));
-        processor.submitOrder(new Order(Order.Type.SELL, 100.0, 5));
-        processor.submitOrder(new Order(Order.Type.SELL, 99.5, 10));
-        processor.submitOrder(new Order(Order.Type.BUY, 101.0, 15));
+        long duration = endTime - startTime;
+        long average = duration/5;
+        System.out.println("5 trades matched in " + duration + " milliseconds.");
+        System.out.println(average + " milliseconds per match");
 
-        // Allow time for execution
-        try { Thread.sleep(2000); } catch (InterruptedException e) { }
-        processor.shutdown();
+
     }
 }
