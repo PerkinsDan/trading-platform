@@ -6,6 +6,9 @@ A trading platform for our group assignment (Software Engineering Tools Techniqu
 - Any shared libraries / utilities can be put in packages/
 - scripts/ is for CICD scripts
 
+To run docker:
+```docker build -t client ./apps/client/```
+
 On Mac?
 You may run into:
 
