@@ -1,4 +1,4 @@
-package main.java.orderMatchingEngine;
+package orderMatchingEngine;
 
 import java.util.PriorityQueue;
 import java.util.concurrent.BlockingQueue;
@@ -15,7 +15,6 @@ public class MatchingEngine implements Runnable{
 
     @Override
     public void run(){
-
         while(true){
             try{
                 Order order = orderQueue.take();
@@ -45,30 +44,30 @@ public class MatchingEngine implements Runnable{
         int buyAmount = order.getQuantity();
         Order topOrder = sellBook.peek();
     
-        if(topOrder == null || order.getPrice() < topPrice){
+        if(topOrder == null || order.getPrice() < topOrder.getPrice()){
             // sellbook was empty, add this order to the book and move on
             // OR the buy price was just too low and no one is interested in selling at this price, add this order to the book and move on
-            sellBook.offer();
-            break;
-        }
-        //topOrder is not null and prices overlap so proceed to try matching
-        Double topPrice = topOrder.getPrice();
-        int topQuantity = topOrder.getQuantity();
-        while (buyAmount != 0){
-            if(buyAmount >= topQuantity){
-                //matched but not enough quantity to fill, fill as much as possible and move on
-                System.out.println(topOrder.getQuantity() + " lots bought at " +  topPrice);
-                buyAmount = buyAmount - topQuantity;
-                Order filledOrder = sellBook.poll();
-                System.out.println("Order with id = " + filledOrder.getId() + "has been filled and removed from the books");
-                //set new best price and quantity
-                topPrice = newBestPrice();
-                topQuantity = newBestQuantity();
-            } else {
-                System.out.println(buyAmount + "lots bought at " + topPrice );
-                topOrder.setQuantity(topQuantity - buyAmount);
-                buyAmount = 0; //set to zero to break out of loop as we've filled the order
-            }         
+            sellBook.offer(order);
+        } else {
+            //topOrder is not null and prices overlap so proceed to try matching
+            Double topPrice = topOrder.getPrice();
+            int topQuantity = topOrder.getQuantity();
+            while (buyAmount != 0){
+                if(buyAmount >= topQuantity){
+                    //matched but not enough quantity to fill, fill as much as possible and move on
+                    System.out.println(topOrder.getQuantity() + " lots bought at " +  topPrice);
+                    buyAmount = buyAmount - topQuantity;
+                    Order filledOrder = sellBook.poll();
+                    System.out.println("Order with id = " + filledOrder.getId() + "has been filled and removed from the books");
+                    //set new best price and quantity
+                    topPrice = newBestPrice();
+                    topQuantity = newBestQuantity();
+                } else {
+                    System.out.println(buyAmount + "lots bought at " + topPrice );
+                    topOrder.setQuantity(topQuantity - buyAmount);
+                    buyAmount = 0; //set to zero to break out of loop as we've filled the order
+                }         
+            }
         }
     }
 
@@ -77,15 +76,12 @@ public class MatchingEngine implements Runnable{
         int sellAmount = order.getQuantity();
         Order topOrder = buyBook.peek();
     
-        if(topOrder == null || order.getPrice() > topPrice){
+        if(topOrder == null || order.getPrice() > topOrder.getPrice()){
             // buybook was empty, add this order to the book and move on
             // OR the sell price was just too high and no one is interested in buying at this price, add this order to the book and move on
-            buyBook.offer();
-            break;
+            buyBook.offer(order);
         }
-        //topOrder is not null and prices overlap so proceed to try matching
-        Double topPrice = topOrder.getPrice();
-        int topQuantity = topOrder.getQuantity();
+        //topOrder is not null and prices overlap so proceed to try matching        int topQuantity = topOrder.getQuantity();
         while (sellAmount != 0){
             if(sellAmount >= topQuantity){
                 //matched but not enough quantity to fill, fill as much as possible adust for whats left and move on
@@ -104,7 +100,7 @@ public class MatchingEngine implements Runnable{
             }         
         }
     }
-       
+    
     private Double newBestPrice(){
         return sellBook.peek().getPrice();
     }

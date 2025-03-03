@@ -1,11 +1,14 @@
-import main.java.orderMatchingEngine.MatchingEngine;
-import main.java.orderMatchingEngine.Order;
-import main.java.orderMatchingEngine.OrderProcessor;
+package orderMatchingEngine;
+
+import java.util.concurrent.PriorityBlockingQueue;
 
 public class Main {
     public static void main(String[] args) {
-        MatchingEngine engine = new MatchingEngine();
-        OrderProcessor processor = new OrderProcessor(engine);
+
+        OrderProcessor processor = new OrderProcessor();
+        PriorityBlockingQueue<Order> orderQueue = OrderProcessor.getOrderQueue();
+        MatchingEngine engine = new MatchingEngine(orderQueue);
+        
 
         // Start matching engine in a separate thread
         new Thread(engine).start();

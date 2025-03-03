@@ -1,4 +1,4 @@
-package main.java.orderMatchingEngine;
+package orderMatchingEngine;
 
 import java.util.Comparator;
 

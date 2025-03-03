@@ -1,12 +1,12 @@
-package main.java.orderMatchingEngine;
+package orderMatchingEngine;
 
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Order {
     // automatic UUID generator for setting the order type
-    private final AtomicLong counter = new AtomicLong(0);
+    private static final AtomicLong counter = new AtomicLong(0);
     
-    enum Type { BUY, SELL }
+    public enum Type { BUY, SELL }
     
     private final long id;
     private final Type type;
@@ -21,7 +21,14 @@ public class Order {
         this.quantity = quantity;
         this.timestamp = System.nanoTime(); // FIFO tie-breaker
     }
-
+    // secondary constructor to force equal timestamps, used for testing
+    public Order(Type type, double price, int quantity, long timestamp) {
+        this.id = counter.getAndIncrement();
+        this.type = type;
+        this.price = price;
+        this.quantity = quantity;
+        this.timestamp = timestamp;
+    }
     public long getId() { return id; }
     public Type getType() { return type; }
     public double getPrice() { return price; }
