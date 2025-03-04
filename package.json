@@ -4,7 +4,6 @@
   "description": "A trading platform for our group assignment (Software Engineering Tools Techniques and Practices)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky && husky install"
   },
   "repository": {
