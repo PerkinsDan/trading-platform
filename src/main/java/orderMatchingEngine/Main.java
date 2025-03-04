@@ -2,7 +2,7 @@ package orderMatchingEngine;
 
 public class Main {
     public static void main(String[] args) {
-        MatchingEngine engine = new MatchingEngine();
+        MatchingEngine matchingEngine = MatchingEngine.getInstance();
         OrderProcessor processor = new OrderProcessor();
         // TO-DO : This temporary until we have an API to function as an entry point to the MatchingEngine
         Order[] orders = {
@@ -21,8 +21,11 @@ public class Main {
         }
         
         //Run matching engine
-        MatchingEngine.match(MatchingEngine.getTradeBook(Order.Ticker.A));
-
-
+        long start = System.currentTimeMillis();
+        int count = matchingEngine.match(MatchingEngine.getTradeBook(Order.Ticker.A));
+        long end = System.currentTimeMillis();
+        long time = end -start;
+        System.out.println(count + " trades matched in " + time + "ms");
+        System.out.println("average of " + time/5 +  "ms /trade");
     }
 }

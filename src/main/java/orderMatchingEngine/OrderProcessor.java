@@ -9,8 +9,8 @@ public class OrderProcessor{
         book.addToBook(order);
     }
 
-    public static void match(Order order){
-        MatchingEngine.match(MatchingEngine.getTradeBook(order.getTicker()));
+    public void match(MatchingEngine matchingEngine,Order order){
+        matchingEngine.match(MatchingEngine.getTradeBook(order.getTicker()));
     }
 
 }
