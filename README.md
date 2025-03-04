@@ -6,16 +6,8 @@ A trading platform for our group assignment (Software Engineering Tools Techniqu
 - Any shared libraries / utilities can be put in packages/
 - scripts/ is for CICD scripts
 
-To run docker:  
-Frontend:
-`docker build -t client ./apps/client/`
-`docker run -p 3000:3000 client`
-
-API:
-`cd ./apps/api`
-`mvn clean package`
-`docker build -t api .`
-`docker run -p 8080:8080 api`
+To run the app:
+`docker compose up`
 
 On Mac?
 When trying to commit you may run into:
