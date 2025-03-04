@@ -7,17 +7,26 @@ import java.util.PriorityQueue;
 
 public class MatchingEngine{
     
+    private static MatchingEngine engine = null;
     private static final Map<Order.Ticker, TradeBook> TradeBookMap = new HashMap<>();
     private static final Order.Ticker[] equities = {Order.Ticker.A,Order.Ticker.B,Order.Ticker.C,Order.Ticker.D,Order.Ticker.E};
-
-    public MatchingEngine(){
+    
+    public static MatchingEngine getInstance(){
+        if(engine == null){
+            MatchingEngine.engine = new MatchingEngine();
+            return engine;
+        } else {
+            return engine;
+        }
+    }
+    
+    private MatchingEngine(){
         for(Order.Ticker equity : equities){
             AddTradeBook(equity);
-        }
-            
+        }      
     }
 
-    private static void AddTradeBook(Order.Ticker ticker){
+    private void AddTradeBook(Order.Ticker ticker){
         TradeBook newTradeBook = new TradeBook(ticker);
         TradeBookMap.put(ticker,newTradeBook);
     }
@@ -26,7 +35,7 @@ public class MatchingEngine{
         return TradeBookMap.get(ticker);
     }
 
-    public static int match(TradeBook book){
+    public int match(TradeBook book){
         PriorityQueue<Order> buyOrders = book.getBuyBook();
         PriorityQueue<Order> sellOrders = book.getSellBook();
 
@@ -55,6 +64,11 @@ public class MatchingEngine{
             }
         }
         return matchesFound; // True if at least one match occurred, false otherwise
+    }
+    
+    // used only for testing
+    public void resetInstance(){
+        engine = null;
     }
 
 

@@ -13,11 +13,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderProcessorTest {
 
     private OrderProcessor orderProcessor;
+    private MatchingEngine engine;
 
     @BeforeEach
     void setUp() {
-        MatchingEngine engine = new MatchingEngine();
+        engine = MatchingEngine.getInstance();
         orderProcessor = new OrderProcessor();
+    }
+
+    @AfterEach
+    void reset(){
+        engine.resetInstance();
     }
 
 
