@@ -1,11 +1,10 @@
 package orderMatchingEngine;
 
-import java.util.concurrent.PriorityBlockingQueue;
-
 public class Main {
     public static void main(String[] args) {
         MatchingEngine engine = new MatchingEngine();
         OrderProcessor processor = new OrderProcessor();
+        // TO-DO : This temporary until we have an API to function as an entry point to the MatchingEngine
         Order[] orders = {
             new Order(Order.Type.SELL, Order.Ticker.A, 99.0, 575),
             new Order(Order.Type.SELL, Order.Ticker.A, 100.0, 500),
@@ -20,15 +19,9 @@ public class Main {
         for(Order order : orders){
             processor.addOrder(order);
         }
-
-        long startTime = System.currentTimeMillis();
-        MatchingEngine.match(MatchingEngine.getTradeBook("A"));
-        long endTime = System.currentTimeMillis();
-
-        long duration = endTime - startTime;
-        long average = duration/5;
-        System.out.println("5 trades matched in " + duration + " milliseconds.");
-        System.out.println(average + " milliseconds per match");
+        
+        //Run matching engine
+        MatchingEngine.match(MatchingEngine.getTradeBook(Order.Ticker.A));
 
 
     }

@@ -4,25 +4,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+
 public class MatchingEngine{
     
-    private static final Map<String, TradeBook> TradeBookMap = new HashMap();
-    private static final String[] equities = {"A","B","C","D","E"};
+    private static final Map<Order.Ticker, TradeBook> TradeBookMap = new HashMap<>();
+    private static final Order.Ticker[] equities = {Order.Ticker.A,Order.Ticker.B,Order.Ticker.C,Order.Ticker.D,Order.Ticker.E};
 
     public MatchingEngine(){
-        for(String equity : equities){
+        for(Order.Ticker equity : equities){
             AddTradeBook(equity);
         }
             
     }
 
-    private static void AddTradeBook(String ticker){
+    private static void AddTradeBook(Order.Ticker ticker){
         TradeBook newTradeBook = new TradeBook(ticker);
         TradeBookMap.put(ticker,newTradeBook);
     }
 
-    public static TradeBook getTradeBook(String equity){
-        return TradeBookMap.get(equity);
+    public static TradeBook getTradeBook(Order.Ticker ticker){
+        return TradeBookMap.get(ticker);
     }
 
     public static int match(TradeBook book){
