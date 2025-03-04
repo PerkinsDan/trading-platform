@@ -4,7 +4,8 @@
   "description": "A trading platform for our group assignment (Software Engineering Tools Techniques and Practices)",
   "main": "index.js",
   "scripts": {
-    "prepare": "husky && husky install"
+    "prepare": "husky",
+    "format": "prettier --write **/* --plugin=prettier-plugin-java"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   },
   "homepage": "https://github.com/PerkinsDan/trading-platform#readme",
   "devDependencies": {
+    "eslint": "^9.21.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
     "prettier": "3.5.3",

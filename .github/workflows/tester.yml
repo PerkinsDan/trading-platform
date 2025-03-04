@@ -3,10 +3,10 @@ name: Run Tests
 on:
   push:
     branches:
-      - "**" # Run on all branches
+      - "**"
   pull_request:
     branches:
-      - "**" # Run on all PRs
+      - "**"
 
 jobs:
   java-tests:
@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: "temurin"
-          java-version: "17"
+          java-version: "23"
 
       - name: Run Maven Tests
-        run: mvn test --batch-mode
+        run: cd ./apps/api/ && mvn test --batch-mode
