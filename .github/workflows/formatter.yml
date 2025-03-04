@@ -3,10 +3,10 @@ name: Code Formatter Check
 on:
   push:
     branches:
-      - "**" # Runs on every branch
+      - "**"
   pull_request:
     branches:
-      - "**" # Runs on every PR, regardless of the branch
+      - "**"
 
 jobs:
   format-check:
@@ -17,22 +17,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Install Prettier & ESLint
-        run: npm install -g prettier eslint
+      - name: Install Packages
+        run: npm ci
 
       - name: Run Prettier Check
-        run: prettier --check "**/*"
-
-      - name: Run ESLint Check
-        run: eslint . --ext .js,.ts
+        run: npx prettier --check "**/*"
 
       - name: Auto-fix Formatting
         if: github.event_name == 'push'
         run: |
-          prettier --write "**/*"
-          eslint . --ext .js,.ts --fix
-          find . -name "*.java" -print0 | xargs -0 java -jar google-java-format-1.17.0-all-deps.jar -i
-          black .
+          npm run format
 
       - name: Commit Changes
         if: github.event_name == 'push'
