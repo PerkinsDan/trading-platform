@@ -7,11 +7,18 @@ A trading platform for our group assignment (Software Engineering Tools Techniqu
 - scripts/ is for CICD scripts
 
 To run docker:  
-```docker build -t client ./apps/client/```
-```docker run -p 3000:3000 client```
+Frontend:
+`docker build -t client ./apps/client/`
+`docker run -p 3000:3000 client`
+
+API:
+`cd ./apps/api`
+`mvn clean package`
+`docker build -t api .`
+`docker run -p 8080:8080 api`
 
 On Mac?
-You may run into:
+When trying to commit you may run into:
 
 ```zsh
 hint: The '.husky/pre-commit' hook was ignored because it's not set as executable.
