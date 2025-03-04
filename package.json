@@ -1,0 +1,31 @@
+{
+  "name": "trading-platform",
+  "version": "1.0.0",
+  "description": "A trading platform for our group assignment (Software Engineering Tools Techniques and Practices)",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky",
+    "format": "prettier --write **/* --plugin=prettier-plugin-java"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PerkinsDan/trading-platform.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PerkinsDan/trading-platform/issues"
+  },
+  "homepage": "https://github.com/PerkinsDan/trading-platform#readme",
+  "devDependencies": {
+    "eslint": "^9.21.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
+    "prettier": "3.5.3",
+    "prettier-plugin-java": "^2.6.7"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
+}

@@ -1,0 +1,38 @@
+name: Code Formatter Check
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  format-check:
+    name: Check & Fix Formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Packages
+        run: npm ci
+
+      - name: Run Prettier Check
+        run: npx prettier --check "**/*"
+
+      - name: Auto-fix Formatting
+        if: github.event_name == 'push'
+        run: |
+          npm run format
+
+      - name: Commit Changes
+        if: github.event_name == 'push'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m "Auto-format code" || echo "No changes to commit"
+          git push || echo "No changes to push"
