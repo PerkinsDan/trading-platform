@@ -9,6 +9,9 @@ A trading platform for our group assignment (Software Engineering Tools Techniqu
 To run the app:
 `docker compose up`
 
+To enable formmating and linting:  
+`npm install`
+
 On Mac?
 When trying to commit you may run into:
 
