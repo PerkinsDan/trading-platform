@@ -3,22 +3,22 @@ package orderMatchingEngine;
 import java.util.PriorityQueue;
 
 public class TradeBook {
-    private final String ticker;
+    private final Order.Ticker ticker;
     private final PriorityQueue<Order> buyBook;
     private final PriorityQueue<Order> sellBook;
 
-    public TradeBook(String ticker){
-        this.buyBook = new PriorityQueue<>( 100,new BuyOrderComparator());
-        this.sellBook = new PriorityQueue<>(100, new SellOrderComparator());
+    public TradeBook(Order.Ticker ticker){
+        this.buyBook = new PriorityQueue<>(new BuyOrderComparator());
+        this.sellBook = new PriorityQueue<>(new SellOrderComparator());
         this.ticker = ticker;
     }
 
     public void addToBook(Order order){
         switch(order.getType()){
-            case BUY:
+            case Order.Type.BUY:
                 buyBook.offer(order);
                 break;
-            case SELL:
+            case Order.Type.SELL:
                 sellBook.offer(order);
                 break;
         }
@@ -30,12 +30,10 @@ public class TradeBook {
     public PriorityQueue<Order> getSellBook(){
         return sellBook;
     }
-    public void printOrders() {
-        System.out.println("\nBuy Orders:");
-        buyBook.forEach(System.out::println);
-        System.out.println("Sell Orders:");
-        sellBook.forEach(System.out::println);
+    public String getTicker(){
+        return ticker.name();
     }
+
         
     
 }

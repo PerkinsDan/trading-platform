@@ -27,7 +27,7 @@ class OrderProcessorTest {
         Order order1 = new Order(Order.Type.BUY,Order.Ticker.A,100.0, 2000);
         orderProcessor.addOrder(order);
         orderProcessor.addOrder(order1);
-        TradeBook book = MatchingEngine.getTradeBook("A");
+        TradeBook book = MatchingEngine.getTradeBook(Order.Ticker.A);
         PriorityQueue<Order> buyBook = book.getBuyBook();
         PriorityQueue<Order> sellBook = book.getSellBook();
         assertTrue(sellBook.contains(order));
@@ -49,7 +49,7 @@ class OrderProcessorTest {
         orderProcessor.addOrder(newBuyOrder);
         orderProcessor.addOrder(oldBuyOrder);
 
-        TradeBook book = MatchingEngine.getTradeBook("A");
+        TradeBook book = MatchingEngine.getTradeBook(Order.Ticker.A);
         PriorityQueue<Order> sellQueue = book.getSellBook();
         PriorityQueue<Order> buyQueue = book.getBuyBook();
 
@@ -73,7 +73,7 @@ class OrderProcessorTest {
         orderProcessor.addOrder(cheapSellOrder);
         orderProcessor.addOrder(expensiveSellOrder);
 
-        TradeBook book = MatchingEngine.getTradeBook("A");
+        TradeBook book = MatchingEngine.getTradeBook(Order.Ticker.A);
         PriorityQueue<Order> buyBook = book.getBuyBook();
         PriorityQueue<Order> sellBook = book.getSellBook();
  

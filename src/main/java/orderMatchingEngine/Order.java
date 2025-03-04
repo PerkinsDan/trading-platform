@@ -46,10 +46,6 @@ public class Order {
         this.quantity -= decrement;
     }
 
-    public void setQuantity(int newQuantity){
-        this.quantity = newQuantity;
-    }
-
     @Override
     public String toString() {
         return String.format("Order{id=%d, type=%s, ticker=%s, price=%.2f, quantity=%d, timestamp=%d}",
