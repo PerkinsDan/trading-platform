@@ -7,17 +7,15 @@ import java.util.PriorityQueue;
 
 public class MatchingEngine{
     
-    private static MatchingEngine engine = null;
+    private static MatchingEngine engine;
     private static final Map<Order.Ticker, TradeBook> TradeBookMap = new HashMap<>();
     private static final Order.Ticker[] equities = {Order.Ticker.A,Order.Ticker.B,Order.Ticker.C,Order.Ticker.D,Order.Ticker.E};
     
     public static MatchingEngine getInstance(){
         if(engine == null){
-            MatchingEngine.engine = new MatchingEngine();
-            return engine;
-        } else {
-            return engine;
+            engine = new MatchingEngine();
         }
+        return engine;
     }
     
     private MatchingEngine(){
