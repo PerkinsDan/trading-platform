@@ -21,7 +21,7 @@ jobs:
         run: npm ci
 
       - name: Run Prettier Check
-        run: npx prettier --check "**/*"
+        run: npx prettier --check .
 
       - name: Auto-fix Formatting
         if: github.event_name == 'push'
