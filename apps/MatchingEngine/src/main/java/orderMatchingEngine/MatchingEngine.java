@@ -6,19 +6,6 @@ import java.util.PriorityQueue;
 
 public class MatchingEngine {
 
-<<<<<<< HEAD
-public class MatchingEngine{
-    
-    private static MatchingEngine engine;
-    private static final Map<Order.Ticker, TradeBook> TradeBookMap = new HashMap<>();
-    private static final Order.Ticker[] equities = {Order.Ticker.A,Order.Ticker.B,Order.Ticker.C,Order.Ticker.D,Order.Ticker.E};
-    
-    public static MatchingEngine getInstance(){
-        if(engine == null){
-            engine = new MatchingEngine();
-        }
-        return engine;
-=======
   private static MatchingEngine engine = null;
   private static final Map<Order.Ticker, TradeBook> TradeBookMap =
     new HashMap<>();
@@ -36,7 +23,6 @@ public class MatchingEngine{
       return engine;
     } else {
       return engine;
->>>>>>> 384d28c4515770e005fea5725171010f9338b318
     }
   }
 
