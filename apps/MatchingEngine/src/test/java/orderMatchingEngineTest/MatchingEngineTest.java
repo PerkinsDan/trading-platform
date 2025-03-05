@@ -55,7 +55,10 @@ public class MatchingEngineTest {
     processor.addOrder(buyOrder);
     processor.addOrder(sellOrder);
 
-    assertEquals(engine.match(MatchingEngine.getTradeBook(Order.Ticker.A)), 1);
+    TradeBook booker = MatchingEngine.getTradeBook(Order.Ticker.A);
+    int numTrades = engine.match(booker);
+
+    assertEquals(numTrades, 1);
     //both orders should have been cleared of the books, so no matches should be made
     assertEquals(engine.match(MatchingEngine.getTradeBook(Order.Ticker.A)), 0);
   }
@@ -95,7 +98,7 @@ public class MatchingEngineTest {
       processor.addOrder(order);
     }
 
-    assertEquals(engine.match(MatchingEngine.getTradeBook(Order.Ticker.A)), 5);
+    assertEquals(5, engine.match(MatchingEngine.getTradeBook(Order.Ticker.A)));
     //check that theres just one unfilled order left in buyBook()
     TradeBook book = MatchingEngine.getTradeBook(Order.Ticker.A);
     PriorityQueue<Order> buyBook = book.getBuyBook();
