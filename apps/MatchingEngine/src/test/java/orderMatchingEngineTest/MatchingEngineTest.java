@@ -11,6 +11,7 @@ import orderMatchingEngine.OrderType;
 import orderMatchingEngine.TradeBook;
 import org.junit.jupiter.api.*;
 
+//REMEMBER THAT 1 MATCH WILL CREATE 2 UPDATE OBJECTS - One for the buy trade and one for the sell trade
 
 public class MatchingEngineTest {
 
@@ -37,7 +38,7 @@ public class MatchingEngineTest {
     processor.addOrder(buyOrder);
     processor.addOrder(sellOrder);
 
-    assertEquals(engine.match(MatchingEngine.getTradeBook(Ticker.A)), 0); //returning 0 means no matches
+    assertEquals(engine.match(MatchingEngine.getTradeBook(Ticker.A)).size(), 0); //returning 0 means no matches
   }
 
   @Test
@@ -47,7 +48,7 @@ public class MatchingEngineTest {
 
     processor.addOrder(order);
 
-    assertEquals(engine.match(MatchingEngine.getTradeBook(Ticker.A)), 0);
+    assertEquals(engine.match(MatchingEngine.getTradeBook(Ticker.A)).size(), 0);
   }
 
   @Test
@@ -59,11 +60,11 @@ public class MatchingEngineTest {
     processor.addOrder(sellOrder);
 
     TradeBook booker = MatchingEngine.getTradeBook(Ticker.A);
-    int numTrades = engine.match(booker);
+    int numTrades = engine.match(booker).size();
 
-    assertEquals(numTrades, 1);
+    assertEquals(numTrades, 2);
     //both orders should have been cleared of the books, so no matches should be made
-    assertEquals(engine.match(MatchingEngine.getTradeBook(Ticker.A)), 0);
+    assertEquals(engine.match(MatchingEngine.getTradeBook(Ticker.A)).size(), 0);
   }
 
   @Test
@@ -75,7 +76,7 @@ public class MatchingEngineTest {
     processor.addOrder(sellOrder);
 
     //assert a match took place
-    assertEquals(engine.match(MatchingEngine.getTradeBook(Ticker.A)), 1);
+    assertEquals(engine.match(MatchingEngine.getTradeBook(Ticker.A)).size(), 2);
 
     //assert that part of the original sell order remains unfilled
     Order partiallyFilledOrder = MatchingEngine.getTradeBook(Ticker.A)
@@ -101,7 +102,7 @@ public class MatchingEngineTest {
       processor.addOrder(order);
     }
 
-    assertEquals(5, engine.match(MatchingEngine.getTradeBook(Ticker.A)));
+    assertEquals(10, engine.match(MatchingEngine.getTradeBook(Ticker.A)).size());
     //check that theres just one unfilled order left in buyBook()
     TradeBook book = MatchingEngine.getTradeBook(Ticker.A);
     PriorityQueue<Order> buyBook = book.getBuyBook();
