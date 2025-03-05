@@ -21,15 +21,15 @@ jobs:
         run: npm ci
 
       - name: Run Prettier Check
-        run: npx prettier --check .
+        id: prettier_check
+        run: npx prettier --check . || echo "needs_formatting=true" >> $GITHUB_ENV
 
       - name: Auto-fix Formatting
-        if: github.event_name == 'push'
-        run: |
-          npm run format
+        if: env.needs_formatting == 'true'
+        run: npm run format
 
       - name: Commit Changes
-        if: github.event_name == 'push'
+        if: env.needs_formatting == 'true' && github.event_name == 'push'
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
