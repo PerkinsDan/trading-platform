@@ -25,7 +25,7 @@ public class Main {
     long start = System.currentTimeMillis();
     int count = matchingEngine.match(
       MatchingEngine.getTradeBook(Ticker.A)
-    );
+    ).size();
     long end = System.currentTimeMillis();
     long time = end - start;
     System.out.println(count + " trades matched in " + time + "ms");

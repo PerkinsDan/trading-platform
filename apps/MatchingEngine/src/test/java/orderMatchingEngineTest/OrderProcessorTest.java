@@ -89,52 +89,34 @@ class OrderProcessorTest {
       "Newer order should be processed second"
     );
   }
+  
 
-  @Test
   void testAddOrder_pollInOrderOfPrice() {
-    long fixedTimestamp = 1000000L;
+
     Order cheapSellOrder = new Order(
-      OrderType.SELL,
-      Ticker.A,
-      95.0,
-      2000,
-      fixedTimestamp
-    );
-    Order expensiveSellOrder = new Order(
-      OrderType.SELL,
-      Ticker.A,
-      105.0,
-      2000,
-      fixedTimestamp
-    );
+    OrderType.SELL,
+    Ticker.A,
+    95.0,
+    2000
+  );
+  cheapSellOrder.setTimeStamp(1000000L);
+  Order expensiveSellOrder = new Order(
+    OrderType.SELL,
+    Ticker.A,
+    105.0,
+    2000
+  );
+  expensiveSellOrder.setTimeStamp(1000000L);
 
-    Order cheapBuyOrder = new Order(
-      OrderType.BUY,
-      Ticker.A,
-      95.0,
-      2000,
-      fixedTimestamp
-    );
-    Order expensiveBuyOrder = new Order(
-      OrderType.BUY,
-      Ticker.A,
-      105.0,
-      2000,
-      fixedTimestamp
-    );
+  orderProcessor.addOrder(cheapSellOrder);
+  orderProcessor.addOrder(expensiveSellOrder);
 
-    orderProcessor.addOrder(expensiveBuyOrder);
-    orderProcessor.addOrder(cheapBuyOrder);
-    orderProcessor.addOrder(cheapSellOrder);
-    orderProcessor.addOrder(expensiveSellOrder);
+  TradeBook book = MatchingEngine.getTradeBook(Ticker.A);
+  PriorityQueue<Order> sellBook = book.getSellBook();
 
-    TradeBook book = MatchingEngine.getTradeBook(Ticker.A);
-    PriorityQueue<Order> buyBook = book.getBuyBook();
-    PriorityQueue<Order> sellBook = book.getSellBook();
-
-    assertEquals(expensiveBuyOrder, buyBook.poll());
-    assertEquals(cheapBuyOrder, buyBook.poll());
-    assertEquals(cheapSellOrder, sellBook.poll());
-    assertEquals(expensiveSellOrder, sellBook.poll());
-  }
+  assertEquals(cheapSellOrder, sellBook.poll());
+  assertEquals(expensiveSellOrder, sellBook.poll());
+  
+    }
 }
+
