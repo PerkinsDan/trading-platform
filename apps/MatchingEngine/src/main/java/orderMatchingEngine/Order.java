@@ -1,14 +1,9 @@
 package orderMatchingEngine;
 
-import java.util.concurrent.atomic.AtomicLong;
-
+import java.util.UUID;
 public class Order {
 
-  // automatic UUID generator for setting the order type
-  private static final AtomicLong counter = new AtomicLong(0);
-
-  private final long orderId;
-  //private final long orderId : implement later, dont know enough about it currently
+  private final UUID orderId;
   private final OrderType type;
   private final double price;
   private final long timestamp;
@@ -16,7 +11,7 @@ public class Order {
   private int quantity; // quantity isnt final becuase it can change during partial fills
 
   public Order(OrderType type, Ticker ticker, double price, int quantity) {
-    this.orderId = counter.getAndIncrement();
+    this.orderId = UUID.randomUUID();
     this.type = type;
     this.ticker = ticker;
     this.price = price;
@@ -32,16 +27,12 @@ public class Order {
     int quantity,
     long timestamp
   ) {
-    this.orderId = counter.getAndIncrement();
+    this.orderId = UUID.randomUUID();
     this.type = type;
     this.ticker = ticker;
     this.price = price;
     this.quantity = quantity;
     this.timestamp = timestamp;
-  }
-
-  public long getId() {
-    return orderId;
   }
 
   public OrderType getType() {
@@ -72,7 +63,7 @@ public class Order {
   public String toString() {
     return String.format(
       "Order{id=%d, type=%s, ticker=%s, price=%.2f, quantity=%d, timestamp=%d}",
-      orderId,
+      orderId.toString(),
       type,
       ticker,
       price,
