@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import orderMatchingEngine.Order;
 import orderMatchingEngine.SellOrderComparator;
+import orderMatchingEngine.Ticker;
+import orderMatchingEngine.OrderType;
+
 import org.junit.jupiter.api.Test;
 
 class SellOrderComparatorTest {
@@ -12,8 +15,8 @@ class SellOrderComparatorTest {
 
   @Test
   void testLowerPriceComesFirst() {
-    Order order1 = new Order(Order.Type.SELL, Order.Ticker.A, 100.0, 2000); // Lower price
-    Order order2 = new Order(Order.Type.SELL, Order.Ticker.A, 105.0, 1000); // Higher price
+    Order order1 = new Order(OrderType.SELL, Ticker.A, 100.0, 2000); // Lower price
+    Order order2 = new Order(OrderType.SELL, Ticker.A, 105.0, 1000); // Higher price
 
     assertTrue(
       comparator.compare(order1, order2) < 0,
@@ -23,8 +26,8 @@ class SellOrderComparatorTest {
 
   @Test
   void testSamePrice_EarlierTimestampComesFirst() {
-    Order order1 = new Order(Order.Type.SELL, Order.Ticker.A, 100.0, 2000); // Earlier timestamp
-    Order order2 = new Order(Order.Type.SELL, Order.Ticker.A, 100.0, 1000); // Later timestamp
+    Order order1 = new Order(OrderType.SELL, Ticker.A, 100.0, 2000); // Earlier timestamp
+    Order order2 = new Order(OrderType.SELL, Ticker.A, 100.0, 1000); // Later timestamp
 
     assertTrue(
       comparator.compare(order1, order2) < 0,
@@ -36,15 +39,15 @@ class SellOrderComparatorTest {
   void testSamePriceAndTimestamp_AreEqual() {
     long fixedTimestamp = 1000000000L;
     Order order1 = new Order(
-      Order.Type.SELL,
-      Order.Ticker.A,
+      OrderType.SELL,
+      Ticker.A,
       100.0,
       1000,
       fixedTimestamp
     );
     Order order2 = new Order(
-      Order.Type.SELL,
-      Order.Ticker.A,
+      OrderType.SELL,
+      Ticker.A,
       100.0,
       1000,
       fixedTimestamp

@@ -4,11 +4,11 @@ import java.util.PriorityQueue;
 
 public class TradeBook {
 
-  private final Order.Ticker ticker;
+  private final Ticker ticker;
   private final PriorityQueue<Order> buyBook;
   private final PriorityQueue<Order> sellBook;
 
-  public TradeBook(Order.Ticker ticker) {
+  public TradeBook(Ticker ticker) {
     this.buyBook = new PriorityQueue<>(new BuyOrderComparator());
     this.sellBook = new PriorityQueue<>(new SellOrderComparator());
     this.ticker = ticker;
@@ -16,10 +16,10 @@ public class TradeBook {
 
   public void addToBook(Order order) {
     switch (order.getType()) {
-      case Order.Type.BUY:
+      case OrderType.BUY:
         buyBook.offer(order);
         break;
-      case Order.Type.SELL:
+      case OrderType.SELL:
         sellBook.offer(order);
         break;
     }

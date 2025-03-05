@@ -7,28 +7,15 @@ public class Order {
   // automatic UUID generator for setting the order type
   private static final AtomicLong counter = new AtomicLong(0);
 
-  public enum Type {
-    BUY,
-    SELL,
-  }
-
-  public enum Ticker {
-    A,
-    B,
-    C,
-    D,
-    E,
-  }
-
   private final long orderId;
   //private final long orderId : implement later, dont know enough about it currently
-  private final Type type;
+  private final OrderType type;
   private final double price;
   private final long timestamp;
   private final Ticker ticker;
   private int quantity; // quantity isnt final becuase it can change during partial fills
 
-  public Order(Type type, Ticker ticker, double price, int quantity) {
+  public Order(OrderType type, Ticker ticker, double price, int quantity) {
     this.orderId = counter.getAndIncrement();
     this.type = type;
     this.ticker = ticker;
@@ -39,7 +26,7 @@ public class Order {
 
   // secondary constructor to force equal timestamps, used for testing
   public Order(
-    Type type,
+    OrderType type,
     Ticker ticker,
     double price,
     int quantity,
@@ -57,7 +44,7 @@ public class Order {
     return orderId;
   }
 
-  public Type getType() {
+  public OrderType getType() {
     return type;
   }
 
