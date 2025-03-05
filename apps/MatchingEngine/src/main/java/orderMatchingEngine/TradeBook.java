@@ -5,32 +5,32 @@ import java.util.PriorityQueue;
 public class TradeBook {
 
   private final Ticker ticker;
-  private final PriorityQueue<Order> buyBook;
-  private final PriorityQueue<Order> sellBook;
+  private final PriorityQueue<Order> buySide;
+  private final PriorityQueue<Order> sellSide;
 
   public TradeBook(Ticker ticker) {
-    this.buyBook = new PriorityQueue<>(new BuyOrderComparator());
-    this.sellBook = new PriorityQueue<>(new SellOrderComparator());
+    this.buySide = new PriorityQueue<>(new BuyOrderComparator());
+    this.sellSide = new PriorityQueue<>(new SellOrderComparator());
     this.ticker = ticker;
   }
 
   public void addToBook(Order order) {
     switch (order.getType()) {
       case OrderType.BUY:
-        buyBook.offer(order);
+        buySide.offer(order);
         break;
       case OrderType.SELL:
-        sellBook.offer(order);
+        sellSide.offer(order);
         break;
     }
   }
 
   public PriorityQueue<Order> getBuyBook() {
-    return buyBook;
+    return buySide;
   }
 
   public PriorityQueue<Order> getSellBook() {
-    return sellBook;
+    return sellSide;
   }
 
   public String getTicker() {
