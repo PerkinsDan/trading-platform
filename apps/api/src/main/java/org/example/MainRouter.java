@@ -22,5 +22,35 @@ public class MainRouter {
         response.putHeader("content-type", "text/plain");
         response.end("Hello World from Vert.x-Web!");
       });
+
+      router.get("/user-active-positions").handler(ctx -> {
+          // logic to retrieve user's active trade positions
+          ctx.response().end("Retrieving user's active positions...");
+      });
+
+      router.get("/user-trade-history").handler(ctx -> {
+          // logic to retrieve user's trade history
+          ctx.response().end("Retrieving user's trade history...");
+      });
+
+      router.get("/orders").handler(ctx -> {
+          // logic to retrieve all active orders
+          ctx.response().end("Retrieving all orders...");
+      });
+
+      router.post("/create-user").handler(ctx -> {
+          // logic to create a new user
+          ctx.response().end("Creating a new user...");
+      });
   }
 }
+
+
+//user-active-positions
+//user-trade-history
+//orders
+//create-order
+//create-user
+//update-user-balance
+//get-user-account (to get balance)
+//market-prices
