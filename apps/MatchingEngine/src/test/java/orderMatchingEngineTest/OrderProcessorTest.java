@@ -6,6 +6,8 @@ import java.util.PriorityQueue;
 import orderMatchingEngine.MatchingEngine;
 import orderMatchingEngine.Order;
 import orderMatchingEngine.OrderProcessor;
+import orderMatchingEngine.Ticker;
+import orderMatchingEngine.OrderType;
 import orderMatchingEngine.TradeBook;
 import org.junit.jupiter.api.*;
 
@@ -27,11 +29,11 @@ class OrderProcessorTest {
 
   @Test
   void testSubmitOrder_AddsOrderToBook() {
-    Order order = new Order(Order.Type.SELL, Order.Ticker.A, 100.0, 2000);
-    Order order1 = new Order(Order.Type.BUY, Order.Ticker.A, 100.0, 2000);
+    Order order = new Order(OrderType.SELL, Ticker.A, 100.0, 2000);
+    Order order1 = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
     orderProcessor.addOrder(order);
     orderProcessor.addOrder(order1);
-    TradeBook book = MatchingEngine.getTradeBook(Order.Ticker.A);
+    TradeBook book = MatchingEngine.getTradeBook(Ticker.A);
     PriorityQueue<Order> buyBook = book.getBuyBook();
     PriorityQueue<Order> sellBook = book.getSellBook();
     assertTrue(sellBook.contains(order));
@@ -42,27 +44,27 @@ class OrderProcessorTest {
   void testOrdersProcessedInTimeOrder() {
     //two sell orders created with same price but different time stamps
     Order oldSellOrder = new Order(
-      Order.Type.SELL,
-      Order.Ticker.A,
+      OrderType.SELL,
+      Ticker.A,
       100.0,
       2000
     );
     Order newSellOrder = new Order(
-      Order.Type.SELL,
-      Order.Ticker.A,
+      OrderType.SELL,
+      Ticker.A,
       100.0,
       2000
     );
 
-    Order oldBuyOrder = new Order(Order.Type.BUY, Order.Ticker.A, 100.0, 2000);
-    Order newBuyOrder = new Order(Order.Type.BUY, Order.Ticker.A, 100.0, 2000);
+    Order oldBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
+    Order newBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
 
     orderProcessor.addOrder(newSellOrder);
     orderProcessor.addOrder(oldSellOrder);
     orderProcessor.addOrder(newBuyOrder);
     orderProcessor.addOrder(oldBuyOrder);
 
-    TradeBook book = MatchingEngine.getTradeBook(Order.Ticker.A);
+    TradeBook book = MatchingEngine.getTradeBook(Ticker.A);
     PriorityQueue<Order> sellQueue = book.getSellBook();
     PriorityQueue<Order> buyQueue = book.getBuyBook();
 
@@ -92,30 +94,30 @@ class OrderProcessorTest {
   void testAddOrder_pollInOrderOfPrice() {
     long fixedTimestamp = 1000000L;
     Order cheapSellOrder = new Order(
-      Order.Type.SELL,
-      Order.Ticker.A,
+      OrderType.SELL,
+      Ticker.A,
       95.0,
       2000,
       fixedTimestamp
     );
     Order expensiveSellOrder = new Order(
-      Order.Type.SELL,
-      Order.Ticker.A,
+      OrderType.SELL,
+      Ticker.A,
       105.0,
       2000,
       fixedTimestamp
     );
 
     Order cheapBuyOrder = new Order(
-      Order.Type.BUY,
-      Order.Ticker.A,
+      OrderType.BUY,
+      Ticker.A,
       95.0,
       2000,
       fixedTimestamp
     );
     Order expensiveBuyOrder = new Order(
-      Order.Type.BUY,
-      Order.Ticker.A,
+      OrderType.BUY,
+      Ticker.A,
       105.0,
       2000,
       fixedTimestamp
@@ -126,7 +128,7 @@ class OrderProcessorTest {
     orderProcessor.addOrder(cheapSellOrder);
     orderProcessor.addOrder(expensiveSellOrder);
 
-    TradeBook book = MatchingEngine.getTradeBook(Order.Ticker.A);
+    TradeBook book = MatchingEngine.getTradeBook(Ticker.A);
     PriorityQueue<Order> buyBook = book.getBuyBook();
     PriorityQueue<Order> sellBook = book.getSellBook();
 

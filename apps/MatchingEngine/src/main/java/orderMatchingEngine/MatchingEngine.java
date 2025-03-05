@@ -7,14 +7,14 @@ import java.util.PriorityQueue;
 public class MatchingEngine {
 
   private static MatchingEngine engine = null;
-  private static final Map<Order.Ticker, TradeBook> TradeBookMap =
+  private static final Map<Ticker, TradeBook> TradeBookMap =
     new HashMap<>();
-  private static final Order.Ticker[] equities = {
-    Order.Ticker.A,
-    Order.Ticker.B,
-    Order.Ticker.C,
-    Order.Ticker.D,
-    Order.Ticker.E,
+  private static final Ticker[] equities = {
+    Ticker.A,
+    Ticker.B,
+    Ticker.C,
+    Ticker.D,
+    Ticker.E,
   };
 
   public static MatchingEngine getInstance() {
@@ -27,17 +27,17 @@ public class MatchingEngine {
   }
 
   private MatchingEngine() {
-    for (Order.Ticker equity : equities) {
+    for (Ticker equity : equities) {
       AddTradeBook(equity);
     }
   }
 
-  private void AddTradeBook(Order.Ticker ticker) {
+  private void AddTradeBook(Ticker ticker) {
     TradeBook newTradeBook = new TradeBook(ticker);
     TradeBookMap.put(ticker, newTradeBook);
   }
 
-  public static TradeBook getTradeBook(Order.Ticker ticker) {
+  public static TradeBook getTradeBook(Ticker ticker) {
     return TradeBookMap.get(ticker);
   }
 
