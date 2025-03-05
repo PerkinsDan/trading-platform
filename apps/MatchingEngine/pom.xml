@@ -4,8 +4,8 @@
     
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>SETAP-IOT452-DVA</groupId>
-    <artifactId>group-project-trading-platform</artifactId>
+    <groupId>group-project-trading-platform</groupId>
+    <artifactId>MatchingEngine</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>

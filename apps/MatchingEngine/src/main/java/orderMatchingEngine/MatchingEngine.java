@@ -51,7 +51,11 @@ public class MatchingEngine {
       Order buy = buyOrders.peek();
       Order sell = sellOrders.peek();
 
-      if (buy.getPrice() >= sell.getPrice()) { // Match found
+      if (buy.getPrice() < sell.getPrice()) {
+        // No matches possible
+        return matchesFound;
+      } else {
+
         int quantityTraded = Math.min(buy.getQuantity(), sell.getQuantity());
 
         System.out.println(
@@ -62,6 +66,7 @@ public class MatchingEngine {
           " @ " +
           sell.getPrice()
         );
+
         //replace this with some kind of message class to notify API of whats changed
         matchesFound++;
 
@@ -72,11 +77,9 @@ public class MatchingEngine {
         // Remove completed orders
         if (buy.getQuantity() == 0) buyOrders.poll();
         if (sell.getQuantity() == 0) sellOrders.poll();
-      } else {
-        break; // No more matches possible
       }
     }
-    return matchesFound; // True if at least one match occurred, false otherwise
+    return matchesFound;
   }
 
   // used only for testing

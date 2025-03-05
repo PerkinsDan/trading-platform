@@ -1,14 +1,13 @@
 package orderMatchingEngineTest;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import orderMatchingEngine.Order;
-import orderMatchingEngine.SellOrderComparator;
 import org.junit.jupiter.api.Test;
-
+import orderMatchingEngine.BuyOrderComparator;
+;
 class BuyOrderComparatorTest {
 
-  private final SellOrderComparator comparator = new SellOrderComparator();
+  private final BuyOrderComparator comparator = new BuyOrderComparator();
 
   @Test
   void testHigherPriceComesFirst() {
@@ -16,7 +15,7 @@ class BuyOrderComparatorTest {
     Order order2 = new Order(Order.Type.SELL, Order.Ticker.A, 105.0, 1000); // Higher price
 
     assertTrue(
-      comparator.compare(order1, order2) < 0,
+      comparator.compare(order2, order1) < 0,
       "Lower price should come later"
     );
   }
