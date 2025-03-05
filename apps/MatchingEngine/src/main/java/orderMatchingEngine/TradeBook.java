@@ -9,8 +9,8 @@ public class TradeBook {
   private final PriorityQueue<Order> sellBook;
 
   public TradeBook(Order.Ticker ticker) {
-    this.buyBook = new PriorityQueue<>(new BuyOrderComparator());
-    this.sellBook = new PriorityQueue<>(new SellOrderComparator());
+    this.buyBook = new PriorityQueue<>(new OrderComparator(Order.Type.BUY));
+    this.sellBook = new PriorityQueue<>(new OrderComparator(Order.Type.SELL));
     this.ticker = ticker;
   }
 
