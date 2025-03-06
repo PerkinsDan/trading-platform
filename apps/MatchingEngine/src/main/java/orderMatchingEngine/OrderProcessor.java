@@ -48,7 +48,7 @@ public class OrderProcessor {
   public static TradeBook getTradeBook(Ticker ticker) {
     return TradeBookMap.get(ticker);
   }
-  // used only for testing
+  
   public void resetInstance() {
     orderProcessor = null;
   }

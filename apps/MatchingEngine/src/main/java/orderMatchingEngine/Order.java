@@ -21,22 +21,6 @@ public class Order {
     this.filled = false;
   }
 
-  // secondary constructor to force equal timestamps, used for testing
-  public Order(
-    OrderType type,
-    Ticker ticker,
-    double price,
-    int quantity,
-    long timestamp
-  ) {
-    this.orderId = UUID.randomUUID();
-    this.type = type;
-    this.ticker = ticker;
-    this.price = price;
-    this.quantity = quantity;
-    this.timestamp = timestamp;
-  }
-
   public UUID getId(){
     return orderId;
   }
@@ -65,7 +49,6 @@ public class Order {
     this.quantity -= decrement;
   }
 
-  //used just for testing, to create orders with equal timestamps
   public void setTimeStamp(long timestamp){
     this.timestamp = timestamp;
   }
@@ -80,14 +63,14 @@ public class Order {
 
   @Override
   public String toString() {
-    return String.format(
-      "Order{id=%d, type=%s, ticker=%s, price=%.2f, quantity=%d, timestamp=%d}",
-      orderId.toString(),
-      type,
-      ticker,
-      price,
-      quantity,
-      timestamp
-    );
+    return "Order{" +
+            "orderId=" + orderId +
+            ", type=" + type +
+            ", ticker=" + ticker +
+            ", price=" + price +
+            ", quantity=" + quantity +
+            ", timestamp=" + timestamp +
+            ", filled=" + filled +
+            '}';
   }
 }

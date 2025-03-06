@@ -22,37 +22,32 @@ public class MatchingEngine {
       if (buy.getPrice() < sell.getPrice()) {
         // No matches possible
         return matchesFound;
-      } else {
-
-        int quantityTraded = Math.min(buy.getQuantity(), sell.getQuantity());
-
-        System.out.println(
-          "Trade Executed: " +
-          quantityTraded +
-          " " +
-          buy.getTicker() +
-          " @ " +
-          sell.getPrice()
-        );
-
-        // Reduce quantities
-        buy.reduceQuantity(quantityTraded);
-        sell.reduceQuantity(quantityTraded);
-
-        Boolean removeSell  = (sell.getQuantity() == 0) ? true : false;
-        Boolean removeBuy = (buy.getQuantity() == 0) ? true : false;
-
-        //replace this with some kind of message class to notify API of whats changed
-        // sell.getPrice() becuase it'll always be the lowest.
-        matchesFound.add(createBSON(buy.getId(), quantityTraded, sell.getPrice(), removeBuy));
-        matchesFound.add(createBSON(sell.getId(),quantityTraded,sell.getPrice(),removeSell));
-
-        // Remove completed orders
-        if (removeBuy) buyOrders.poll();
-        if (removeSell) sellOrders.poll();
       }
+      int quantityTraded = Math.min(buy.getQuantity(), sell.getQuantity());
 
+      System.out.println(
+        "Trade Executed: " +
+        quantityTraded +
+        " " +
+        buy.getTicker() +
+        " @ " +
+        sell.getPrice()
+      );
+
+      buy.reduceQuantity(quantityTraded);
+      sell.reduceQuantity(quantityTraded);
+
+      Boolean removeSell  = (sell.getQuantity() == 0) ? true : false;
+      Boolean removeBuy = (buy.getQuantity() == 0) ? true : false;
+
+      matchesFound.add(createBSON(buy.getId(), quantityTraded, sell.getPrice(), removeBuy));
+      matchesFound.add(createBSON(sell.getId(),quantityTraded,sell.getPrice(),removeSell));
+
+      // Remove completed orders
+      if (removeBuy) buyOrders.poll();
+      if (removeSell) sellOrders.poll();
     }
+
     for (Document match : matchesFound){
       System.out.println(match.toJson());
     }
@@ -67,3 +62,4 @@ public class MatchingEngine {
     return bsonDocument;
   }
 }
+
