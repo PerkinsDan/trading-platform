@@ -3,11 +3,6 @@ package OrderProcessor;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.PriorityQueue;
-import OrderProcessor.Order;
-import OrderProcessor.OrderProcessor;
-import OrderProcessor.OrderType;
-import OrderProcessor.Ticker;
-import OrderProcessor.TradeBook;
 
 import org.junit.jupiter.api.*;
 
@@ -26,14 +21,18 @@ class OrderProcessorTest {
   }
 
   @Test
-  void testSubmitOrder_AddsOrderToBook() {
+  void testSubmitOrder() {
     Order order = new Order(OrderType.SELL, Ticker.A, 100.0, 2000);
     Order order1 = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
+
     orderProcessor.addOrder(order);
     orderProcessor.addOrder(order1);
+
     TradeBook book = OrderProcessor.getTradeBook(Ticker.A);
+
     PriorityQueue<Order> buyBook = book.getBuyBook();
     PriorityQueue<Order> sellBook = book.getSellBook();
+
     assertTrue(sellBook.contains(order));
     assertTrue(buyBook.contains(order1));
   }
@@ -65,7 +64,8 @@ class OrderProcessorTest {
     TradeBook book = OrderProcessor.getTradeBook(Ticker.A);
     PriorityQueue<Order> sellQueue = book.getSellBook();
     PriorityQueue<Order> buyQueue = book.getBuyBook();
-
+    
+    //verify that orders are queued in the correct way
     assertEquals(
       oldSellOrder,
       sellQueue.poll(),
@@ -89,7 +89,7 @@ class OrderProcessorTest {
   }
   
 
-  void testAddOrder_pollInOrderOfPrice() {
+  void testPollingInOrderOfPrice() {
 
     Order cheapSellOrder = new Order(
     OrderType.SELL,
