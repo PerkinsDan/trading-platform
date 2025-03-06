@@ -1,15 +1,15 @@
 package OrderProcessor;
 
 import java.util.UUID;
+
 public class Order {
 
   private final UUID orderId;
   private final OrderType type;
   private final double price;
-  private long timestamp;
+  private final long timestamp;
   private final Ticker ticker;
-  private int quantity; // quantity isnt final becuase it can change during partial fills
-  private Boolean filled;
+  private int quantity;
 
   public Order(OrderType type, Ticker ticker, double price, int quantity) {
     this.orderId = UUID.randomUUID();
@@ -17,11 +17,10 @@ public class Order {
     this.ticker = ticker;
     this.price = price;
     this.quantity = quantity;
-    this.timestamp = System.nanoTime(); // FIFO tie-breaker
-    this.filled = false;
+    this.timestamp = System.nanoTime();
   }
 
-  public UUID getId(){
+  public UUID getId() {
     return orderId;
   }
 
@@ -45,32 +44,20 @@ public class Order {
     return ticker;
   }
 
-  public void reduceQuantity(int decrement) {
-    this.quantity -= decrement;
-  }
-
-  public void setTimeStamp(long timestamp){
-    this.timestamp = timestamp;
-  }
-
-  public Boolean getFilled(){
-    return filled;
-  }
-
-  public void setFilledTrue(){
-    filled = true;
+  public void reduceQuantity(int amount) {
+    this.quantity -= amount;
   }
 
   @Override
   public String toString() {
-    return "Order{" +
-            "orderId=" + orderId +
-            ", type=" + type +
-            ", ticker=" + ticker +
-            ", price=" + price +
-            ", quantity=" + quantity +
-            ", timestamp=" + timestamp +
-            ", filled=" + filled +
-            '}';
+    return String.format(
+      "Order{orderId=%s, type=%s, ticker=%s, price=%.2f, quantity=%d, timestamp=%d}",
+      orderId,
+      type,
+      ticker,
+      price,
+      quantity,
+      timestamp
+    );
   }
 }
