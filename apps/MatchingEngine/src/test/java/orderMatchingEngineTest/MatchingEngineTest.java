@@ -3,7 +3,6 @@ package orderMatchingEngineTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.PriorityQueue;
-import orderMatchingEngine.MatchingEngine;
 import orderMatchingEngine.Order;
 import orderMatchingEngine.OrderProcessor;
 import orderMatchingEngine.Ticker;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.*;
 
 public class MatchingEngineTest {
 
-  private MatchingEngine engine;
   private OrderProcessor processor;
 
   @BeforeEach
