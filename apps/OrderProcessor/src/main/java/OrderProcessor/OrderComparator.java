@@ -12,8 +12,8 @@ public class OrderComparator implements Comparator<Order> {
 
   @Override
   public int compare(Order order1, Order order2) {
-    boolean samePrice = order1.getPrice == order2.getPrice;
-    if (samePrice) {
+    boolean samePrice = (order1.getPrice() == order2.getPrice());
+    if (!samePrice) {
       return switch (type) {
         case BUY -> Double.compare(order2.getPrice(), order1.getPrice());
         case SELL -> Double.compare(order1.getPrice(), order2.getPrice());

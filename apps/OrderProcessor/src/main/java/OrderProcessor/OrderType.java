@@ -1,6 +1,6 @@
 package OrderProcessor;
 
-public final enum OrderType {
+public enum OrderType {
     BUY,
     SELL,
 }

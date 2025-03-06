@@ -1,6 +1,6 @@
 package OrderProcessor;
 
-public final enum Ticker {
+public enum Ticker {
     A,
     B,
     C,
