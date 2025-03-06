@@ -2,6 +2,7 @@ package org.example;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
 
@@ -18,5 +19,10 @@ public class MainVerticle extends AbstractVerticle {
       .listen(8080)
       .<Void>mapEmpty()
       .onComplete(startPromise);
+  }
+
+  public static void main(String[] args) {
+    Vertx vertx = Vertx.vertx();
+    vertx.deployVerticle(new MainVerticle());
   }
 }
