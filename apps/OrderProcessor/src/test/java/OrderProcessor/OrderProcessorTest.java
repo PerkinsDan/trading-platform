@@ -3,12 +3,6 @@ package OrderProcessor;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.PriorityQueue;
-import OrderProcessor.Order;
-import OrderProcessor.OrderProcessor;
-import OrderProcessor.OrderType;
-import OrderProcessor.Ticker;
-import OrderProcessor.TradeBook;
-
 import org.junit.jupiter.api.*;
 
 class OrderProcessorTest {
@@ -26,56 +20,38 @@ class OrderProcessorTest {
   }
 
   @Test
-  void testSubmitOrder_AddsOrderToBook() {
-    Order order = new Order(OrderType.SELL, Ticker.A, 100.0, 2000);
-    Order order1 = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
-    orderProcessor.addOrder(order);
-    orderProcessor.addOrder(order1);
-    TradeBook book = OrderProcessor.getTradeBook(Ticker.A);
-    PriorityQueue<Order> buyBook = book.getBuyBook();
-    PriorityQueue<Order> sellBook = book.getSellBook();
-    assertTrue(sellBook.contains(order));
-    assertTrue(buyBook.contains(order1));
+  void addBuyOrder() {
+    Order order = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
+    orderProcessor.processOrder(order);
+
+    TradeBook book = orderProcessor.getTradeBook(Ticker.A);
+
+    PriorityQueue<Order> buyBook = book.getBuyOrders();
+    assertTrue(buyBook.contains(order));
   }
 
   @Test
-  void testOrdersProcessedInTimeOrder() {
-    //two sell orders created with same price but different time stamps
-    Order oldSellOrder = new Order(
-      OrderType.SELL,
-      Ticker.A,
-      100.0,
-      2
-    );
-    Order newSellOrder = new Order(
-      OrderType.SELL,
-      Ticker.A,
-      100.0,
-      2000
-    );
+  void addSellOrder() {
+    Order order = new Order(OrderType.SELL, Ticker.A, 100.0, 2000);
+    orderProcessor.processOrder(order);
 
+    TradeBook book = orderProcessor.getTradeBook(Ticker.A);
+
+    PriorityQueue<Order> sellBook = book.getSellOrders();
+    assertTrue(sellBook.contains(order));
+  }
+
+  @Test
+  void inTimeOrder() {
     Order oldBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2);
     Order newBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
 
-    orderProcessor.addOrder(newSellOrder);
-    orderProcessor.addOrder(oldSellOrder);
-    orderProcessor.addOrder(newBuyOrder);
-    orderProcessor.addOrder(oldBuyOrder);
+    orderProcessor.processOrder(newBuyOrder);
+    orderProcessor.processOrder(oldBuyOrder);
 
-    TradeBook book = OrderProcessor.getTradeBook(Ticker.A);
-    PriorityQueue<Order> sellQueue = book.getSellBook();
-    PriorityQueue<Order> buyQueue = book.getBuyBook();
+    TradeBook book = orderProcessor.getTradeBook(Ticker.A);
+    PriorityQueue<Order> buyQueue = book.getBuyOrders();
 
-    assertEquals(
-      oldSellOrder,
-      sellQueue.poll(),
-      "Older order should be processed first"
-    );
-    assertEquals(
-      newSellOrder,
-      sellQueue.poll(),
-      "Newer order should be processed second"
-    );
     assertEquals(
       oldBuyOrder,
       buyQueue.poll(),
@@ -87,34 +63,50 @@ class OrderProcessorTest {
       "Newer order should be processed second"
     );
   }
-  
 
-  void testAddOrder_pollInOrderOfPrice() {
+  @Test
+  void sellByPriceDesc() {
+    Order cheapSellOrder = new Order(OrderType.SELL, Ticker.A, 95.0, 2000);
+    Order expensiveSellOrder = new Order(OrderType.SELL, Ticker.A, 105.0, 2000);
 
-    Order cheapSellOrder = new Order(
-    OrderType.SELL,
-    Ticker.A,
-    95.0,
-    2000
-  );
-  cheapSellOrder.setTimeStamp(1000000L);
-  Order expensiveSellOrder = new Order(
-    OrderType.SELL,
-    Ticker.A,
-    105.0,
-    2000
-  );
-  expensiveSellOrder.setTimeStamp(1000000L);
+    orderProcessor.processOrder(cheapSellOrder);
+    orderProcessor.processOrder(expensiveSellOrder);
 
-  orderProcessor.addOrder(cheapSellOrder);
-  orderProcessor.addOrder(expensiveSellOrder);
+    TradeBook book = orderProcessor.getTradeBook(Ticker.A);
+    PriorityQueue<Order> sellBook = book.getSellOrders();
 
-  TradeBook book = OrderProcessor.getTradeBook(Ticker.A);
-  PriorityQueue<Order> sellBook = book.getSellBook();
+    assertEquals(
+      cheapSellOrder,
+      sellBook.poll(),
+      "Cheap sell order should be processed first"
+    );
+    assertEquals(
+      expensiveSellOrder,
+      sellBook.poll(),
+      "Expensive sell order should be processed second"
+    );
+  }
 
-  assertEquals(cheapSellOrder, sellBook.poll());
-  assertEquals(expensiveSellOrder, sellBook.poll());
-  
-    }
+  @Test
+  void buyByPriceAsc() {
+    Order cheapBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
+    Order expensiveBuyOrder = new Order(OrderType.BUY, Ticker.A, 105.0, 2000);
+
+    orderProcessor.processOrder(cheapBuyOrder);
+    orderProcessor.processOrder(expensiveBuyOrder);
+
+    TradeBook book = orderProcessor.getTradeBook(Ticker.A);
+    PriorityQueue<Order> buyQueue = book.getBuyOrders();
+
+    assertEquals(
+      expensiveBuyOrder,
+      buyQueue.poll(),
+      "Expensive sell order should be processed first"
+    );
+    assertEquals(
+      cheapBuyOrder,
+      buyQueue.poll(),
+      "Cheap sell order should be processed second"
+    );
+  }
 }
-

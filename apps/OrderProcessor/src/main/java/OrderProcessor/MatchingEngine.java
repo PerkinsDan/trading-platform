@@ -1,66 +1,69 @@
 package OrderProcessor;
 
-
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.UUID;
-
-
 import org.bson.Document;
 
 public class MatchingEngine {
-  
-  public static ArrayList<Document> match(TradeBook book) {
-    PriorityQueue<Order> buyOrders = book.getBuyBook();
-    PriorityQueue<Order> sellOrders = book.getSellBook();
 
-    ArrayList<Document> matchesFound = new ArrayList<>();
+  private static PriorityQueue<Order> buyOrders;
+  private static PriorityQueue<Order> sellOrders;
+  private static ArrayList<Document> matchesFound;
+
+  public static ArrayList<Document> match(TradeBook book) {
+    buyOrders = book.getBuyOrders();
+    sellOrders = book.getSellOrders();
+    matchesFound = new ArrayList<>();
 
     while (!buyOrders.isEmpty() && !sellOrders.isEmpty()) {
       Order buy = buyOrders.peek();
       Order sell = sellOrders.peek();
 
-      if (buy.getPrice() < sell.getPrice()) {
-        // No matches possible
-        return matchesFound;
-      }
-      int quantityTraded = Math.min(buy.getQuantity(), sell.getQuantity());
+      if (buy.getPrice() < sell.getPrice()) break;
 
-      System.out.println(
-        "Trade Executed: " +
-        quantityTraded +
-        " " +
-        buy.getTicker() +
-        " @ " +
-        sell.getPrice()
-      );
-
-      buy.reduceQuantity(quantityTraded);
-      sell.reduceQuantity(quantityTraded);
-
-      Boolean removeSell  = (sell.getQuantity() == 0) ? true : false;
-      Boolean removeBuy = (buy.getQuantity() == 0) ? true : false;
-
-      matchesFound.add(createBSON(buy.getId(), quantityTraded, sell.getPrice(), removeBuy));
-      matchesFound.add(createBSON(sell.getId(),quantityTraded,sell.getPrice(),removeSell));
-
-      // Remove completed orders
-      if (removeBuy) buyOrders.poll();
-      if (removeSell) sellOrders.poll();
+      processMatches(buy, sell);
     }
 
-    for (Document match : matchesFound){
-      System.out.println(match.toJson());
-    }
+    matchesFound.forEach(match -> System.out.println(match.toJson()));
+
     return matchesFound;
   }
 
-  private static Document createBSON(UUID id, int quantityChange, double tradePrice, Boolean filled){
-    Document bsonDocument = new Document("orderId", id)
-    .append("price", tradePrice)
-    .append("quantityChange", quantityChange)
-    .append("filled", filled);
-    return bsonDocument;
+  private static void processMatches(Order buy, Order sell) {
+    int quantity = Math.min(buy.getQuantity(), sell.getQuantity());
+    Ticker ticker = buy.getTicker();
+    double price = sell.getPrice();
+
+    System.out.printf("Trade Executed: %d %s @ $%.2f", quantity, ticker, price);
+
+    buy.reduceQuantity(quantity);
+    sell.reduceQuantity(quantity);
+
+    boolean sellFilled = sell.getQuantity() == 0;
+    boolean buyFilled = buy.getQuantity() == 0;
+
+    matchesFound.add(
+      createChangeDocument(buy.getId(), quantity, price, buyFilled)
+    );
+    matchesFound.add(
+      createChangeDocument(sell.getId(), quantity, price, sellFilled)
+    );
+
+    // Remove completed orders
+    if (buyFilled) buyOrders.poll();
+    if (sellFilled) sellOrders.poll();
+  }
+
+  private static Document createChangeDocument(
+    UUID id,
+    int quantityChange,
+    double tradePrice,
+    boolean filled
+  ) {
+    return new Document("orderId", id)
+      .append("price", tradePrice)
+      .append("quantityChange", quantityChange)
+      .append("filled", filled);
   }
 }
-

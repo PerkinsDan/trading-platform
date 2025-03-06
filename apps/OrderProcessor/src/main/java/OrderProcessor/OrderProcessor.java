@@ -3,52 +3,37 @@ package OrderProcessor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bson.Document;
 
 public class OrderProcessor {
 
   private static OrderProcessor orderProcessor = null;
-  private static final Map<Ticker, TradeBook> TradeBookMap = new HashMap<>();
-  private static final Ticker[] equities = {
-    Ticker.A,
-    Ticker.B,
-    Ticker.C,
-    Ticker.D,
-    Ticker.E,
-  };
+  private static final Map<Ticker, TradeBook> tradeBookMap = new HashMap<>();
 
   private OrderProcessor() {
-    for (Ticker equity : equities) {
-      AddTradeBook(equity);
+    for (Ticker ticker : Ticker.values()) {
+      tradeBookMap.put(ticker, new TradeBook());
     }
   }
 
-  public static OrderProcessor getInstance(){
-    if(orderProcessor == null){
+  public static OrderProcessor getInstance() {
+    if (orderProcessor == null) {
       orderProcessor = new OrderProcessor();
     }
     return orderProcessor;
   }
 
-  public void addOrder(Order order) {
-    TradeBook book  = OrderProcessor.getTradeBook(order.getTicker());
+  public ArrayList<Document> processOrder(Order order) {
+    TradeBook book = orderProcessor.getTradeBook(order.getTicker());
     book.addToBook(order);
+
+    return MatchingEngine.match(orderProcessor.getTradeBook(order.getTicker()));
   }
 
-  public ArrayList<Document> MatchTrades( Order order) {
-    return MatchingEngine.match(OrderProcessor.getTradeBook(order.getTicker()));
+  public TradeBook getTradeBook(Ticker ticker) {
+    return tradeBookMap.get(ticker);
   }
 
-  private void AddTradeBook(Ticker ticker) {
-    TradeBook newTradeBook = new TradeBook(ticker);
-    TradeBookMap.put(ticker, newTradeBook);
-  }
-
-  public static TradeBook getTradeBook(Ticker ticker) {
-    return TradeBookMap.get(ticker);
-  }
-  
   public void resetInstance() {
     orderProcessor = null;
   }

@@ -4,36 +4,25 @@ import java.util.PriorityQueue;
 
 public class TradeBook {
 
-  private final Ticker ticker;
-  private final PriorityQueue<Order> buySide;
-  private final PriorityQueue<Order> sellSide;
-
-  public TradeBook(Ticker ticker) {
-    this.buySide = new PriorityQueue<>(new OrderComparator(OrderType.BUY));
-    this.sellSide = new PriorityQueue<>(new OrderComparator(OrderType.SELL));
-    this.ticker = ticker;
-  }
+  private final PriorityQueue<Order> buyOrders = new PriorityQueue<>(
+    new OrderComparator(OrderType.BUY)
+  );
+  private final PriorityQueue<Order> sellOrders = new PriorityQueue<>(
+    new OrderComparator(OrderType.SELL)
+  );
 
   public void addToBook(Order order) {
     switch (order.getType()) {
-      case OrderType.BUY:
-        buySide.offer(order);
-        break;
-      case OrderType.SELL:
-        sellSide.offer(order);
-        break;
+      case BUY -> buyOrders.offer(order);
+      case SELL -> sellOrders.offer(order);
     }
   }
 
-  public PriorityQueue<Order> getBuyBook() {
-    return buySide;
+  public PriorityQueue<Order> getBuyOrders() {
+    return buyOrders;
   }
 
-  public PriorityQueue<Order> getSellBook() {
-    return sellSide;
-  }
-
-  public String getTicker() {
-    return ticker.name();
+  public PriorityQueue<Order> getSellOrders() {
+    return sellOrders;
   }
 }
