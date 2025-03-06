@@ -17,11 +17,11 @@ public class MongoClientConnection {
     private static MongoClient mongoClient;
     private static MongoDatabase database;
 
-    public static MongoCollection<Document> getOrdersCollection() {
+    public static MongoCollection<Document> getCollection(String collection) {
         if (mongoClient == null) {
             initClient();
         }
-        return database.getCollection("orders");
+        return database.getCollection(collection);
     }
 
     private static void initClient() {
