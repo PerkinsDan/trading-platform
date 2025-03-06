@@ -29,5 +29,6 @@ public class Main {
     long time = end - start;
     System.out.println(count/2 + " trades matched in " + time + "ms");
     System.out.println("average of " + (time / 5)  + "ms /trade");
+    
   }
 }
