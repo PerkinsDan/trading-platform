@@ -5,12 +5,15 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import orderMatchingEngine.*;
 import org.bson.Document;
 import org.database.MongoClientConnection;
 
 public class MainRouter {
 
     Router router;
+    OrderProcessor orderprocessor;
+    MatchingEngine matchingengine = MatchingEngine.getInstance();
 
     MainRouter(Vertx vertx) {
         router = Router.router(vertx);
@@ -57,8 +60,12 @@ public class MainRouter {
             var ordersCollection = MongoClientConnection.getOrdersCollection();
             ordersCollection.insertOne(newOrderDoc);
 
-            //Order order = new Order(type, ticker, price, quantity);
-            OrderProcessor.addOrder(order);
+            Order order = new Order(type, ticker, price, quantity);
+
+            if (orderprocessor == null) {
+                orderprocessor = new OrderProcessor();
+            }
+            orderprocessor.addOrder(order);
 
             ctx.response()
                     .setStatusCode(201)
