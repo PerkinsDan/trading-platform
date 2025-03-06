@@ -1,10 +1,8 @@
-package OrderProcessor;
+package orderProcessor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.ArrayList;
-import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,11 +26,8 @@ public class MatchingEngineTest {
     Order buyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 50);
     Order sellOrder = new Order(OrderType.SELL, Ticker.A, 110.0, 50);
 
-    ArrayList<Document> result = processor.processOrder(buyOrder);
-    assertEquals(0, result.size());
-
-    result = processor.processOrder(sellOrder);
-    assertEquals(0, result.size());
+    assertEquals(0, processor.processOrder(buyOrder).size());
+    assertEquals(0, processor.processOrder(sellOrder).size());
   }
 
   @Test
