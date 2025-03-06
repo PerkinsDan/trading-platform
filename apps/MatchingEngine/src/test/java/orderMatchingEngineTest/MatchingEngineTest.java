@@ -20,13 +20,12 @@ public class MatchingEngineTest {
 
   @BeforeEach
   void setUp() {
-    engine = MatchingEngine.getInstance();
-    processor = new OrderProcessor();
+    processor = OrderProcessor.getInstance();
   }
 
   @AfterEach
   void reset() {
-    engine.resetInstance();
+    processor.resetInstance();
   }
 
   @Test
@@ -38,7 +37,7 @@ public class MatchingEngineTest {
     processor.addOrder(buyOrder);
     processor.addOrder(sellOrder);
 
-    assertEquals(engine.match(MatchingEngine.getTradeBook(Ticker.A)).size(), 0); //returning 0 means no matches
+    assertEquals(processor.MatchTrades(sellOrder).size(), 0); //returning 0 means no matches
   }
 
   @Test
@@ -48,7 +47,7 @@ public class MatchingEngineTest {
 
     processor.addOrder(order);
 
-    assertEquals(engine.match(MatchingEngine.getTradeBook(Ticker.A)).size(), 0);
+    assertEquals(processor.MatchTrades(order).size(), 0);
   }
 
   @Test
@@ -59,12 +58,11 @@ public class MatchingEngineTest {
     processor.addOrder(buyOrder);
     processor.addOrder(sellOrder);
 
-    TradeBook booker = MatchingEngine.getTradeBook(Ticker.A);
-    int numTrades = engine.match(booker).size();
+    int numTrades = processor.MatchTrades(buyOrder).size();
 
     assertEquals(numTrades, 2);
     //both orders should have been cleared of the books, so no matches should be made
-    assertEquals(engine.match(MatchingEngine.getTradeBook(Ticker.A)).size(), 0);
+    assertEquals(processor.MatchTrades(buyOrder).size(), 0);
   }
 
   @Test
@@ -76,10 +74,10 @@ public class MatchingEngineTest {
     processor.addOrder(sellOrder);
 
     //assert a match took place
-    assertEquals(engine.match(MatchingEngine.getTradeBook(Ticker.A)).size(), 2);
+    assertEquals(processor.MatchTrades(sellOrder).size(), 2);
 
     //assert that part of the original sell order remains unfilled
-    Order partiallyFilledOrder = MatchingEngine.getTradeBook(Ticker.A)
+    Order partiallyFilledOrder = OrderProcessor.getTradeBook(Ticker.A)
       .getSellBook()
       .peek();
     assertEquals(partiallyFilledOrder.getQuantity(), 20);
@@ -101,10 +99,12 @@ public class MatchingEngineTest {
     for (Order order : orders) {
       processor.addOrder(order);
     }
+    
+    Order dummyOrder = new Order(OrderType.BUY, Ticker.A, 102.0, 130);
 
-    assertEquals(10, engine.match(MatchingEngine.getTradeBook(Ticker.A)).size());
+    assertEquals(10, processor.MatchTrades(dummyOrder).size());
     //check that theres just one unfilled order left in buyBook()
-    TradeBook book = MatchingEngine.getTradeBook(Ticker.A);
+    TradeBook book = OrderProcessor.getTradeBook(Ticker.A);
     PriorityQueue<Order> buyBook = book.getBuyBook();
     PriorityQueue<Order> sellBook = book.getSellBook();
 
