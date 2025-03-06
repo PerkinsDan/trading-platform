@@ -4,15 +4,8 @@ package OrderProcessor;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.PriorityQueue;
-import OrderProcessor.Order;
-import OrderProcessor.OrderProcessor;
-import OrderProcessor.OrderType;
-import OrderProcessor.Ticker;
-import OrderProcessor.TradeBook;
 
 import org.junit.jupiter.api.*;
-
-//REMEMBER THAT 1 MATCH WILL CREATE 2 UPDATE OBJECTS - One for the buy trade and one for the sell trade
 
 public class MatchingEngineTest {
 
@@ -29,7 +22,7 @@ public class MatchingEngineTest {
   }
 
   @Test
-  void test_match_nothingToMatch_pricesDiffer() {
+  void testWithNoPossibleMatches() {
     //Add order to book of equity A, prices dont match so there should be no matching
     Order buyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 50);
     Order sellOrder = new Order(OrderType.SELL, Ticker.A, 110.0, 50);
@@ -37,12 +30,12 @@ public class MatchingEngineTest {
     processor.addOrder(buyOrder);
     processor.addOrder(sellOrder);
 
-    assertEquals(processor.MatchTrades(sellOrder).size(), 0); //returning 0 means no matches
+    assertEquals(processor.MatchTrades(sellOrder).size(), 0); 
   }
 
   @Test
-  void test_match_nothingToMatch_emptyBuyQueue() {
-    //Add order to tradebook for A and no sell orders
+  void testNoMatchesFromEmptyQueues() {
+    //Add order to tradebook for A and no sell orders, verify no matches occur
     Order order = new Order(OrderType.SELL, Ticker.A, 100.0, 50);
 
     processor.addOrder(order);
@@ -51,7 +44,8 @@ public class MatchingEngineTest {
   }
 
   @Test
-  void test_match_fullMatch_checkmatchAndEmptyBooksAfter() {
+  void testMatchAndEmptyBooksAfter() {
+    //Create two orer that will match and leave the trade book empty. Verify that the book is empty after
     Order sellOrder = new Order(OrderType.SELL, Ticker.A, 100.0, 50);
     Order buyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 50);
 
@@ -61,12 +55,11 @@ public class MatchingEngineTest {
     int numTrades = processor.MatchTrades(buyOrder).size();
 
     assertEquals(numTrades, 2);
-    //both orders should have been cleared of the books, so no matches should be made
     assertEquals(processor.MatchTrades(buyOrder).size(), 0);
   }
 
   @Test
-  void test_match_checkPartialFill() {
+  void testPartialFill() {
     Order sellOrder = new Order(OrderType.SELL, Ticker.A, 100.0, 50);
     Order buyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 30);
 
@@ -84,7 +77,7 @@ public class MatchingEngineTest {
   }
 
   @Test
-  void test_match_checkMultipleMatches() {
+  void testMultipleMatches() {
     Order[] orders = {
       new Order(OrderType.SELL, Ticker.A, 99.0, 575),
       new Order(OrderType.SELL, Ticker.A, 100.0, 500),
@@ -103,6 +96,7 @@ public class MatchingEngineTest {
     Order dummyOrder = new Order(OrderType.BUY, Ticker.A, 102.0, 130);
 
     assertEquals(10, processor.MatchTrades(dummyOrder).size());
+    
     //check that theres just one unfilled order left in buyBook()
     TradeBook book = OrderProcessor.getTradeBook(Ticker.A);
     PriorityQueue<Order> buyBook = book.getBuyBook();
