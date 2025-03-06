@@ -1,4 +1,4 @@
-package OrderProcessor;
+package orderProcessor;
 
 import static org.junit.jupiter.api.Assertions.*;
 

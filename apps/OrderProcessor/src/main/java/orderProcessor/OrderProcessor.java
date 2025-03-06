@@ -1,4 +1,4 @@
-package OrderProcessor;
+package orderProcessor;
 
 import java.util.ArrayList;
 import java.util.HashMap;

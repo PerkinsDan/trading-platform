@@ -1,4 +1,4 @@
-package OrderProcessor;
+package orderProcessor;
 
 public enum Ticker {
   A,
