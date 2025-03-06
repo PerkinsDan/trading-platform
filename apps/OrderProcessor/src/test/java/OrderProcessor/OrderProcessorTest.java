@@ -3,11 +3,12 @@ package OrderProcessor;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.PriorityQueue;
-import orderMatchingEngine.Order;
-import orderMatchingEngine.OrderProcessor;
-import orderMatchingEngine.Ticker;
-import orderMatchingEngine.OrderType;
-import orderMatchingEngine.TradeBook;
+import OrderProcessor.Order;
+import OrderProcessor.OrderProcessor;
+import OrderProcessor.OrderType;
+import OrderProcessor.Ticker;
+import OrderProcessor.TradeBook;
+
 import org.junit.jupiter.api.*;
 
 class OrderProcessorTest {
@@ -44,7 +45,7 @@ class OrderProcessorTest {
       OrderType.SELL,
       Ticker.A,
       100.0,
-      2000
+      2
     );
     Order newSellOrder = new Order(
       OrderType.SELL,
@@ -53,7 +54,7 @@ class OrderProcessorTest {
       2000
     );
 
-    Order oldBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
+    Order oldBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2);
     Order newBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
 
     orderProcessor.addOrder(newSellOrder);
