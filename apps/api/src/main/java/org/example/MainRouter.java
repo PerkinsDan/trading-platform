@@ -57,7 +57,7 @@ public class MainRouter {
             var ordersCollection = MongoClientConnection.getOrdersCollection();
             ordersCollection.insertOne(newOrderDoc);
 
-            Order order = new Order(type, ticker, price, quantity);
+            //Order order = new Order(type, ticker, price, quantity);
             OrderProcessor.addOrder(order);
 
             ctx.response()

@@ -9,6 +9,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.bson.Document;
 
 public class MongoClientConnection {
@@ -24,7 +25,8 @@ public class MongoClientConnection {
     }
 
     private static void initClient() {
-        String connectionString = "mongodb+srv://databaserUser:databaseUser@trading-platform.beiiy.mongodb.net/?retryWrites=true&w=majority&appName=trading-platform";
+        Dotenv dotenv = Dotenv.load();
+        String connectionString = dotenv.get("DB_URI");
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
                 .build();
@@ -40,5 +42,9 @@ public class MongoClientConnection {
         } catch (MongoException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        initClient();
     }
 }
