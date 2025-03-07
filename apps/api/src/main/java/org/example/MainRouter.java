@@ -7,19 +7,13 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import orderProcessor.Order;
-import orderProcessor.OrderProcessor;
-import orderProcessor.Ticker;
-import orderProcessor.OrderType;
-import org.bson.Document;
+import org.database.DatabaseUtils;
 import org.bson.conversions.Bson;
 import org.database.MongoClientConnection;
-
-import java.util.ArrayList;
 
 public class MainRouter {
 
     Router router;
-    OrderProcessor orderprocessor = OrderProcessor.getInstance();
 
     MainRouter(Vertx vertx) {
         router = Router.router(vertx);
@@ -60,62 +54,8 @@ public class MainRouter {
 
         router.post("/create-order").handler(ctx -> {
             JsonObject body = ctx.getBodyAsJson();
-
-            String typeStr = body.getString("type");
-            String tickerStr = body.getString("ticker");
-            double price = body.getDouble("price");
-            int quantity = body.getInteger("quantity");
-
-            OrderType type = OrderType.valueOf(typeStr);
-            Ticker ticker = Ticker.valueOf(tickerStr);
-
-            Document newOrderDoc = new Document()
-                    .append("type", type)
-                    .append("ticker", ticker)
-                    .append("price", price)
-                    .append("quantity", quantity);
-
-            var ordersCollection = MongoClientConnection.getCollection("orders");
-            ordersCollection.insertOne(newOrderDoc);
-
-            Order order = new Order(type, ticker, price, quantity);
-            ArrayList<Document> matchesFound = orderprocessor.processOrder(order);
-
-            if (!matchesFound.isEmpty()) {
-                Document buyOrder = matchesFound.get(0);
-                Document sellOrder = matchesFound.get(1);
-
-                boolean buyOrderFilled = buyOrder.getBoolean("filled");
-                boolean sellOrderFilled = sellOrder.getBoolean("filled");
-
-                if(buyOrderFilled) {
-                    ordersCollection.deleteOne(Filters.eq("orderId", buyOrder.getString("orderId")));
-                }
-
-                if(!buyOrderFilled){
-                    String orderId = buyOrder.getString("orderId");
-                    int quantityChange = buyOrder.getInteger("quantityChange");
-
-                    ordersCollection.findOneAndUpdate(
-                            Filters.eq("orderId", orderId),
-                            new Document("$inc", new Document("quantity", quantityChange))
-                    );
-                }
-
-                if(sellOrderFilled){
-                    ordersCollection.deleteOne(Filters.eq("orderId", sellOrder.getString("orderId")));
-                }
-
-                if(!sellOrderFilled){
-                    String orderId = sellOrder.getString("orderId");
-                    int quantityChange = sellOrder.getInteger("quantityChange");
-
-                    ordersCollection.findOneAndUpdate(
-                            Filters.eq("orderId", orderId),
-                            new Document("$inc", new Document("quantity", -quantityChange))
-                    );
-                }
-            }
+            Order order = DatabaseUtils.createOrderAndInsertIntoDatabase(body);
+            DatabaseUtils.processOrder(order);
 
             ctx.response()
                     .setStatusCode(201)
@@ -134,4 +74,3 @@ public class MainRouter {
 //create-user
 //update-user-balance
 //get-user-account (to get balance)
-//market-prices
