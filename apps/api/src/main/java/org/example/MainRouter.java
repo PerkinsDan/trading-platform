@@ -7,6 +7,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import orderProcessor.Order;
+import org.bson.Document;
 import org.database.DatabaseUtils;
 import org.bson.conversions.Bson;
 import org.database.MongoClientConnection;
@@ -29,6 +30,27 @@ public class MainRouter {
                     response.putHeader("content-type", "text/plain");
                     response.end("Hello World from Vert.x-Web!");
                 });
+
+        router.get("/create-user").handler(ctx -> {
+            JsonObject body = ctx.getBodyAsJson();
+
+            String userID = body.getString("userID");
+            Integer balance = body.getInteger("balance");
+
+            Document newUserDoc = new Document()
+                    .append("userID", userID)
+                    .append("balance", balance);
+
+            var usersCollection = MongoClientConnection.getCollection("users");
+            usersCollection.insertOne(newUserDoc);
+
+            ctx.response().end("Creating user...");
+        });
+
+        router.get("/update-user-balance").handler(ctx -> {
+            // logic to retrieve user's trade history
+            ctx.response().end("Updating user's balance...");
+        });
 
         router.get("/user-active-positions").handler(ctx -> {
             //receive user parameters to query on
