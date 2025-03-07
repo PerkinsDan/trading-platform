@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prepare": "husky",
-    "format": "prettier --write **/* --plugin=prettier-plugin-java"
+    "format": "prettier --write . --plugin=prettier-plugin-java"
   },
   "repository": {
     "type": "git",
