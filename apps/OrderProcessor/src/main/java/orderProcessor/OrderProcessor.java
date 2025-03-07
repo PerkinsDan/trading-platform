@@ -23,7 +23,7 @@ public class OrderProcessor {
     return orderProcessor;
   }
 
-  public ArrayList<JSONObject> processOrder(Order order) {
+  public ArrayList<String> processOrder(Order order) {
     TradeBook book = orderProcessor.getTradeBook(order.getTicker());
     book.addToBook(order);
 

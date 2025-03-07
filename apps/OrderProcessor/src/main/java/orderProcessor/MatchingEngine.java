@@ -1,18 +1,17 @@
 package orderProcessor;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
-import java.util.UUID;
-import org.json.*;
-
 
 public class MatchingEngine {
 
   private static PriorityQueue<Order> buyOrders;
   private static PriorityQueue<Order> sellOrders;
-  private static ArrayList<JSONObject> matchesFound;
+  private static ArrayList<String> matchesFound;
 
-  public static ArrayList<JSONObject> match(TradeBook book) {
+  public static ArrayList<String> match(TradeBook book) {
     buyOrders = book.getBuyOrders();
     sellOrders = book.getSellOrders();
     matchesFound = new ArrayList<>();
@@ -34,7 +33,12 @@ public class MatchingEngine {
     Ticker ticker = buy.getTicker();
     double price = sell.getPrice();
 
-    System.out.printf("Trade Executed: %d %s @ $%.2f", quantity, ticker, price);
+    System.out.printf(
+      "Trade Executed: %d %s @ $%.2f%n",
+      quantity,
+      ticker,
+      price
+    );
 
     buy.reduceQuantity(quantity);
     sell.reduceQuantity(quantity);
@@ -42,30 +46,27 @@ public class MatchingEngine {
     boolean sellFilled = sell.getQuantity() == 0;
     boolean buyFilled = buy.getQuantity() == 0;
 
-    matchesFound.add(
-      createChangeDocument(buy.getId(), quantity, price, buyFilled,false)
-    );
-    matchesFound.add(
-      createChangeDocument(sell.getId(), quantity, price, sellFilled,false)
-    );
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      matchesFound.add(
+        mapper.writeValueAsString(
+          new MatchingDetails(buy.getId(), price, quantity, buyFilled)
+        )
+      );
+      matchesFound.add(
+        mapper.writeValueAsString(
+          new MatchingDetails(sell.getId(), price, quantity, sellFilled)
+        )
+      );
+    } catch (JsonProcessingException e) {
+      System.err.printf(
+        "Exception processing matches to JSON %s",
+        e.getMessage()
+      );
+    }
 
     // Remove completed orders
     if (buyFilled) buyOrders.poll();
     if (sellFilled) sellOrders.poll();
-  }
-
-  private static JSONObject createChangeDocument(
-    UUID id,
-    int quantityChange,
-    double tradePrice,
-    boolean filled,
-    boolean cancelled
-  ) {
-    JSONObject updates = new JSONObject();
-      updates.put("orderId", id)
-      .put("price", tradePrice)
-      .put("quantityChange",quantityChange)
-      .put("filled",filled);
-    return updates;
   }
 }
