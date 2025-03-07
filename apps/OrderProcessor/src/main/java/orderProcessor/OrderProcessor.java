@@ -3,7 +3,7 @@ package orderProcessor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import org.bson.Document;
+import org.json.*;
 
 public class OrderProcessor {
 
@@ -23,7 +23,7 @@ public class OrderProcessor {
     return orderProcessor;
   }
 
-  public ArrayList<Document> processOrder(Order order) {
+  public ArrayList<JSONObject> processOrder(Order order) {
     TradeBook book = orderProcessor.getTradeBook(order.getTicker());
     book.addToBook(order);
 

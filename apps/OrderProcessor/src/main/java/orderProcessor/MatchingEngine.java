@@ -3,15 +3,16 @@ package orderProcessor;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.UUID;
-import org.bson.Document;
+import org.json.*;
+
 
 public class MatchingEngine {
 
   private static PriorityQueue<Order> buyOrders;
   private static PriorityQueue<Order> sellOrders;
-  private static ArrayList<Document> matchesFound;
+  private static ArrayList<JSONObject> matchesFound;
 
-  public static ArrayList<Document> match(TradeBook book) {
+  public static ArrayList<JSONObject> match(TradeBook book) {
     buyOrders = book.getBuyOrders();
     sellOrders = book.getSellOrders();
     matchesFound = new ArrayList<>();
@@ -24,8 +25,6 @@ public class MatchingEngine {
 
       processMatches(buy, sell);
     }
-
-    matchesFound.forEach(match -> System.out.println(match.toJson()));
 
     return matchesFound;
   }
@@ -44,10 +43,10 @@ public class MatchingEngine {
     boolean buyFilled = buy.getQuantity() == 0;
 
     matchesFound.add(
-      createChangeDocument(buy.getId(), quantity, price, buyFilled)
+      createChangeDocument(buy.getId(), quantity, price, buyFilled,false)
     );
     matchesFound.add(
-      createChangeDocument(sell.getId(), quantity, price, sellFilled)
+      createChangeDocument(sell.getId(), quantity, price, sellFilled,false)
     );
 
     // Remove completed orders
@@ -55,15 +54,18 @@ public class MatchingEngine {
     if (sellFilled) sellOrders.poll();
   }
 
-  private static Document createChangeDocument(
+  private static JSONObject createChangeDocument(
     UUID id,
     int quantityChange,
     double tradePrice,
-    boolean filled
+    boolean filled,
+    boolean cancelled
   ) {
-    return new Document("orderId", id)
-      .append("price", tradePrice)
-      .append("quantityChange", quantityChange)
-      .append("filled", filled);
+    JSONObject updates = new JSONObject();
+      updates.put("orderId", id)
+      .put("price", tradePrice)
+      .put("quantityChange",quantityChange)
+      .put("filled",filled);
+    return updates;
   }
 }

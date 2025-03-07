@@ -10,6 +10,7 @@ public class Order {
   private final long timestamp;
   private final Ticker ticker;
   private int quantity;
+  private int cancelled;
 
   public Order(OrderType type, Ticker ticker, double price, int quantity) {
     this.orderId = UUID.randomUUID();
