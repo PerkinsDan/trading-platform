@@ -82,14 +82,19 @@ public class MainRouter {
             ArrayList<Document> matchesFound = orderprocessor.processOrder(order);
 
             if (!matchesFound.isEmpty()) {
+                Document buyOrder = matchesFound.get(0);
+                Document sellOrder = matchesFound.get(1);
 
-                if(matchesFound.get(0).getBoolean("filled")){
-                    ordersCollection.deleteOne(Filters.eq("orderId", matchesFound.get(0).getString("orderId")));
+                boolean buyOrderFilled = buyOrder.getBoolean("filled");
+                boolean sellOrderFilled = sellOrder.getBoolean("filled");
+
+                if(buyOrderFilled) {
+                    ordersCollection.deleteOne(Filters.eq("orderId", buyOrder.getString("orderId")));
                 }
 
-                if(!matchesFound.get(0).getBoolean("filled")){
-                    String orderId = matchesFound.get(0).getString("orderId");
-                    int quantityChange = matchesFound.get(0).getInteger("quantityChange");
+                if(!buyOrderFilled){
+                    String orderId = buyOrder.getString("orderId");
+                    int quantityChange = buyOrder.getInteger("quantityChange");
 
                     ordersCollection.findOneAndUpdate(
                             Filters.eq("orderId", orderId),
@@ -97,13 +102,13 @@ public class MainRouter {
                     );
                 }
 
-                if(matchesFound.get(1).getBoolean("filled")){
-                    ordersCollection.deleteOne(Filters.eq("orderId", matchesFound.get(0).getString("orderId")));
+                if(sellOrderFilled){
+                    ordersCollection.deleteOne(Filters.eq("orderId", sellOrder.getString("orderId")));
                 }
 
-                if(!matchesFound.get(1).getBoolean("filled")){
-                    String orderId = matchesFound.get(1).getString("orderId");
-                    int quantityChange = matchesFound.get(1).getInteger("quantityChange");
+                if(!sellOrderFilled){
+                    String orderId = sellOrder.getString("orderId");
+                    int quantityChange = sellOrder.getInteger("quantityChange");
 
                     ordersCollection.findOneAndUpdate(
                             Filters.eq("orderId", orderId),
