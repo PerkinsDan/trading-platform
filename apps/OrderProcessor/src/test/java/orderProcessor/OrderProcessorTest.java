@@ -20,6 +20,13 @@ class OrderProcessorTest {
   }
 
   @Test
+  void testOrderCancellation(){
+    Order order = new Order(OrderType.SELL, Ticker.A, 110.0, 50);
+    orderProcessor.processOrder(order);
+    assertTrue(orderProcessor.cancelOrder(order));
+  }
+
+  @Test
   void addBuyOrder() {
     Order order = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
     orderProcessor.processOrder(order);

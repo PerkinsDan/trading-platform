@@ -10,7 +10,7 @@ public class Order {
   private final long timestamp;
   private final Ticker ticker;
   private int quantity;
-  private int cancelled;
+  private boolean cancelled;
 
   public Order(OrderType type, Ticker ticker, double price, int quantity) {
     this.orderId = UUID.randomUUID();
@@ -19,6 +19,7 @@ public class Order {
     this.price = price;
     this.quantity = quantity;
     this.timestamp = System.nanoTime();
+    this.cancelled = false;
   }
 
   public UUID getId() {
