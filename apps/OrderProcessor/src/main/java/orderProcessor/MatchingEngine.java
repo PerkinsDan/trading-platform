@@ -14,15 +14,17 @@ public class MatchingEngine {
   public static ArrayList<String> match(TradeBook book) {
     buyOrders = book.getBuyOrders();
     sellOrders = book.getSellOrders();
+    Order buy = buyOrders.peek();
+    Order sell = sellOrders.peek();
+
     matchesFound = new ArrayList<>();
 
-    while (!buyOrders.isEmpty() && !sellOrders.isEmpty()) {
-      Order buy = buyOrders.peek();
-      Order sell = sellOrders.peek();
+    boolean matchPossible = !buyOrders.isEmpty() && !sellOrders.isEmpty() && buy.getPrice() >= sell.getPrice();
 
-      if (buy.getPrice() < sell.getPrice()) break;
+    while (matchPossible) {
 
       processMatches(buy, sell);
+
     }
 
     return matchesFound;
