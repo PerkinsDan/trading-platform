@@ -7,7 +7,9 @@ import orderProcessor.OrderProcessor;
 import orderProcessor.OrderType;
 import orderProcessor.Ticker;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 
 public class DatabaseUtils {
@@ -40,17 +42,23 @@ public class DatabaseUtils {
 
     public static void processOrder(Order order){
         var ordersCollection = MongoClientConnection.getCollection("orders");
-        ArrayList<Document> matchesFound = orderprocessor.processOrder(order);
+        ArrayList<String> matchesFound = orderprocessor.processOrder(order);
+        ArrayList<Document> matchesFoundAsMongoDBDocs = new ArrayList<>();
+        for (String match : matchesFound) {
+            Document doc = Document.parse(match);
+            matchesFoundAsMongoDBDocs.add(doc);
+        }
 
         if (!matchesFound.isEmpty()) {
-            Document buyOrder = matchesFound.get(0);
-            Document sellOrder = matchesFound.get(1);
+            Document buyOrder = matchesFoundAsMongoDBDocs.get(0);
+            Document sellOrder = matchesFoundAsMongoDBDocs.get(1);
 
             boolean buyOrderFilled = buyOrder.getBoolean("filled");
             boolean sellOrderFilled = sellOrder.getBoolean("filled");
 
             if(buyOrderFilled) {
-                ordersCollection.deleteOne(Filters.eq("orderId", buyOrder.getString("orderId")));
+                //get the Order with the buyOrderID that we are passed
+                //set that order's filled status to filled
             }
 
             if(!buyOrderFilled){

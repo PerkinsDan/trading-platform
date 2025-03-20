@@ -12,6 +12,8 @@ import org.database.DatabaseUtils;
 import org.bson.conversions.Bson;
 import org.database.MongoClientConnection;
 
+import java.util.ArrayList;
+
 public class MainRouter {
 
     Router router;
@@ -32,6 +34,8 @@ public class MainRouter {
                 });
 
         router.get("/create-user").handler(ctx -> {
+            //UUID
+            //if new user we set balance to 0
             JsonObject body = ctx.getBodyAsJson();
 
             String userID = body.getString("userID");
@@ -47,27 +51,32 @@ public class MainRouter {
             ctx.response().end("Creating user...");
         });
 
-        router.get("/update-user-balance").handler(ctx -> {
-            // logic to retrieve user's trade history
+        router.get("/after-trade-update-user-balance").handler(ctx -> {
+            //user has a starting balance
+            //when a buy or sell order is made that is associated with their account
+            //update balance to reflect it
             ctx.response().end("Updating user's balance...");
         });
 
         router.get("/user-active-positions").handler(ctx -> {
-            //receive user parameters to query on
-            JsonObject body = ctx.getBodyAsJson();
-            String userID = body.getString("userID");
+            String userID = ctx.request().getParam("userID");
+            if (userID == null) {
+                ctx.response().setStatusCode(400).end("Missing userID query parameter");
+            }
+
             var usersCollection = MongoClientConnection.getCollection("users");
 
-            //query database for user object
-            Bson filter = Filters.gt("userID", userID);
-            usersCollection.find(filter).forEach(doc -> System.out.println(doc.toJson()));
-            //usersCollection.find(filter).forEach(doc -> );
-            //TODO: RETURN ATTRIBUTES THAT CAN BE USED TO CREATE USER OBJECT, SIMILAR TO .APPEND IN /CREATE-ORDER
+            Bson userID_filter = Filters.eq("userID", userID);
+            var userDocuments = new ArrayList<JsonObject>();
+            usersCollection.find(userID_filter).forEach(
+                    doc -> userDocuments.add(new JsonObject(doc.toJson()))
+            );
 
-            //return it as user object
-
-            ctx.response().end("Retrieving user's active positions...");
+            ctx.response()
+                    .putHeader("Content-Type", "application/json")
+                    .end(userDocuments.toString());
         });
+
 
         router.get("/user-trade-history").handler(ctx -> {
             // logic to retrieve user's trade history
@@ -89,10 +98,11 @@ public class MainRouter {
 }
 
 
+//create-order
+//create-user
+
 //user-active-positions
 //user-trade-history
 //orders
-//create-order
-//create-user
 //update-user-balance
 //get-user-account (to get balance)
