@@ -21,14 +21,14 @@ class OrderProcessorTest {
 
   @Test
   void testOrderCancellation(){
-    Order order = new Order(OrderType.SELL, Ticker.A, 110.0, 50);
+    Order order = new Order(OrderType.SELL, Ticker.A, 110.0, 50, "dummyID");
     orderProcessor.processOrder(order);
     assertTrue(orderProcessor.cancelOrder(order));
   }
 
   @Test
   void addBuyOrder() {
-    Order order = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
+    Order order = new Order(OrderType.BUY, Ticker.A, 100.0, 2000,"dummyID");
     orderProcessor.processOrder(order);
 
     TradeBook book = orderProcessor.getTradeBook(Ticker.A);
@@ -39,7 +39,7 @@ class OrderProcessorTest {
 
   @Test
   void addSellOrder() {
-    Order order = new Order(OrderType.SELL, Ticker.A, 100.0, 2000);
+    Order order = new Order(OrderType.SELL, Ticker.A, 100.0, 2000,"dummyID");
     orderProcessor.processOrder(order);
 
     TradeBook book = orderProcessor.getTradeBook(Ticker.A);
@@ -50,8 +50,8 @@ class OrderProcessorTest {
 
   @Test
   void inTimeOrder() {
-    Order oldBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2);
-    Order newBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
+    Order oldBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2,"dummyID");
+    Order newBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2000,"dummyID");
 
     orderProcessor.processOrder(newBuyOrder);
     orderProcessor.processOrder(oldBuyOrder);
@@ -73,8 +73,8 @@ class OrderProcessorTest {
 
   @Test
   void sellByPriceDesc() {
-    Order cheapSellOrder = new Order(OrderType.SELL, Ticker.A, 95.0, 2000);
-    Order expensiveSellOrder = new Order(OrderType.SELL, Ticker.A, 105.0, 2000);
+    Order cheapSellOrder = new Order(OrderType.SELL, Ticker.A, 95.0, 2000,"dummyID");
+    Order expensiveSellOrder = new Order(OrderType.SELL, Ticker.A, 105.0, 2000,"dummyID");
 
     orderProcessor.processOrder(cheapSellOrder);
     orderProcessor.processOrder(expensiveSellOrder);
@@ -96,8 +96,8 @@ class OrderProcessorTest {
 
   @Test
   void buyByPriceAsc() {
-    Order cheapBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2000);
-    Order expensiveBuyOrder = new Order(OrderType.BUY, Ticker.A, 105.0, 2000);
+    Order cheapBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2000,"dummyID");
+    Order expensiveBuyOrder = new Order(OrderType.BUY, Ticker.A, 105.0, 2000,"dummyID");
 
     orderProcessor.processOrder(cheapBuyOrder);
     orderProcessor.processOrder(expensiveBuyOrder);
