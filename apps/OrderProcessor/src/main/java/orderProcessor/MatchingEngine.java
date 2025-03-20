@@ -14,22 +14,16 @@ public class MatchingEngine {
   public static ArrayList<String> match(TradeBook book) {
     buyOrders = book.getBuyOrders();
     sellOrders = book.getSellOrders();
-    Order buy = buyOrders.peek();
-    Order sell = sellOrders.peek();
 
     matchesFound = new ArrayList<>();
 
-    boolean matchPossible = !buyOrders.isEmpty() && !sellOrders.isEmpty() && buy.getPrice() >= sell.getPrice();
-
-    while (matchPossible) {
-
-      processMatches(buy, sell);
-
-    }
-
+    while (matchPossible(buyOrders,sellOrders)) {
+          processMatches(buyOrders.peek(), sellOrders.peek());
+        } 
+    
     return matchesFound;
   }
-
+    
   private static void processMatches(Order buy, Order sell) {
     int quantity = Math.min(buy.getQuantity(), sell.getQuantity());
     Ticker ticker = buy.getTicker();
@@ -70,5 +64,11 @@ public class MatchingEngine {
     // Remove completed orders
     if (buyFilled) buyOrders.poll();
     if (sellFilled) sellOrders.poll();
+  }
+
+  private static boolean matchPossible(PriorityQueue<Order> buyOrders, PriorityQueue<Order> sellOrders){
+    Order buy = buyOrders.peek();
+    Order sell = sellOrders.peek();
+    return !buyOrders.isEmpty() && !sellOrders.isEmpty() && buy.getPrice() >= sell.getPrice();
   }
 }
