@@ -23,8 +23,8 @@ public class MatchingEngineTest {
 
   @Test
   void noMatchWhenPricesDiffer() {
-    Order buyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 50);
-    Order sellOrder = new Order(OrderType.SELL, Ticker.A, 110.0, 50);
+    Order buyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 50,"dummyID");
+    Order sellOrder = new Order(OrderType.SELL, Ticker.A, 110.0, 50,"dummyID");
 
     assertEquals(0, processor.processOrder(buyOrder).size());
     assertEquals(0, processor.processOrder(sellOrder).size());
@@ -32,14 +32,14 @@ public class MatchingEngineTest {
 
   @Test
   void noMatchWhenEmptyBuyQueue() {
-    Order order = new Order(OrderType.SELL, Ticker.A, 100.0, 50);
+    Order order = new Order(OrderType.SELL, Ticker.A, 100.0, 50,"dummyID");
     assertEquals(0, processor.processOrder(order).size());
   }
 
   @Test
   void fullMatchRemovesOrders() {
-    Order sellOrder = new Order(OrderType.SELL, Ticker.A, 100.0, 50);
-    Order buyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 50);
+    Order sellOrder = new Order(OrderType.SELL, Ticker.A, 100.0, 50,"dummyID");
+    Order buyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 50,"dummyID");
 
     assertEquals(0, processor.processOrder(buyOrder).size());
     assertEquals(2, processor.processOrder(sellOrder).size());
@@ -47,8 +47,8 @@ public class MatchingEngineTest {
 
   @Test
   void partialFill() {
-    Order sellOrder = new Order(OrderType.SELL, Ticker.A, 100.0, 50);
-    Order buyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 30);
+    Order sellOrder = new Order(OrderType.SELL, Ticker.A, 100.0, 50,"dummyID");
+    Order buyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 30,"dummyID");
 
     processor.processOrder(buyOrder);
     assertEquals(2, processor.processOrder(sellOrder).size());
