@@ -65,6 +65,10 @@ public class Order {
     this.quantity -= amount;
   }
 
+  public void setFilled(){
+    this.filled = true;
+  }
+
   @Override
   public String toString() {
     return String.format(
