@@ -12,8 +12,9 @@ public class Order {
   private int quantity;
   private boolean cancelled;
   private boolean filled;
+  private final String UserId;
 
-  public Order(OrderType type, Ticker ticker, double price, int quantity) {
+  public Order(OrderType type, Ticker ticker, double price, int quantity, String UserId) {
     this.orderId = UUID.randomUUID();
     this.type = type;
     this.ticker = ticker;
@@ -22,6 +23,7 @@ public class Order {
     this.timestamp = System.nanoTime();
     this.cancelled = false;
     this.filled = false;
+    this.UserId = UserId;
   }
 
   public UUID getId() {
@@ -52,15 +54,12 @@ public class Order {
     this.quantity -= amount;
   }
 
-  public void setFilled(){
-    this.filled = true;
-  }
-
   @Override
   public String toString() {
     return String.format(
-      "Order{orderId=%s, type=%s, ticker=%s, price=%.2f, quantity=%d, timestamp=%d, cancelled=%s, filled=%s}",
+      "Order{orderId=%s, UserId=%s, type=%s, ticker=%s, price=%.2f, quantity=%d, timestamp=%d, cancelled=%s, filled=%s}",
       orderId,
+      UserId,
       type,
       ticker,
       price,
