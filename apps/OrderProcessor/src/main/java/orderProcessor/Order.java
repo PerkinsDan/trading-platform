@@ -1,5 +1,7 @@
 package orderProcessor;
 
+import org.bson.Document;
+
 import java.util.UUID;
 
 public class Order {
@@ -68,5 +70,17 @@ public class Order {
       cancelled,
       filled
     );
+  }
+
+  public Document toDoc() {
+    return new Document()
+            .append("orderId", this.orderId.toString())
+            .append("type", this.type.name())
+            .append("ticker", this.ticker.name())
+            .append("price", this.price)
+            .append("quantity", this.quantity)
+            .append("timestamp", this.timestamp)
+            .append("cancelled", this.cancelled)
+            .append("filled", this.filled);
   }
 }
