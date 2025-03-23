@@ -7,18 +7,17 @@ import orderProcessor.OrderProcessor;
 import orderProcessor.OrderType;
 import orderProcessor.Ticker;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 
 public class DatabaseUtils {
 
     static OrderProcessor orderprocessor = OrderProcessor.getInstance();
 
-    public DatabaseUtils() {}
+    public DatabaseUtils() {
+    }
 
-    public static Order createOrderAndInsertIntoDatabase(JsonObject body){
+    public static Order createOrderAndInsertIntoDatabase(JsonObject body) {
 
         String typeStr = body.getString("type");
         String tickerStr = body.getString("ticker");
@@ -28,20 +27,18 @@ public class DatabaseUtils {
         OrderType type = OrderType.valueOf(typeStr);
         Ticker ticker = Ticker.valueOf(tickerStr);
 
-        Document newOrderDoc = new Document()
-                .append("type", type)
-                .append("ticker", ticker)
-                .append("price", price)
-                .append("quantity", quantity);
+        Order order = new Order(type, ticker, price, quantity);
+        Document orderDoc = order.toDoc();
 
         var ordersCollection = MongoClientConnection.getCollection("orders");
-        ordersCollection.insertOne(newOrderDoc);
+        ordersCollection.insertOne(orderDoc);
 
-        return new Order(type, ticker, price, quantity);
+        return order;
     }
 
-    public static void processOrder(Order order){
+    public static void processOrder(Order order) {
         var ordersCollection = MongoClientConnection.getCollection("orders");
+        var usersCollection = MongoClientConnection.getCollection("users");
         ArrayList<String> matchesFound = orderprocessor.processOrder(order);
         ArrayList<Document> matchesFoundAsMongoDBDocs = new ArrayList<>();
         for (String match : matchesFound) {
@@ -55,32 +52,39 @@ public class DatabaseUtils {
 
             boolean buyOrderFilled = buyOrder.getBoolean("filled");
             boolean sellOrderFilled = sellOrder.getBoolean("filled");
+            String buyOrderId = buyOrder.getString("orderId");
+            String sellOrderId = sellOrder.getString("orderId");
 
-            if(buyOrderFilled) {
-                //get the Order with the buyOrderID that we are passed
-                //set that order's filled status to filled
+            if (buyOrderFilled) {
+                //set order as filled
+                ordersCollection.updateOne(
+                        Filters.eq("orderId", buyOrderId),
+                        new Document("$set", new Document("filled", true)));
+
+                //TODO change user's balance according to price and quantity
+                usersCollection.updateOne(
+                        Filters.eq("orderId", buyOrderId),
+                        new Document("$set", new Document("filled", true)));
             }
 
-            if(!buyOrderFilled){
-                String orderId = buyOrder.getString("orderId");
+            if (!buyOrderFilled) {
                 int quantityChange = buyOrder.getInteger("quantityChange");
 
                 ordersCollection.findOneAndUpdate(
-                        Filters.eq("orderId", orderId),
+                        Filters.eq("orderId", buyOrderId),
                         new Document("$inc", new Document("quantity", quantityChange))
                 );
             }
 
-            if(sellOrderFilled){
+            if (sellOrderFilled) {
                 ordersCollection.deleteOne(Filters.eq("orderId", sellOrder.getString("orderId")));
             }
 
-            if(!sellOrderFilled){
-                String orderId = sellOrder.getString("orderId");
+            if (!sellOrderFilled) {
                 int quantityChange = sellOrder.getInteger("quantityChange");
 
                 ordersCollection.findOneAndUpdate(
-                        Filters.eq("orderId", orderId),
+                        Filters.eq("orderId", sellOrderId),
                         new Document("$inc", new Document("quantity", -quantityChange))
                 );
             }
