@@ -23,11 +23,12 @@ public class DatabaseUtils {
         String tickerStr = body.getString("ticker");
         double price = body.getDouble("price");
         int quantity = body.getInteger("quantity");
+        String UserID = body.getString("UserID");
 
         OrderType type = OrderType.valueOf(typeStr);
         Ticker ticker = Ticker.valueOf(tickerStr);
 
-        Order order = new Order(type, ticker, price, quantity);
+        Order order = new Order(type, ticker, price, quantity, UserID);
         Document orderDoc = order.toDoc();
 
         var ordersCollection = MongoClientConnection.getCollection("orders");
@@ -56,37 +57,56 @@ public class DatabaseUtils {
             String sellOrderId = sellOrder.getString("orderId");
 
             if (buyOrderFilled) {
-                //set order as filled
+
+                int quantityChange = buyOrder.getInteger("quantity") * buyOrder.getInteger("price");
+
                 ordersCollection.updateOne(
                         Filters.eq("orderId", buyOrderId),
                         new Document("$set", new Document("filled", true)));
 
-                //TODO change user's balance according to price and quantity
                 usersCollection.updateOne(
                         Filters.eq("orderId", buyOrderId),
-                        new Document("$set", new Document("filled", true)));
+                        new Document("$inc", new Document("balance", -quantityChange)));
             }
 
             if (!buyOrderFilled) {
-                int quantityChange = buyOrder.getInteger("quantityChange");
+                //TODO decrement quantity by amount traded (?)
+                //if we decrement quantity on the db, we mess with user history
 
-                ordersCollection.findOneAndUpdate(
-                        Filters.eq("orderId", buyOrderId),
-                        new Document("$inc", new Document("quantity", quantityChange))
-                );
+//                int quantityChange = buyOrder.getInteger("quantityChange");
+//
+//                ordersCollection.findOneAndUpdate(
+//                        Filters.eq("orderId", buyOrderId),
+//                        new Document("$inc", new Document("quantity", quantityChange))
+//                );
             }
 
             if (sellOrderFilled) {
-                ordersCollection.deleteOne(Filters.eq("orderId", sellOrder.getString("orderId")));
+
+                int quantityChange = sellOrder.getInteger("quantity") * sellOrder.getInteger("price");
+
+                ordersCollection.updateOne(
+                        Filters.eq("orderId", sellOrderId),
+                        new Document("$set", new Document("filled", true)));
+
+                usersCollection.updateOne(
+                        Filters.eq("orderId", sellOrderId),
+                        new Document("$inc", new Document("balance", quantityChange)));
+
             }
 
             if (!sellOrderFilled) {
-                int quantityChange = sellOrder.getInteger("quantityChange");
+                //TODO decrement quantity by amount traded (?)
+                //if we decrement quantity on the db, we mess with user history
 
-                ordersCollection.findOneAndUpdate(
-                        Filters.eq("orderId", sellOrderId),
-                        new Document("$inc", new Document("quantity", -quantityChange))
-                );
+
+
+//                int quantityChange = sellOrder.getInteger("quantityChange");
+//
+//                ordersCollection.findOneAndUpdate(
+//                        Filters.eq("orderId", sellOrderId),
+//                        new Document("$inc", new Document("quantity", -quantityChange))
+//                );
             }
         }
     }
