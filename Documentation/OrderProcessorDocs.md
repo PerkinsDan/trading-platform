@@ -11,7 +11,7 @@ classDiagram
          - OrderProcessor()
          + getInstance() OrderProcessor
          + processOrder(Order) ArrayList~String~         
-         + getTradeBook(Ticker) TradeBook
+         cd + getTradeBook(Ticker) TradeBook
          + cancelOrder(Order) boolean
          + resetInstance() void
     }
