@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class User {
     UUID userId;
-    int balance;
+    int balance = 0;
     ArrayList<Order> usersOrders;
 
     public User(int balance) {

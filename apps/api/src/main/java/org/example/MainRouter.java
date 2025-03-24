@@ -32,18 +32,14 @@ public class MainRouter {
                     response.putHeader("content-type", "text/plain");
                     response.end("Hello World from Vert.x-Web!");
                 });
-//make post
-        router.get("/create-user").handler(ctx -> {
-            //UUID
-            //if new user we set balance to 0
+
+        router.post("/create-user").handler(ctx -> {
             JsonObject body = ctx.getBodyAsJson();
 
             String userID = body.getString("userID");
-            Integer balance = body.getInteger("balance");
 
             Document newUserDoc = new Document()
-                    .append("userID", userID)
-                    .append("balance", balance);
+                    .append("userID", userID);
 
             var usersCollection = MongoClientConnection.getCollection("users");
             usersCollection.insertOne(newUserDoc);
@@ -51,10 +47,18 @@ public class MainRouter {
             ctx.response().end("Creating user...");
         });
 
-        router.get("/after-trade-update-user-balance").handler(ctx -> {
-            //user has a starting balance
-            //when a buy or sell order is made that is associated with their account
-            //update balance to reflect it
+        router.get("/update-user-balance").handler(ctx -> {
+
+            JsonObject body = ctx.getBodyAsJson();
+            var usersCollection = MongoClientConnection.getCollection("users");
+
+            int moneyAddedToBalance = body.getInteger("moneyAddedToBalance");
+            String userID = body.getString("userID");
+
+            usersCollection.updateOne(
+                    Filters.eq("userId", userID),
+                    new Document("$inc", new Document("balance", moneyAddedToBalance)));
+
             ctx.response().end("Updating user's balance...");
         });
 
