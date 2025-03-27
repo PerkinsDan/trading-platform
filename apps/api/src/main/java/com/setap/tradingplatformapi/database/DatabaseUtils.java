@@ -12,6 +12,8 @@ import org.bson.Document;
 
 public class DatabaseUtils {
 
+  static OrderProcessor orderprocessor = OrderProcessor.getInstance();
+
   public DatabaseUtils() {}
 
   public static Order createOrderAndInsertIntoDatabase(
