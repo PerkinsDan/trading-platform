@@ -24,7 +24,7 @@ jobs:
           java-version: "23"
 
       - name: Build OrderProcessor
-        run: cd ./apps/order-processor/ && mvn clean install --batch-mode
+        run: cd ./apps/OrderProcessor/ && mvn clean install --batch-mode
 
       - name: Build API
         run: cd ./apps/api/ && mvn clean install --batch-mode
