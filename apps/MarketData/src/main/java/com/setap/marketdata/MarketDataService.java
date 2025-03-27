@@ -6,7 +6,7 @@ public class MarketDataService {
 
   private Map<String, String> marketData;
 
-  public void start() {
+  public MarketDataService() {
     System.out.println("MarketDataService started!");
 
     while (true) {
@@ -27,7 +27,12 @@ public class MarketDataService {
     marketData = MarketDataFetcher.fetchData();
   }
 
-  public String getTickerDataFromMap(Tickers ticker) {
-    return marketData.get(ticker.toString());
+  public String getTickerDataFromMap(String symbol) {
+    try {
+      Tickers ticker = Tickers.valueOf(symbol);
+      return marketData.get(ticker.toString());
+    } catch (IllegalArgumentException e) {
+      return "Invalid symbol";
+    }
   }
 }
