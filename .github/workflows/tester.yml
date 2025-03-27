@@ -23,5 +23,11 @@ jobs:
           distribution: "temurin"
           java-version: "23"
 
+      - name: Build OrderProcessor
+        run: cd ./apps/order-processor/ && mvn clean install --batch-mode
+
+      - name: Build API
+        run: cd ./apps/api/ && mvn clean install --batch-mode
+
       - name: Run Maven Tests
         run: cd ./apps/api/ && mvn test --batch-mode

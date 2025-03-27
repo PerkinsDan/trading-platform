@@ -12,7 +12,7 @@ RUN apk add --no-cache maven
 RUN mvn clean package -DskipTests
 
 # Copy the built JAR to the final location
-RUN cp target/api-1.0-SNAPSHOT.jar /app/app.jar
+RUN cp target/trading-platform-api-1.0-SNAPSHOT.jar /app/app.jar
 
 EXPOSE 8080
 
