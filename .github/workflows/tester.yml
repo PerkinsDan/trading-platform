@@ -29,5 +29,8 @@ jobs:
       - name: Build API
         run: cd ./apps/api/ && mvn clean install --batch-mode
 
-      - name: Run Maven Tests
+      - name: Run OrderProcessor Tests
+        run: cd ./apps/OrderProcessor/ && mvn test --batch-mode
+
+      - name: Run API Tests
         run: cd ./apps/api/ && mvn test --batch-mode
