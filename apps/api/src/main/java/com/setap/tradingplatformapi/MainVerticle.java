@@ -1,4 +1,4 @@
-package org.example;
+package com.setap.tradingplatformapi;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
@@ -22,6 +22,7 @@ public class MainVerticle extends AbstractVerticle {
   }
 
   public static void main(String[] args) {
+    System.out.println("Starting server...");
     Vertx vertx = Vertx.vertx();
     vertx.deployVerticle(new MainVerticle());
   }
