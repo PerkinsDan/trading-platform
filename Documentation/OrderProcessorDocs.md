@@ -1,5 +1,4 @@
-//mermaid script to create docs for the trading platform project
-// go to https://mermaid.live and copy-paste the below mermaid script to see UML diagram for OrderProcesor
+```mermaid
 ---
 title: Package - Order Processor
 ---
@@ -89,5 +88,5 @@ Order --* OrderType : Composed Of
 TradeBook --o Order : Aggregates
 TradeBook ..> OrderComparator : Depends On
 Order
-
+```
 
