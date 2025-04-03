@@ -1,3 +1,4 @@
+```mermaid
 graph TD;
     subgraph Front End
         A[Web Interface]
@@ -24,3 +25,4 @@ graph TD;
     classDef listens fill:#90EE90,stroke:#333,stroke-width:2px, color: #000000;
     class A,B,D cloud;
     class E listens;
+```
