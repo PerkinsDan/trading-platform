@@ -14,7 +14,6 @@ flowchart TD
         G["Generate match details"]
         H["Leave order on books"]
         I["Update DB with match details"]
-        J["Notify Webhook"]
         K["Update front end"]
         L@{ shape: framed-circle, label: "Stop" }
 
@@ -28,8 +27,7 @@ flowchart TD
         F --> |No| H
         F --> |Yes| G
         G --> I 
-        I --> J
-        J --> K
+        I --> |Webhook notified| K
         H --> L
         K --> L
     end
