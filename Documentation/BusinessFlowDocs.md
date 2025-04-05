@@ -1,4 +1,4 @@
-'''mermaid
+```mermaid
 ---
 title: BUSINESS FLOWS
 ---
@@ -53,4 +53,4 @@ flowchart TD
         e --> |"Update DB"|f 
         f --> g
     end
-'''
+```
