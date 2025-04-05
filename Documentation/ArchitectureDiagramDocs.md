@@ -1,6 +1,6 @@
 ```mermaid
-graph TD;
-    subgraph "Front End"
+graph RL;
+    subgraph FrontEnd
         A[Web Interface]
     end
 
@@ -12,16 +12,16 @@ graph TD;
     subgraph Storage
         D[MongoDB]
     end
-
-    "Front End"--> API : Calls
+    
+    
+    FrontEnd-->|Calls| API
+    Storage --> |Feeds| E
+    E --> |Updates| FrontEnd
+    
     API--> |Writes To| Storage
     API--> |Updates| Storage
     API --> |Notifies| E[Webhook]
 
-    Storage --> |Feeds| E
-    E --> |Updates| Front End
-
     classDef cloud fill:#00FFFF,stroke:#00000,stroke-width:2px,color:#000000;
     class A,B,D,E cloud;
-    
 ```
