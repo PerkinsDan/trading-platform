@@ -1,28 +1,29 @@
 ```mermaid
 graph TD;
-    subgraph Front End
+    subgraph "Front End"
         A[Web Interface]
     end
 
     subgraph API
-        B --> C[Matching Engine]
-        C --> B[Order Processor]
+        B[Order Processor]
+        C[Matching Engine]
     end
 
     subgraph Storage
         D[MongoDB]
     end
 
-    A --> API
-    API--> |Updates| Storage
+    A -->|Calls| B
+    B -->|Order Process| C
+    C -->|Matches| B
+    B -->|Writes To| D
+    B -->|Updates| D
+    B -->|Notifies| E[Webhook]
 
-    E[Webhook] --> |listens to| Storage
-    A <--> |Updates From| E[Webhook]
-    A --> |Writes To| Storage 
-    
+    D -->|Feeds| E
+    E -->|Updates| A
 
     classDef cloud fill:#00FFFF,stroke:#00000,stroke-width:2px,color:#000000;
-    classDef listens fill:#90EE90,stroke:#333,stroke-width:2px, color: #000000;
-    class A,B,D cloud;
-    class E listens;
+    class A,B,D,E cloud;
+
 ```
