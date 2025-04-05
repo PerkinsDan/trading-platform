@@ -1,5 +1,4 @@
 ```mermaid
-
 graph TD;
     subgraph "Front End"
         A[Web Interface]
