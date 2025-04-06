@@ -7,6 +7,7 @@ import java.util.UUID;
 public class Order {
 
   private final UUID orderId;
+  private final String userId;
   private final OrderType type;
   private final double price;
   private final long timestamp;
@@ -14,10 +15,10 @@ public class Order {
   private int quantity;
   private boolean cancelled;
   private boolean filled;
-  private final String UserId;
 
-  public Order(OrderType type, Ticker ticker, double price, int quantity, String UserId) {
+  public Order(OrderType type, String userId, Ticker ticker, double price, int quantity) {
     this.orderId = UUID.randomUUID();
+    this.userId = userId;
     this.type = type;
     this.ticker = ticker;
     this.price = price;
@@ -25,7 +26,6 @@ public class Order {
     this.timestamp = System.nanoTime();
     this.cancelled = false;
     this.filled = false;
-    this.UserId = UserId;
   }
 
   public UUID getId() {
@@ -52,6 +52,8 @@ public class Order {
     return ticker;
   }
 
+  public String getUserId() {return userId;}
+
   public void reduceQuantity(int amount) {
     this.quantity -= amount;
   }
@@ -59,9 +61,9 @@ public class Order {
   @Override
   public String toString() {
     return String.format(
-      "Order{orderId=%s, UserId=%s, type=%s, ticker=%s, price=%.2f, quantity=%d, timestamp=%d, cancelled=%s, filled=%s}",
+      "Order{orderId=%s, userId=%s, type=%s, ticker=%s, price=%.2f, quantity=%d, timestamp=%d, cancelled=%s, filled=%s}",
       orderId,
-      UserId,
+      userId,
       type,
       ticker,
       price,
@@ -75,6 +77,7 @@ public class Order {
   public Document toDoc() {
     return new Document()
             .append("orderId", this.orderId.toString())
+            .append("userId", this.userId)
             .append("type", this.type.name())
             .append("ticker", this.ticker.name())
             .append("price", this.price)

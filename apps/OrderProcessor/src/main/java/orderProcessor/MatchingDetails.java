@@ -4,25 +4,28 @@ import java.util.UUID;
 
 public class MatchingDetails {
 
-  UUID orderID;
+  UUID orderId;
   double price;
   int quantityChange;
   boolean filled;
+  String userId;
 
-  MatchingDetails(
-    UUID orderID,
-    double price,
-    int quantityChange,
-    boolean filled
+  public MatchingDetails(
+          UUID orderId,
+          double price,
+          int quantityChange,
+          boolean filled,
+          String userId
   ) {
-    this.orderID = orderID;
+    this.orderId = orderId;
     this.price = price;
     this.quantityChange = quantityChange;
     this.filled = filled;
+    this.userId = userId;
   }
 
   public UUID getOrderID() {
-    return orderID;
+    return orderId;
   }
 
   public double getPrice() {
