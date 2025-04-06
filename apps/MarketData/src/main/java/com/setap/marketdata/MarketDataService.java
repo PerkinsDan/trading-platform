@@ -7,8 +7,8 @@ public class MarketDataService {
 
   private final SimulatedData simulatedData;
 
-  public MarketDataService() {
-    this.simulatedData = new SimulatedData();
+  public MarketDataService(ArrayList<String> tickers) {
+    this.simulatedData = new SimulatedData(tickers);
 
     Thread dataGenerationThread = new Thread(() -> {
       boolean firstIteration = true;
@@ -35,19 +35,19 @@ public class MarketDataService {
     dataGenerationThread.start();
   }
 
-  public ArrayList<Snapshot> getTimeSeries(Tickers ticker) {
+  public ArrayList<Snapshot> getTimeSeries(String ticker) {
     synchronized (simulatedData) {
       return simulatedData.getTimeSeries(ticker).getSnapshots();
     }
   }
 
-  public Snapshot getLatestSnapshot(Tickers ticker) {
+  public Snapshot getLatestSnapshot(String ticker) {
     synchronized (simulatedData) {
       return simulatedData.getTimeSeries(ticker).getLatestSnapshot();
     }
   }
 
-  public double getLatestChange(Tickers ticker) {
+  public double getLatestChange(String ticker) {
     synchronized (simulatedData) {
       return simulatedData.getTimeSeries(ticker).getLatestChange();
     }

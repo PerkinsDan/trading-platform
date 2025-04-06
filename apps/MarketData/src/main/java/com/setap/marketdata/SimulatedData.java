@@ -1,6 +1,7 @@
 package com.setap.marketdata;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -10,15 +11,15 @@ public class SimulatedData {
   private final LocalTime marketOpenTime = LocalTime.of(9, 30, 0);
   private final LocalTime marketCloseTime = LocalTime.of(16, 0, 0);
 
-  private final Map<Tickers, TimeSeries> timeSeriesMap = new HashMap<>();
+  private final Map<String, TimeSeries> timeSeriesMap = new HashMap<>();
 
-  public SimulatedData() {
-    for (Tickers ticker : Tickers.values()) {
+  public SimulatedData(ArrayList<String> tickers) {
+    for (String ticker : tickers) {
       timeSeriesMap.put(ticker, new TimeSeries());
     }
   }
 
-  public TimeSeries getTimeSeries(Tickers ticker) {
+  public TimeSeries getTimeSeries(String ticker) {
     return timeSeriesMap.get(ticker);
   }
 
@@ -29,15 +30,13 @@ public class SimulatedData {
   public void generateData() {
     System.out.println("Generating simulated data...");
 
-    for (Tickers ticker : Tickers.values()) {
+    for (String ticker : timeSeriesMap.keySet()) {
       TimeSeries timeSeries = timeSeriesMap.get(ticker);
       LocalTime rollingTimeStamp = marketOpenTime;
 
       // Simulated starting price
       double price = Math.random() * 1000;
-      timeSeries.addSnapshot(
-        new Snapshot(ticker.toString(), price, marketOpenTime)
-      );
+      timeSeries.addSnapshot(new Snapshot(ticker, price, marketOpenTime));
 
       rollingTimeStamp = rollingTimeStamp.plusMinutes(5);
 
@@ -48,9 +47,7 @@ public class SimulatedData {
         // Ensure price doesn't go negative
         price = Math.max(price, 0);
 
-        timeSeries.addSnapshot(
-          new Snapshot(ticker.toString(), price, rollingTimeStamp)
-        );
+        timeSeries.addSnapshot(new Snapshot(ticker, price, rollingTimeStamp));
         rollingTimeStamp = rollingTimeStamp.plusMinutes(5);
       }
     }
