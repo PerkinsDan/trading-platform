@@ -1,5 +1,6 @@
 package com.setap.marketdata;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class MarketDataService {
@@ -10,14 +11,19 @@ public class MarketDataService {
     this.simulatedData = new SimulatedData();
 
     Thread dataGenerationThread = new Thread(() -> {
+      boolean firstIteration = true;
+
       while (true) {
-        synchronized (simulatedData) {
-          simulatedData.generateData();
+        if (LocalTime.now() == LocalTime.MIDNIGHT || firstIteration) {
+          // Reset the simulated data at midnight
+          synchronized (simulatedData) {
+            simulatedData.generateData();
+            firstIteration = false;
+          }
         }
 
         try {
-          // Sleep for 24 hours before generating data again
-          Thread.sleep(24 * 60 * 60 * 1000);
+          Thread.sleep(5 * 60 * 1000); // Sleep for 5 minutes
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
           break;

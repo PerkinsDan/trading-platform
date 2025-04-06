@@ -11,13 +11,13 @@ public class MarketDataServiceTest {
   private MarketDataService marketDataService;
 
   @BeforeEach
-  void setUp() {
+  void setUp() throws InterruptedException {
     marketDataService = new MarketDataService();
+    Thread.sleep(100); // Wait for the data generation thread to start
   }
 
   @Test
   void getTimeSeriesShouldReturnPopulatedListAfterDataGeneration() {
-    marketDataService.getTimeSeries(Tickers.AAPL);
     ArrayList<Snapshot> snapshots = marketDataService.getTimeSeries(
       Tickers.AAPL
     );
@@ -26,13 +26,11 @@ public class MarketDataServiceTest {
 
   @Test
   void getLatestSnapshotShouldReturnLastSnapshotAfterDataGeneration() {
-    marketDataService.getTimeSeries(Tickers.AAPL);
     assertNotNull(marketDataService.getLatestSnapshot(Tickers.AAPL));
   }
 
   @Test
   void getLatestChangeShouldReturnNonZeroAfterDataGeneration() {
-    marketDataService.getTimeSeries(Tickers.AAPL);
     assertNotEquals(0, marketDataService.getLatestChange(Tickers.AAPL));
   }
 }
