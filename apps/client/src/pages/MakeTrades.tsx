@@ -1,4 +1,4 @@
-import { Grid, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import NavBar from "../components/NavBar";
 import TradingCard from "../components/TradingCard";
 import { useState } from "react";
@@ -9,12 +9,14 @@ function MakeTrades() {
   return (
     <Stack height="100%" width="100%" flexDirection="row">
       <NavBar currentPage="make-trades" />
-      <Grid
+      <Stack
         display="grid"
-        gridTemplateColumns={"repeat(2, 1fr)"}
+        gridTemplateColumns="repeat(3, 1fr)" // Define a 3-column grid
+        gridTemplateRows="auto"
         gap="4rem"
-        padding="4rem"
+        padding="6rem" // Increase padding to add spacing from the sides
         width="100%"
+        position="relative" // Allow absolute positioning of cards
       >
         {[
           "Amazon",
@@ -23,7 +25,7 @@ function MakeTrades() {
           "Blockbuster",
           "Meta",
           "Dan Perkins Ltd.",
-        ].map((stock) => (
+        ].map((stock, index) => (
           <TradingCard
             key={stock}
             stock={stock}
@@ -31,9 +33,11 @@ function MakeTrades() {
             onExpand={() =>
               setExpandedCard(expandedCard === stock ? null : stock)
             }
+            expandedCard={expandedCard}
+            index={index} // Pass the index for positioning
           />
         ))}
-      </Grid>
+      </Stack>
     </Stack>
   );
 }

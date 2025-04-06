@@ -2,7 +2,6 @@ import { Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
   LogoutRounded,
-  Person2Outlined,
   Schedule,
   TrendingUp,
 } from "@mui/icons-material";
