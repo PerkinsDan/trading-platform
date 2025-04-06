@@ -1,38 +1,49 @@
 package com.setap.marketdata;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 public class MarketDataService {
 
-  private Map<String, String> marketData;
+  private final SimulatedData simulatedData;
 
   public MarketDataService() {
-    System.out.println("MarketDataService started!");
+    this.simulatedData = new SimulatedData();
 
-    while (true) {
-      fetchData();
+    Thread dataGenerationThread = new Thread(() -> {
+      while (true) {
+        synchronized (simulatedData) {
+          simulatedData.generateData();
+        }
 
-      try {
-        Thread.sleep(60000); // Sleep for 1 minute
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-        System.out.println(
-          "Thread was interrupted, Failed to complete operation"
-        );
+        try {
+          // Sleep for 24 hours before generating data again
+          Thread.sleep(24 * 60 * 60 * 1000);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          break;
+        }
       }
+    });
+
+    dataGenerationThread.setDaemon(true);
+    dataGenerationThread.start();
+  }
+
+  public ArrayList<Snapshot> getTimeSeries(Tickers ticker) {
+    synchronized (simulatedData) {
+      return simulatedData.getTimeSeries(ticker).getSnapshots();
     }
   }
 
-  private void fetchData() {
-    marketData = MarketDataFetcher.fetchData();
+  public Snapshot getLatestSnapshot(Tickers ticker) {
+    synchronized (simulatedData) {
+      return simulatedData.getTimeSeries(ticker).getLatestSnapshot();
+    }
   }
 
-  public String getTickerDataFromMap(String symbol) {
-    try {
-      Tickers ticker = Tickers.valueOf(symbol);
-      return marketData.get(ticker.toString());
-    } catch (IllegalArgumentException e) {
-      return "Invalid symbol";
+  public double getLatestChange(Tickers ticker) {
+    synchronized (simulatedData) {
+      return simulatedData.getTimeSeries(ticker).getLatestChange();
     }
   }
 }
