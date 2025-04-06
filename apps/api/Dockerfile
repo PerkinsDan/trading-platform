@@ -2,13 +2,18 @@ FROM eclipse-temurin:23-jdk-alpine
 
 WORKDIR /app
 
-# Copy the Maven project files
-COPY . /app
-
 # Install Maven
 RUN apk add --no-cache maven
 
-# Build the application
+# Copy the entire project
+COPY . /app/apps
+
+# Build and install the order-processor module
+WORKDIR /app/apps/OrderProcessor
+RUN mvn clean install -DskipTests
+
+# Build the trading-platform-api module
+WORKDIR /app/apps/api
 RUN mvn clean package -DskipTests
 
 # Copy the built JAR to the final location
