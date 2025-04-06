@@ -6,16 +6,17 @@ import java.util.ArrayList;
 public class MarketDataService {
 
   private final SimulatedData simulatedData;
+  private static MarketDataService marketDataServiceHolder = null;
 
-  public MarketDataService(ArrayList<String> tickers) {
+  private MarketDataService(ArrayList<String> tickers) {
     this.simulatedData = new SimulatedData(tickers);
 
     Thread dataGenerationThread = new Thread(() -> {
       boolean firstIteration = true;
 
       while (true) {
-        if (LocalTime.now() == LocalTime.MIDNIGHT || firstIteration) {
-          // Reset the simulated data at midnight
+        if (LocalTime.now() == LocalTime.of(9, 30) || firstIteration) {
+          // Regenerate the simulated data at Market Open or on the first iteration
           synchronized (simulatedData) {
             simulatedData.generateData();
             firstIteration = false;
@@ -23,7 +24,7 @@ public class MarketDataService {
         }
 
         try {
-          Thread.sleep(5 * 60 * 1000); // Sleep for 5 minutes
+          Thread.sleep(60 * 1000); // Sleep for 1 minute
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
           break;
@@ -33,6 +34,25 @@ public class MarketDataService {
 
     dataGenerationThread.setDaemon(true);
     dataGenerationThread.start();
+  }
+
+  public static MarketDataService getInstance() {
+    if (marketDataServiceHolder == null) {
+      throw new IllegalStateException(
+        "MarketDataService not initialized. Call createInstance() first."
+      );
+    }
+
+    return marketDataServiceHolder;
+  }
+
+  public static MarketDataService createInstance(ArrayList<String> tickers) {
+    if (marketDataServiceHolder != null) {
+      return marketDataServiceHolder;
+    }
+
+    marketDataServiceHolder = new MarketDataService(tickers);
+    return marketDataServiceHolder;
   }
 
   public ArrayList<Snapshot> getTimeSeries(String ticker) {

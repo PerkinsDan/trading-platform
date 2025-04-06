@@ -15,7 +15,7 @@ public class MarketDataServiceTest {
     ArrayList<String> tickers = new ArrayList<>();
     tickers.add("AAPL");
 
-    marketDataService = new MarketDataService(tickers);
+    marketDataService = MarketDataService.createInstance(tickers);
     Thread.sleep(100); // Wait for the data generation thread to start
   }
 
