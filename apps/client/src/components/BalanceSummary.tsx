@@ -1,12 +1,10 @@
-
 import { Stack, Typography } from "@mui/material";
 
 interface BalanceSummaryProps {
   totalBalance: number;
-  lockedFunds: number;
 }
 
-function BalanceSummary({ totalBalance, lockedFunds }: BalanceSummaryProps) {
+function BalanceSummary({ totalBalance }: BalanceSummaryProps) {
   return (
     <Stack
       direction="row"
@@ -18,10 +16,7 @@ function BalanceSummary({ totalBalance, lockedFunds }: BalanceSummaryProps) {
         boxShadow: 1,
       }}
     >
-      <Typography>Total Balance: ${totalBalance.toFixed(2)}</Typography>
-      <Typography>
-        Including Locked Funds: ${(totalBalance + lockedFunds).toFixed(2)}
-      </Typography>
+      <Typography>Total Balance: £{totalBalance.toFixed(2)}</Typography>
     </Stack>
   );
 }

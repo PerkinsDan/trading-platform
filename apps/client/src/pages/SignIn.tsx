@@ -13,7 +13,7 @@ function SignIn() {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      const token = result.user.getIdToken();
+      const token = await user.getIdToken();
       const userData = {
         displayName: user.displayName,
         email: user.email,
@@ -21,9 +21,24 @@ function SignIn() {
         uid: user.uid,
       };
 
-      // Api call to store userData.uid
-      console.log(userData);
-      console.log(token);
+      // API call to add/get user
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/create-user`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ userId: userData.uid }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to add/get user from the database");
+      }
+
+      console.log("User added/retrieved successfully:", userData);
       navigate("/my-trades"); // Redirect after successful sign-in
     } catch (error) {
       console.error("Error signing in with Google:", error);

@@ -9,6 +9,9 @@ export default defineConfig(({ mode }) => {
       "process.env.REACT_APP_FIREBASE_API_KEY": JSON.stringify(
         env.REACT_APP_FIREBASE_API_KEY,
       ),
+      "process.env.REACT_APP_API_BASE_URL": JSON.stringify(
+        env.REACT_APP_API_BASE_URL,
+      ),
     },
     plugins: [react()],
   };
