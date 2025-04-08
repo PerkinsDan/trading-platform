@@ -4,18 +4,14 @@ import java.time.LocalTime;
 
 public class Snapshot {
 
-  private final String ticker;
+  private final Tickers ticker;
   private final double price;
   private final LocalTime timestamp;
 
-  public Snapshot(String ticker, double price, LocalTime timestamp) {
+  public Snapshot(Tickers ticker, double price, LocalTime timestamp) {
     this.ticker = ticker;
     this.price = price;
     this.timestamp = timestamp;
-  }
-
-  public String getTicker() {
-    return ticker;
   }
 
   public double getPrice() {

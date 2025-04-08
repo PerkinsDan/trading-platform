@@ -1,5 +1,6 @@
 package com.setap.marketdata;
 
+import static com.setap.marketdata.Tickers.AAPL;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
@@ -12,26 +13,23 @@ public class MarketDataServiceTest {
 
   @BeforeEach
   void setUp() throws InterruptedException {
-    ArrayList<String> tickers = new ArrayList<>();
-    tickers.add("AAPL");
-
-    marketDataService = MarketDataService.createInstance(tickers);
+    marketDataService = MarketDataService.getInstance();
     Thread.sleep(100); // Wait for the data generation thread to start
   }
 
   @Test
   void getTimeSeriesShouldReturnPopulatedListAfterDataGeneration() {
-    ArrayList<Snapshot> snapshots = marketDataService.getTimeSeries("AAPL");
+    ArrayList<Snapshot> snapshots = marketDataService.getTimeSeries(AAPL);
     assertFalse(snapshots.isEmpty());
   }
 
   @Test
   void getLatestSnapshotShouldReturnLastSnapshotAfterDataGeneration() {
-    assertNotNull(marketDataService.getLatestSnapshot("AAPL"));
+    assertNotNull(marketDataService.getLatestSnapshot(AAPL));
   }
 
   @Test
   void getLatestChangeShouldReturnNonZeroAfterDataGeneration() {
-    assertNotEquals(0, marketDataService.getLatestChange("AAPL"));
+    assertNotEquals(0, marketDataService.getLatestChange(AAPL));
   }
 }

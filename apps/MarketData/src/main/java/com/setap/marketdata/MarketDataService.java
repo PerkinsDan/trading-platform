@@ -8,8 +8,8 @@ public class MarketDataService {
   private final SimulatedData simulatedData;
   private static MarketDataService marketDataServiceHolder = null;
 
-  private MarketDataService(ArrayList<String> tickers) {
-    this.simulatedData = new SimulatedData(tickers);
+  private MarketDataService() {
+    this.simulatedData = new SimulatedData();
 
     Thread dataGenerationThread = new Thread(() -> {
       boolean firstIteration = true;
@@ -38,36 +38,25 @@ public class MarketDataService {
 
   public static MarketDataService getInstance() {
     if (marketDataServiceHolder == null) {
-      throw new IllegalStateException(
-        "MarketDataService not initialized. Call createInstance() first."
-      );
+      marketDataServiceHolder = new MarketDataService();
     }
 
     return marketDataServiceHolder;
   }
 
-  public static MarketDataService createInstance(ArrayList<String> tickers) {
-    if (marketDataServiceHolder != null) {
-      return marketDataServiceHolder;
-    }
-
-    marketDataServiceHolder = new MarketDataService(tickers);
-    return marketDataServiceHolder;
-  }
-
-  public ArrayList<Snapshot> getTimeSeries(String ticker) {
+  public ArrayList<Snapshot> getTimeSeries(Tickers ticker) {
     synchronized (simulatedData) {
       return simulatedData.getTimeSeries(ticker).getSnapshots();
     }
   }
 
-  public Snapshot getLatestSnapshot(String ticker) {
+  public Snapshot getLatestSnapshot(Tickers ticker) {
     synchronized (simulatedData) {
       return simulatedData.getTimeSeries(ticker).getLatestSnapshot();
     }
   }
 
-  public double getLatestChange(String ticker) {
+  public double getLatestChange(Tickers ticker) {
     synchronized (simulatedData) {
       return simulatedData.getTimeSeries(ticker).getLatestChange();
     }
