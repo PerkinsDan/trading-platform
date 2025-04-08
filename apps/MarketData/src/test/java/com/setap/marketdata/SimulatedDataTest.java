@@ -38,7 +38,7 @@ public class SimulatedDataTest {
       timeSeries
         .getSnapshots()
         .stream()
-        .allMatch(snapshot -> snapshot.getPrice() >= 0)
+        .allMatch(snapshot -> snapshot.price() >= 0)
     );
   }
 
@@ -52,8 +52,8 @@ public class SimulatedDataTest {
         .stream()
         .allMatch(
           snapshot ->
-            !snapshot.getTimestamp().isBefore(LocalTime.of(9, 30)) &&
-            !snapshot.getTimestamp().isAfter(LocalTime.of(16, 0))
+            !snapshot.timestamp().isBefore(LocalTime.of(9, 30)) &&
+            !snapshot.timestamp().isAfter(LocalTime.of(16, 0))
         )
     );
   }
