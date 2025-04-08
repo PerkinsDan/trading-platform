@@ -55,10 +55,4 @@ public class MarketDataService {
       return simulatedData.getTimeSeries(ticker).getLatestSnapshot();
     }
   }
-
-  public double getLatestChange(Tickers ticker) {
-    synchronized (simulatedData) {
-      return simulatedData.getTimeSeries(ticker).getLatestChange();
-    }
-  }
 }

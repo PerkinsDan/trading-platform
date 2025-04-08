@@ -1,17 +1,18 @@
 package com.setap.marketdata;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalTime;
 
 public class Snapshot {
 
-  private final Tickers ticker;
   private final double price;
   private final LocalTime timestamp;
+  private final double change;
 
-  public Snapshot(Tickers ticker, double price, LocalTime timestamp) {
-    this.ticker = ticker;
+  public Snapshot(double price, LocalTime timestamp, double change) {
     this.price = price;
     this.timestamp = timestamp;
+    this.change = change;
   }
 
   public double getPrice() {
@@ -22,18 +23,7 @@ public class Snapshot {
     return timestamp;
   }
 
-  @Override
-  public String toString() {
-    return (
-      "Snapshot{" +
-      "ticker='" +
-      ticker +
-      '\'' +
-      ", price=" +
-      price +
-      ", timestamp=" +
-      timestamp +
-      '}'
-    );
+  public double getChange() {
+    return change;
   }
 }

@@ -29,18 +29,26 @@ public class SimulatedData {
 
       // Simulated starting price
       double price = Math.random() * 1000;
-      timeSeries.addSnapshot(new Snapshot(ticker, price, marketOpenTime));
+      timeSeries.addSnapshot(new Snapshot(price, marketOpenTime, 0));
 
       rollingTimeStamp = rollingTimeStamp.plusMinutes(5);
 
       while (rollingTimeStamp.isBefore(marketCloseTime)) {
+        double previousPrice = price;
+
         // Simulate price changes using normal distribution
         price += new Random().nextGaussian() * 5;
+
+        // Round to 2 decimal places
+        price = Math.round(price * 100.0) / 100.0;
 
         // Ensure price doesn't go negative
         price = Math.max(price, 0);
 
-        timeSeries.addSnapshot(new Snapshot(ticker, price, rollingTimeStamp));
+        double change = ((price - previousPrice) / previousPrice) * 100;
+        change = Math.round(change * 100.0) / 100.0;
+
+        timeSeries.addSnapshot(new Snapshot(price, rollingTimeStamp, change));
         rollingTimeStamp = rollingTimeStamp.plusMinutes(5);
       }
     }

@@ -27,9 +27,4 @@ public class MarketDataServiceTest {
   void getLatestSnapshotShouldReturnLastSnapshotAfterDataGeneration() {
     assertNotNull(marketDataService.getLatestSnapshot(AAPL));
   }
-
-  @Test
-  void getLatestChangeShouldReturnNonZeroAfterDataGeneration() {
-    assertNotEquals(0, marketDataService.getLatestChange(AAPL));
-  }
 }
