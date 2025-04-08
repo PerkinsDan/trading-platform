@@ -14,6 +14,6 @@ RUN mvn clean install -DskipTests
 # Copy the built JAR to the final location
 RUN cp target/market-data-1.0-SNAPSHOT.jar /app/app.jar
 
-EXPOSE 8080
+EXPOSE 12000
 
 CMD ["java", "-jar", "/app/app.jar"]
