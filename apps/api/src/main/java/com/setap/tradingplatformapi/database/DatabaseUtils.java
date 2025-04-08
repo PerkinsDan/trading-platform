@@ -56,8 +56,8 @@ public class DatabaseUtils {
 
         boolean buyOrderFilled = buyOrder.getBoolean("filled");
         boolean sellOrderFilled = sellOrder.getBoolean("filled");
-        String buyOrderId = buyOrder.getString("orderId");
-        String sellOrderId = sellOrder.getString("orderId");
+        String buyOrderId = buyOrder.getString("orderID");
+        String sellOrderId = sellOrder.getString("orderID");
         String buyUserId = buyOrder.getString("userId");
         String sellUserId = sellOrder.getString("userId");
 
@@ -77,6 +77,7 @@ public class DatabaseUtils {
 
         if (!buyOrderFilled) {
             //TODO decrement quantity by amount traded (?)
+            //create orderHistory collection, send orders there when they are fulfilled, 
             //if we decrement quantity on the db, we mess with user history
 
             //                int quantityChange = buyOrder.getInteger("quantityChange");
