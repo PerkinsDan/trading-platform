@@ -1,8 +1,5 @@
 ```mermaid
----
-title: Architecture
----
-graph BT;
+graph RL;
     subgraph FrontEnd
         A[Web Interface]
     end
