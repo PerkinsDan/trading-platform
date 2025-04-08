@@ -23,8 +23,15 @@ public class MarketDataServiceMain {
       vertx,
       marketDataService
     ).getRouter();
+
+    router
+      .route("/")
+      .handler(ctx -> {
+        ctx.response().end("Welcome to the Market Data Service");
+      });
+
     router.route().subRouter(marketDataRouter);
 
-    server.requestHandler(router).listen(8080);
+    server.requestHandler(router).listen(12000);
   }
 }
