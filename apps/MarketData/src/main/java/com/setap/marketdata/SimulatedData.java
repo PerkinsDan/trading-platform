@@ -29,6 +29,8 @@ public class SimulatedData {
 
       // Simulated starting price
       double price = Math.random() * 1000;
+      price = Math.round(price * 100.0) / 100.0;
+
       timeSeries.addSnapshot(new Snapshot(price, marketOpenTime, 0));
 
       rollingTimeStamp = rollingTimeStamp.plusMinutes(5);
@@ -38,8 +40,6 @@ public class SimulatedData {
 
         // Simulate price changes using normal distribution
         price += new Random().nextGaussian() * 5;
-
-        // Round to 2 decimal places
         price = Math.round(price * 100.0) / 100.0;
 
         // Ensure price doesn't go negative

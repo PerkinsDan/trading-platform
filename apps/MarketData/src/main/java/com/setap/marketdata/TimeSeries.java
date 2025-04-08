@@ -21,7 +21,7 @@ public class TimeSeries {
     ArrayList<Snapshot> filteredSnapshots = new ArrayList<>(snapshots);
 
     filteredSnapshots.removeIf(snapshot ->
-      snapshot.getTimestamp().isAfter(currentTime)
+      snapshot.timestamp().isAfter(currentTime)
     );
 
     return filteredSnapshots;
@@ -36,7 +36,7 @@ public class TimeSeries {
 
     Snapshot latest = null;
     for (Snapshot snapshot : snapshots) {
-      if (snapshot.getTimestamp().isBefore(currentTime)) {
+      if (snapshot.timestamp().isBefore(currentTime)) {
         latest = snapshot;
       }
     }
