@@ -43,23 +43,4 @@ public class TimeSeries {
 
     return latest;
   }
-
-  public double getLatestChange() {
-    if (snapshots.size() < 2) {
-      return 0;
-    }
-
-    LocalTime currentTime = LocalTime.now();
-    ArrayList<Snapshot> filteredSnapshots = new ArrayList<>(snapshots);
-    filteredSnapshots.removeIf(snapshot ->
-      snapshot.getTimestamp().isAfter(currentTime)
-    );
-
-    Snapshot latest = filteredSnapshots.getLast();
-    Snapshot previous = filteredSnapshots.get(filteredSnapshots.size() - 2);
-
-    return (
-      ((latest.getPrice() - previous.getPrice()) / previous.getPrice()) * 100
-    );
-  }
 }
