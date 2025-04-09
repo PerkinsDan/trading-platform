@@ -27,6 +27,11 @@ public class MongoClientConnection {
   private static void initClient() {
     Dotenv dotenv = Dotenv.load();
     String connectionString = dotenv.get("DB_URI");
+    if (connectionString == null || connectionString.isEmpty()) {
+      throw new IllegalStateException(
+        "DB_URI is not set in the environment variables."
+      );
+    }
     ServerApi serverApi = ServerApi.builder()
       .version(ServerApiVersion.V1)
       .build();
@@ -40,6 +45,7 @@ public class MongoClientConnection {
       database.runCommand(new Document("ping", 1));
       System.out.println("Successfully connected to MongoDB!");
     } catch (MongoException e) {
+      System.err.println("Failed to connect to MongoDB: " + e.getMessage());
       e.printStackTrace();
     }
   }

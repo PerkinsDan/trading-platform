@@ -11,11 +11,11 @@ public class MatchingDetails {
   String userId;
 
   public MatchingDetails(
-          UUID orderId,
-          double price,
-          int quantityChange,
-          boolean filled,
-          String userId
+    UUID orderId,
+    double price,
+    int quantityChange,
+    boolean filled,
+    String userId
   ) {
     this.orderId = orderId;
     this.price = price;
@@ -28,7 +28,9 @@ public class MatchingDetails {
     return orderId;
   }
 
-  public String getUserId(){return userId;}
+  public String getUserId() {
+    return userId;
+  }
 
   public double getPrice() {
     return price;
