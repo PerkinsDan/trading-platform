@@ -1,62 +1,59 @@
-package com.setap.marketdata;
+package com.setap.marketdata.simulatedata;
 
+import static com.setap.marketdata.constants.Tickers.AAPL;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class SimulatedDataTest {
+public class SimulateDataTest {
 
-  private SimulatedData simulatedData;
+  private SimulateData simulateData;
 
   @BeforeEach
   void setUp() {
-    ArrayList<String> tickers = new ArrayList<>();
-    tickers.add("AAPL");
-
-    simulatedData = new SimulatedData(tickers);
+    simulateData = new SimulateData();
   }
 
   @Test
   void getTimeSeriesShouldReturnEmptyTimeSeriesForNewTicker() {
-    TimeSeries timeSeries = simulatedData.getTimeSeries("AAPL");
+    TimeSeries timeSeries = simulateData.getTimeSeries(AAPL);
     assertNotNull(timeSeries);
     assertTrue(timeSeries.getSnapshots().isEmpty());
   }
 
   @Test
   void generateDataShouldPopulateTimeSeriesWithSnapshots() {
-    simulatedData.generateData();
-    TimeSeries timeSeries = simulatedData.getTimeSeries("AAPL");
+    simulateData.generateData();
+    TimeSeries timeSeries = simulateData.getTimeSeries(AAPL);
     assertFalse(timeSeries.getSnapshots().isEmpty());
   }
 
   @Test
   void generateDataShouldGenerateNonNegativePrices() {
-    simulatedData.generateData();
-    TimeSeries timeSeries = simulatedData.getTimeSeries("AAPL");
+    simulateData.generateData();
+    TimeSeries timeSeries = simulateData.getTimeSeries(AAPL);
     assertTrue(
       timeSeries
         .getSnapshots()
         .stream()
-        .allMatch(snapshot -> snapshot.getPrice() >= 0)
+        .allMatch(snapshot -> snapshot.price() >= 0)
     );
   }
 
   @Test
   void generateDataShouldGenerateSnapshotsWithinMarketHours() {
-    simulatedData.generateData();
-    TimeSeries timeSeries = simulatedData.getTimeSeries("AAPL");
+    simulateData.generateData();
+    TimeSeries timeSeries = simulateData.getTimeSeries(AAPL);
     assertTrue(
       timeSeries
         .getSnapshots()
         .stream()
         .allMatch(
           snapshot ->
-            !snapshot.getTimestamp().isBefore(LocalTime.of(9, 30)) &&
-            !snapshot.getTimestamp().isAfter(LocalTime.of(16, 0))
+            !snapshot.timestamp().isBefore(LocalTime.of(9, 30)) &&
+            !snapshot.timestamp().isAfter(LocalTime.of(16, 0))
         )
     );
   }

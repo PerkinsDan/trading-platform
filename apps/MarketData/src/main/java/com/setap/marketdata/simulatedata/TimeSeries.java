@@ -1,4 +1,4 @@
-package com.setap.marketdata;
+package com.setap.marketdata.simulatedata;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class TimeSeries {
     ArrayList<Snapshot> filteredSnapshots = new ArrayList<>(snapshots);
 
     filteredSnapshots.removeIf(snapshot ->
-      snapshot.getTimestamp().isAfter(currentTime)
+      snapshot.timestamp().isAfter(currentTime)
     );
 
     return filteredSnapshots;
@@ -36,30 +36,11 @@ public class TimeSeries {
 
     Snapshot latest = null;
     for (Snapshot snapshot : snapshots) {
-      if (snapshot.getTimestamp().isBefore(currentTime)) {
+      if (snapshot.timestamp().isBefore(currentTime)) {
         latest = snapshot;
       }
     }
 
     return latest;
-  }
-
-  public double getLatestChange() {
-    if (snapshots.size() < 2) {
-      return 0;
-    }
-
-    LocalTime currentTime = LocalTime.now();
-    ArrayList<Snapshot> filteredSnapshots = new ArrayList<>(snapshots);
-    filteredSnapshots.removeIf(snapshot ->
-      snapshot.getTimestamp().isAfter(currentTime)
-    );
-
-    Snapshot latest = filteredSnapshots.getLast();
-    Snapshot previous = filteredSnapshots.get(filteredSnapshots.size() - 2);
-
-    return (
-      ((latest.getPrice() - previous.getPrice()) / previous.getPrice()) * 100
-    );
   }
 }

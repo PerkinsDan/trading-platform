@@ -7,6 +7,14 @@ services:
       - "8080:8080"
     restart: always
 
+  marketdata:
+    build:
+      context: ./apps/MarketData
+      dockerfile: Dockerfile
+    ports:
+      - "12000:12000"
+    restart: always
+
   client:
     build:
       context: ./apps/client
@@ -16,3 +24,4 @@ services:
     restart: always
     depends_on:
       - api
+      - marketdata
