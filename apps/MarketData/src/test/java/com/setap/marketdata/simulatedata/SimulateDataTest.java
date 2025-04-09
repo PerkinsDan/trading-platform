@@ -1,39 +1,39 @@
-package com.setap.marketdata;
+package com.setap.marketdata.simulatedata;
 
-import static com.setap.marketdata.Tickers.AAPL;
+import static com.setap.marketdata.constants.Tickers.AAPL;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class SimulatedDataTest {
+public class SimulateDataTest {
 
-  private SimulatedData simulatedData;
+  private SimulateData simulateData;
 
   @BeforeEach
   void setUp() {
-    simulatedData = new SimulatedData();
+    simulateData = new SimulateData();
   }
 
   @Test
   void getTimeSeriesShouldReturnEmptyTimeSeriesForNewTicker() {
-    TimeSeries timeSeries = simulatedData.getTimeSeries(AAPL);
+    TimeSeries timeSeries = simulateData.getTimeSeries(AAPL);
     assertNotNull(timeSeries);
     assertTrue(timeSeries.getSnapshots().isEmpty());
   }
 
   @Test
   void generateDataShouldPopulateTimeSeriesWithSnapshots() {
-    simulatedData.generateData();
-    TimeSeries timeSeries = simulatedData.getTimeSeries(AAPL);
+    simulateData.generateData();
+    TimeSeries timeSeries = simulateData.getTimeSeries(AAPL);
     assertFalse(timeSeries.getSnapshots().isEmpty());
   }
 
   @Test
   void generateDataShouldGenerateNonNegativePrices() {
-    simulatedData.generateData();
-    TimeSeries timeSeries = simulatedData.getTimeSeries(AAPL);
+    simulateData.generateData();
+    TimeSeries timeSeries = simulateData.getTimeSeries(AAPL);
     assertTrue(
       timeSeries
         .getSnapshots()
@@ -44,8 +44,8 @@ public class SimulatedDataTest {
 
   @Test
   void generateDataShouldGenerateSnapshotsWithinMarketHours() {
-    simulatedData.generateData();
-    TimeSeries timeSeries = simulatedData.getTimeSeries(AAPL);
+    simulateData.generateData();
+    TimeSeries timeSeries = simulateData.getTimeSeries(AAPL);
     assertTrue(
       timeSeries
         .getSnapshots()

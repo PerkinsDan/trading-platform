@@ -1,16 +1,17 @@
-package com.setap.marketdata;
+package com.setap.marketdata.simulatedata;
 
+import com.setap.marketdata.constants.Tickers;
 import java.time.LocalTime;
 import java.util.*;
 
-public class SimulatedData {
+public class SimulateData {
 
   private final LocalTime marketOpenTime = LocalTime.of(9, 30, 0);
   private final LocalTime marketCloseTime = LocalTime.of(16, 0, 0);
 
   private final Map<Tickers, TimeSeries> timeSeriesMap = new HashMap<>();
 
-  public SimulatedData() {
+  public SimulateData() {
     for (Tickers ticker : Tickers.values()) {
       timeSeriesMap.put(ticker, new TimeSeries());
     }
@@ -31,7 +32,7 @@ public class SimulatedData {
       double price = Math.random() * 1000;
       price = Math.round(price * 100.0) / 100.0;
 
-      timeSeries.addSnapshot(new Snapshot(price, marketOpenTime, 0));
+      timeSeries.addSnapshot(new Snapshot(price, marketOpenTime, 0.0));
 
       rollingTimeStamp = rollingTimeStamp.plusMinutes(5);
 

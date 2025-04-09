@@ -1,15 +1,18 @@
 package com.setap.marketdata;
 
+import com.setap.marketdata.constants.Tickers;
+import com.setap.marketdata.simulatedata.SimulateData;
+import com.setap.marketdata.simulatedata.Snapshot;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class MarketDataService {
 
-  private final SimulatedData simulatedData;
+  private final SimulateData simulateData;
   private static MarketDataService marketDataServiceHolder = null;
 
   private MarketDataService() {
-    this.simulatedData = new SimulatedData();
+    this.simulateData = new SimulateData();
 
     Thread dataGenerationThread = new Thread(() -> {
       boolean firstIteration = true;
@@ -17,8 +20,8 @@ public class MarketDataService {
       while (true) {
         if (LocalTime.now() == LocalTime.of(9, 30) || firstIteration) {
           // Regenerate the simulated data at Market Open or on the first iteration
-          synchronized (simulatedData) {
-            simulatedData.generateData();
+          synchronized (simulateData) {
+            simulateData.generateData();
             firstIteration = false;
           }
         }
@@ -45,14 +48,14 @@ public class MarketDataService {
   }
 
   public ArrayList<Snapshot> getTimeSeries(Tickers ticker) {
-    synchronized (simulatedData) {
-      return simulatedData.getTimeSeries(ticker).getSnapshots();
+    synchronized (simulateData) {
+      return simulateData.getTimeSeries(ticker).getSnapshots();
     }
   }
 
   public Snapshot getLatestSnapshot(Tickers ticker) {
-    synchronized (simulatedData) {
-      return simulatedData.getTimeSeries(ticker).getLatestSnapshot();
+    synchronized (simulateData) {
+      return simulateData.getTimeSeries(ticker).getLatestSnapshot();
     }
   }
 }

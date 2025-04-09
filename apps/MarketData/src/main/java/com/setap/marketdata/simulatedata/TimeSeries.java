@@ -1,4 +1,4 @@
-package com.setap.marketdata;
+package com.setap.marketdata.simulatedata;
 
 import java.time.LocalTime;
 import java.util.ArrayList;

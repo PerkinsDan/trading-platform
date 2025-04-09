@@ -1,4 +1,4 @@
-package com.setap.marketdata;
+package com.setap.marketdata.constants;
 
 public enum Tickers {
   AAPL,

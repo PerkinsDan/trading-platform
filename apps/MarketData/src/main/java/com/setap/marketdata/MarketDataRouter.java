@@ -1,6 +1,8 @@
 package com.setap.marketdata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.setap.marketdata.constants.Tickers;
+import com.setap.marketdata.simulatedata.Snapshot;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
