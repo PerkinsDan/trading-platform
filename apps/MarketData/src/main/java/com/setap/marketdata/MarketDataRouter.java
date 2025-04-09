@@ -25,14 +25,10 @@ public class MarketDataRouter {
       .handler(ctx -> {
         String ticker = ctx.request().getParam("ticker");
 
-        try {
-          Snapshot snapshot = marketDataService.getLatestSnapshot(
-            Tickers.valueOf(ticker)
-          );
-          sendJsonResponse(ctx, snapshot);
-        } catch (Exception e) {
-          sendErrorResponse(ctx);
-        }
+        Snapshot snapshot = marketDataService.getLatestSnapshot(
+          Tickers.valueOf(ticker)
+        );
+        sendJsonResponse(ctx, snapshot);
       });
 
     router
@@ -40,14 +36,10 @@ public class MarketDataRouter {
       .handler(ctx -> {
         String ticker = ctx.request().getParam("ticker");
 
-        try {
-          ArrayList<Snapshot> timeSeries = marketDataService.getTimeSeries(
-            Tickers.valueOf(ticker)
-          );
-          sendJsonResponse(ctx, timeSeries);
-        } catch (Exception e) {
-          sendErrorResponse(ctx);
-        }
+        ArrayList<Snapshot> timeSeries = marketDataService.getTimeSeries(
+          Tickers.valueOf(ticker)
+        );
+        sendJsonResponse(ctx, timeSeries);
       });
   }
 
