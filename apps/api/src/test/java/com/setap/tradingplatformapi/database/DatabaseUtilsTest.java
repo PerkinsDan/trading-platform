@@ -6,9 +6,11 @@ import static org.mockito.Mockito.*;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import orderProcessor.*;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -18,14 +20,14 @@ import org.mockito.Mock;
 
 public class DatabaseUtilsTest {
 
-  @Mock
-  MongoCollection<Document> mockActiveOrdersCollection;
+    @Mock
+    MongoCollection<Document> mockActiveOrdersCollection;
 
-  @Mock
-  MongoCollection<Document> mockUsersCollection;
+    @Mock
+    MongoCollection<Document> mockUsersCollection;
 
-  @Mock
-  MongoCollection<Document> mockOrderHistoryCollection;
+    @Mock
+    MongoCollection<Document> mockOrderHistoryCollection;
 
     @Mock
     OrderProcessor mockOrderProcessor;
@@ -109,7 +111,7 @@ public class DatabaseUtilsTest {
         );
 
         verify(mockActiveOrdersCollection).deleteOne(
-                eq(Filters.eq("orderId", "12345"))
+                eq(Filters.eq("orderId","12345"))
         );
 
         verify(mockUsersCollection).updateOne(
@@ -297,4 +299,3 @@ public class DatabaseUtilsTest {
 
     }
 }
-
