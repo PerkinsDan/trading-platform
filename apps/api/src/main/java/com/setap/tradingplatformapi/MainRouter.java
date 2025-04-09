@@ -17,7 +17,7 @@ import orderProcessor.OrderProcessor;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import static com.setap.tradingplatformapi.database.DatabaseUtils.updateDBToReflectFulfilledOrders;
+import static com.setap.tradingplatformapi.database.DatabaseUtils.updateDb;
 
 public class MainRouter {
 
@@ -98,7 +98,8 @@ public class MainRouter {
         router
                 .get("/user-trade-history")
                 .handler(ctx -> {
-                    // logic to retrieve user's trade history
+                    //check userId in activeOrder collection
+                    //check for userId in orderHistory collection
                     ctx.response().end("Retrieving user's trade history...");
                 });
 
@@ -107,16 +108,18 @@ public class MainRouter {
                 .handler(ctx -> {
                     JsonObject body = ctx.getBodyAsJson();
 
-                    MongoCollection<Document> ordersCollection = MongoClientConnection.getCollection("orders");
+                    MongoCollection<Document> activeOrdersCollection = MongoClientConnection.getCollection("activeOrders");
+                    MongoCollection<Document> orderHistoryCollection = MongoClientConnection.getCollection("orderHistory");
                     MongoCollection<Document> usersCollection = MongoClientConnection.getCollection("users");
 
-                    Order order = DatabaseUtils.createOrderAndInsertIntoDatabase(body, ordersCollection);
+
+                    Order order = DatabaseUtils.createOrderAndInsertIntoDatabase(body, activeOrdersCollection);
                     OrderProcessor orderProcessor = OrderProcessor.getInstance();
 
                     ArrayList<Document> matchesFoundAsMongoDBDocs = DatabaseUtils.processOrderAndParseMatchesFound(order, orderProcessor);
 
                     if (!matchesFoundAsMongoDBDocs.isEmpty()) {
-                        updateDBToReflectFulfilledOrders(matchesFoundAsMongoDBDocs, ordersCollection, usersCollection);
+                        updateDb(matchesFoundAsMongoDBDocs, activeOrdersCollection, usersCollection, orderHistoryCollection);
                     }
 
                     ctx
