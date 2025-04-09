@@ -12,6 +12,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import orderProcessor.*;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -23,6 +24,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+<<<<<<< HEAD
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
+import orderProcessor.*;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 <<<<<<< HEAD
 import com.mongodb.client.model.Updates;
@@ -104,8 +115,8 @@ public class DatabaseUtilsTest {
         Order order = new Order(OrderType.BUY, "userA", Ticker.A, 50.0, 10);
 
         List<String> fakeMatchesToBeProcessed = List.of(
-                "{\"orderId\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}",
-                "{\"orderId\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
+                "{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}",
+                "{\"orderID\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
         );
 
         when(mockOrderProcessor.processOrder(any(Order.class))).thenReturn(new ArrayList<>(fakeMatchesToBeProcessed));
@@ -254,8 +265,9 @@ public class DatabaseUtilsTest {
 =======
         DatabaseUtils.updateDBToReflectFulfilledOrders(
                 matchesFoundAsMongoDBDocs,
-                mockOrdersCollection,
-                mockUsersCollection
+                mockActiveOrdersCollection,
+                mockUsersCollection,
+                mockOrderHistoryCollection
         );
 
         verify(mockOrdersCollection).updateOne(
@@ -317,9 +329,13 @@ public class DatabaseUtilsTest {
                 eq(new Document("$inc", new Document("balance", -500)))
         );
 
-        verify(mockOrdersCollection).updateOne(
-                eq(Filters.eq("orderId", "67890")),
-                eq(new Document("$set", new Document("filled", true)))
+        verify(mockOrderHistoryCollection).insertOne(argThat(doc->
+                doc.getString("orderID").equals("67890") &&
+                        doc.getBoolean("filled"))
+        );
+
+        verify(mockActiveOrdersCollection).deleteOne(
+                eq(Filters.eq("orderId","12345"))
         );
 
         verify(mockUsersCollection).updateOne(
@@ -328,4 +344,9 @@ public class DatabaseUtilsTest {
         );
 >>>>>>> 4b94ddc (add tests, rename variables, add userId parameter to MatchingDetails)
     }
+
+    //TODO
+    //test partial fill
+    //test one complete BUY order following two partial SELL orders
+
 }
