@@ -1,6 +1,6 @@
 ```mermaid
 ---
-title: Package - Order Processor
+title: Microservice- Order Processor
 ---
 %%Define classes
 classDiagram
