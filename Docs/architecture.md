@@ -40,7 +40,7 @@ graph BT;
    OrderProcessor --> |Writes To| Storage
    OrderProcessor --> |Updates| Storage
 
- Storage --> |Feeds| WebHook
+   OrderProcessor --> |Feeds| WebHook
    WebHook --> |Updates| FrontEnd
 
 
@@ -53,5 +53,4 @@ graph BT;
 
    classDef cloud fill:#00FFFF,stroke:#00000,stroke-width:2px,color:#000000;
    class A,B,F,K,WebHook cloud;
-
 ```
