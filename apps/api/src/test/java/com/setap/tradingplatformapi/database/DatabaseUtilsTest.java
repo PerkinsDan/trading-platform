@@ -58,8 +58,8 @@ public class DatabaseUtilsTest {
     MongoCollection<Document> mockOrdersCollection;
 >>>>>>> 4b94ddc (add tests, rename variables, add userId parameter to MatchingDetails)
 
-    @Mock
-    MongoCollection<Document> mockUsersCollection;
+  @Mock
+  MongoCollection<Document> mockUsersCollection;
 
     @Mock
 <<<<<<< HEAD
@@ -114,22 +114,25 @@ public class DatabaseUtilsTest {
 =======
         Order order = new Order(OrderType.BUY, "userA", Ticker.A, 50.0, 10);
 
-        List<String> fakeMatchesToBeProcessed = List.of(
-                "{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}",
-                "{\"orderID\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
-        );
+    List<String> fakeMatchesToBeProcessed = List.of(
+      "{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}",
+      "{\"orderID\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
+    );
 
-        when(mockOrderProcessor.processOrder(any(Order.class))).thenReturn(new ArrayList<>(fakeMatchesToBeProcessed));
+    when(mockOrderProcessor.processOrder(any(Order.class))).thenReturn(
+      new ArrayList<>(fakeMatchesToBeProcessed)
+    );
 
-        ArrayList<Document> matchesFound = DatabaseUtils.processOrderAndParseMatchesFound(order, mockOrderProcessor);
+    ArrayList<Document> matchesFound =
+      DatabaseUtils.processOrderAndParseMatchesFound(order, mockOrderProcessor);
 
         ArrayList<Document> expectedMatches = new ArrayList<>();
         expectedMatches.add(Document.parse("{\"orderId\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"));
         expectedMatches.add(Document.parse("{\"orderId\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"));
 >>>>>>> 4b94ddc (add tests, rename variables, add userId parameter to MatchingDetails)
 
-        assertEquals(expectedMatches, matchesFound);
-    }
+    assertEquals(expectedMatches, matchesFound);
+  }
 
     @Test
 <<<<<<< HEAD
@@ -242,24 +245,26 @@ public class DatabaseUtilsTest {
         when(mockUsersCollection.updateOne(any(Bson.class), any(Bson.class)))
                 .thenReturn(OK_RESULT, OK_RESULT);
 
-        ArrayList<Document> matchesFoundAsMongoDBDocs = new ArrayList<>(
-                Arrays.asList(buyOrderDoc, sellOrderDoc)
-        );
+    ArrayList<Document> matchesFoundAsMongoDBDocs = new ArrayList<>(
+      Arrays.asList(buyOrderDoc, sellOrderDoc)
+    );
 
         FindIterable<Document> mockOrderHistoryFind = mock(FindIterable.class);
         when(mockOrderHistoryCollection.find((Bson) any())).thenReturn(mockOrderHistoryFind);
         when(mockOrderHistoryFind.first()).thenReturn(buyOrderDocHistory, null);
 
-        FindIterable<Document> mockActiveFind = mock(FindIterable.class);
-        when(mockActiveOrdersCollection.find((Bson) any())).thenReturn(mockActiveFind);
-        when(mockActiveFind.first()).thenReturn(buyOrderDoc, sellOrderDoc);
+    FindIterable<Document> mockActiveFind = mock(FindIterable.class);
+    when(mockActiveOrdersCollection.find((Bson) any())).thenReturn(
+      mockActiveFind
+    );
+    when(mockActiveFind.first()).thenReturn(buyOrderDoc, sellOrderDoc);
 
-        DatabaseUtils.updateDb(
-                matchesFoundAsMongoDBDocs,
-                mockActiveOrdersCollection,
-                mockUsersCollection,
-                mockOrderHistoryCollection
-        );
+    DatabaseUtils.updateDb(
+      matchesFoundAsMongoDBDocs,
+      mockActiveOrdersCollection,
+      mockUsersCollection,
+      mockOrderHistoryCollection
+    );
 
         verify(mockOrderHistoryCollection).updateOne(
 =======
@@ -329,14 +334,16 @@ public class DatabaseUtilsTest {
                 eq(new Document("$inc", new Document("balance", -500)))
         );
 
-        verify(mockOrderHistoryCollection).insertOne(argThat(doc->
-                doc.getString("orderID").equals("67890") &&
-                        doc.getBoolean("filled"))
-        );
+    verify(mockOrderHistoryCollection).insertOne(
+      argThat(
+        doc ->
+          doc.getString("orderID").equals("67890") && doc.getBoolean("filled")
+      )
+    );
 
-        verify(mockActiveOrdersCollection).deleteOne(
-                eq(Filters.eq("orderId","12345"))
-        );
+    verify(mockActiveOrdersCollection).deleteOne(
+      eq(Filters.eq("orderId", "12345"))
+    );
 
         verify(mockUsersCollection).updateOne(
                 eq(Filters.eq("userId", "userB")),

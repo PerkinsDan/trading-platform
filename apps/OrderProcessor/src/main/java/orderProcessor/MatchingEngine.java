@@ -23,7 +23,7 @@ public class MatchingEngine {
 
     return matchesFound;
   }
-    
+
   private static void processMatches(Order buy, Order sell) {
     int quantity = Math.min(buy.getQuantity(), sell.getQuantity());
     Ticker ticker = buy.getTicker();
