@@ -1,8 +1,7 @@
 package orderProcessor;
 
-import org.bson.Document;
-
 import java.util.UUID;
+import org.bson.Document;
 
 public class Order {
 
@@ -16,7 +15,13 @@ public class Order {
   private boolean cancelled;
   private boolean filled;
 
-  public Order(OrderType type, String userId, Ticker ticker, double price, int quantity) {
+  public Order(
+    OrderType type,
+    String userId,
+    Ticker ticker,
+    double price,
+    int quantity
+  ) {
     this.orderId = UUID.randomUUID();
     this.userId = userId;
     this.type = type;
@@ -52,7 +57,9 @@ public class Order {
     return ticker;
   }
 
-  public String getUserId() {return userId;}
+  public String getUserId() {
+    return userId;
+  }
 
   public void reduceQuantity(int amount) {
     this.quantity -= amount;
@@ -76,14 +83,14 @@ public class Order {
 
   public Document toDoc() {
     return new Document()
-            .append("orderId", this.orderId.toString())
-            .append("userId", this.userId)
-            .append("type", this.type.name())
-            .append("ticker", this.ticker.name())
-            .append("price", this.price)
-            .append("quantity", this.quantity)
-            .append("timestamp", this.timestamp)
-            .append("cancelled", this.cancelled)
-            .append("filled", this.filled);
+      .append("orderId", this.orderId.toString())
+      .append("userId", this.userId)
+      .append("type", this.type.name())
+      .append("ticker", this.ticker.name())
+      .append("price", this.price)
+      .append("quantity", this.quantity)
+      .append("timestamp", this.timestamp)
+      .append("cancelled", this.cancelled)
+      .append("filled", this.filled);
   }
 }

@@ -28,7 +28,9 @@ public class MatchingDetails {
     return orderId;
   }
 
-  public String getUserId(){return userId;}
+  public String getUserId() {
+    return userId;
+  }
 
   public double getPrice() {
     return price;

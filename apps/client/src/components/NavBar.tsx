@@ -1,10 +1,6 @@
 import { Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import {
-  LogoutRounded,
-  Schedule,
-  TrendingUp,
-} from "@mui/icons-material";
+import { LogoutRounded, Schedule, TrendingUp } from "@mui/icons-material";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig/firebase";
 

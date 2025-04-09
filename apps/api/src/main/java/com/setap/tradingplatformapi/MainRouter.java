@@ -1,6 +1,6 @@
 package com.setap.tradingplatformapi;
 
-import static com.setap.tradingplatformapi.database.DatabaseUtils.updateDBToReflectFulfilledOrders;
+import static com.setap.tradingplatformapi.database.DatabaseUtils.updateDb;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
@@ -18,8 +18,6 @@ import orderProcessor.OrderProcessor;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import static com.setap.tradingplatformapi.database.DatabaseUtils.updateDb;
-
 public class MainRouter {
 
   Router router;
@@ -30,11 +28,7 @@ public class MainRouter {
     router
       .route()
       .handler(
-        CorsHandler.create("*") // Allow all origins
-          .allowedMethod(io.vertx.core.http.HttpMethod.GET)
-          .allowedMethod(io.vertx.core.http.HttpMethod.POST)
-          .allowedMethod(io.vertx.core.http.HttpMethod.PUT)
-          .allowedMethod(io.vertx.core.http.HttpMethod.DELETE)
+        CorsHandler.create("*")
           .allowedHeader("Content-Type")
           .allowedHeader("Authorization")
       );
@@ -149,22 +143,28 @@ public class MainRouter {
       .handler(ctx -> {
         JsonObject body = ctx.getBodyAsJson();
 
-                    MongoCollection<Document> activeOrdersCollection = MongoClientConnection.getCollection("activeOrders");
-                    MongoCollection<Document> orderHistoryCollection = MongoClientConnection.getCollection("orderHistory");
-                    MongoCollection<Document> usersCollection = MongoClientConnection.getCollection("users");
+        MongoCollection<Document> activeOrdersCollection =
+          MongoClientConnection.getCollection("activeOrders");
+        MongoCollection<Document> orderHistoryCollection =
+          MongoClientConnection.getCollection("orderHistory");
+        MongoCollection<Document> usersCollection =
+          MongoClientConnection.getCollection("users");
 
-
-                    Order order = DatabaseUtils.createOrderAndInsertIntoDatabase(body, activeOrdersCollection);
-                    OrderProcessor orderProcessor = OrderProcessor.getInstance();
+        Order order = DatabaseUtils.createOrderAndInsertIntoDatabase(
+          body,
+          activeOrdersCollection
+        );
+        OrderProcessor orderProcessor = OrderProcessor.getInstance();
 
         ArrayList<Document> matchesFoundAsMongoDBDocs =
           DatabaseUtils.processOrderAndParseMatchesFound(order, orderProcessor);
 
         if (!matchesFoundAsMongoDBDocs.isEmpty()) {
-          updateDBToReflectFulfilledOrders(
+          updateDb(
             matchesFoundAsMongoDBDocs,
-            ordersCollection,
-            usersCollection
+            activeOrdersCollection,
+            usersCollection,
+            orderHistoryCollection
           );
         }
 

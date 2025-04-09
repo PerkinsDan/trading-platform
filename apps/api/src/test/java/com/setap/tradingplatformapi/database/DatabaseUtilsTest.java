@@ -1,8 +1,14 @@
 package com.setap.tradingplatformapi.database;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import orderProcessor.*;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -10,111 +16,125 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class DatabaseUtilsTest {
 
-    @Mock
-    MongoCollection<Document> mockActiveOrdersCollection;
+  @Mock
+  MongoCollection<Document> mockActiveOrdersCollection;
 
-    @Mock
-    MongoCollection<Document> mockUsersCollection;
+  @Mock
+  MongoCollection<Document> mockUsersCollection;
 
-    @Mock
-    MongoCollection<Document> mockOrderHistoryCollection;
+  @Mock
+  MongoCollection<Document> mockOrderHistoryCollection;
 
-    @Mock
-    OrderProcessor mockOrderProcessor;
+  @Mock
+  OrderProcessor mockOrderProcessor;
 
-    @BeforeEach
-    void setup() {
-        mockActiveOrdersCollection = mock(MongoCollection.class);
-        mockUsersCollection = mock(MongoCollection.class);
-        mockOrderHistoryCollection = mock(MongoCollection.class);
-        mockOrderProcessor = mock(OrderProcessor.class);
-    }
+  @BeforeEach
+  void setup() {
+    mockActiveOrdersCollection = mock(MongoCollection.class);
+    mockUsersCollection = mock(MongoCollection.class);
+    mockOrderHistoryCollection = mock(MongoCollection.class);
+    mockOrderProcessor = mock(OrderProcessor.class);
+  }
 
-    @Test
-    void testProcessOrderAndParseMatchesFound() {
-        Order order = new Order(OrderType.BUY, "userA", Ticker.A, 50.0, 10);
+  @Test
+  void testProcessOrderAndParseMatchesFound() {
+    Order order = new Order(OrderType.BUY, "userA", Ticker.AAPL, 50.0, 10);
 
-        List<String> fakeMatchesToBeProcessed = List.of(
-                "{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}",
-                "{\"orderID\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
-        );
+    List<String> fakeMatchesToBeProcessed = List.of(
+      "{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}",
+      "{\"orderID\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
+    );
 
-        when(mockOrderProcessor.processOrder(any(Order.class))).thenReturn(new ArrayList<>(fakeMatchesToBeProcessed));
+    when(mockOrderProcessor.processOrder(any(Order.class))).thenReturn(
+      new ArrayList<>(fakeMatchesToBeProcessed)
+    );
 
-        ArrayList<Document> matchesFound = DatabaseUtils.processOrderAndParseMatchesFound(order, mockOrderProcessor);
+    ArrayList<Document> matchesFound =
+      DatabaseUtils.processOrderAndParseMatchesFound(order, mockOrderProcessor);
 
-        ArrayList<Document> expectedMatches = new ArrayList<>();
-        expectedMatches.add(Document.parse("{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"));
-        expectedMatches.add(Document.parse("{\"orderID\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"));
+    ArrayList<Document> expectedMatches = new ArrayList<>();
+    expectedMatches.add(
+      Document.parse(
+        "{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
+      )
+    );
+    expectedMatches.add(
+      Document.parse(
+        "{\"orderID\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
+      )
+    );
 
-        assertEquals(expectedMatches, matchesFound);
-    }
+    assertEquals(expectedMatches, matchesFound);
+  }
 
-    @Test
-    void testUpdateDbForFulfilledOrderNotPreviouslyPartiallyFilled() {
+  @Test
+  void testUpdateDbForFulfilledOrderNotPreviouslyPartiallyFilled() {
+    Document buyOrderDoc = Document.parse(
+      "{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
+    );
+    Document sellOrderDoc = Document.parse(
+      "{\"orderID\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
+    );
 
-        Document buyOrderDoc = Document.parse("{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}");
-        Document sellOrderDoc = Document.parse("{\"orderID\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}");
+    ArrayList<Document> matchesFoundAsMongoDBDocs = new ArrayList<>(
+      Arrays.asList(buyOrderDoc, sellOrderDoc)
+    );
 
-        ArrayList<Document> matchesFoundAsMongoDBDocs = new ArrayList<>(
-                Arrays.asList(buyOrderDoc, sellOrderDoc)
-        );
+    FindIterable<Document> mockOrderHistoryFind = mock(FindIterable.class);
+    when(mockOrderHistoryCollection.find((Bson) any())).thenReturn(
+      mockOrderHistoryFind
+    );
+    when(mockOrderHistoryFind.first()).thenReturn(null);
 
-        FindIterable<Document> mockOrderHistoryFind = mock(FindIterable.class);
-        when(mockOrderHistoryCollection.find((Bson) any())).thenReturn(mockOrderHistoryFind);
-        when(mockOrderHistoryFind.first()).thenReturn(null);
+    FindIterable<Document> mockActiveFind = mock(FindIterable.class);
+    when(mockActiveOrdersCollection.find((Bson) any())).thenReturn(
+      mockActiveFind
+    );
+    when(mockActiveFind.first()).thenReturn(buyOrderDoc, sellOrderDoc);
 
-        FindIterable<Document> mockActiveFind = mock(FindIterable.class);
-        when(mockActiveOrdersCollection.find((Bson) any())).thenReturn(mockActiveFind);
-        when(mockActiveFind.first()).thenReturn(buyOrderDoc, sellOrderDoc);
+    DatabaseUtils.updateDb(
+      matchesFoundAsMongoDBDocs,
+      mockActiveOrdersCollection,
+      mockUsersCollection,
+      mockOrderHistoryCollection
+    );
 
-        DatabaseUtils.updateDb(
-                matchesFoundAsMongoDBDocs,
-                mockActiveOrdersCollection,
-                mockUsersCollection,
-                mockOrderHistoryCollection
-        );
+    verify(mockOrderHistoryCollection).insertOne(
+      argThat(
+        doc ->
+          doc.getString("orderID").equals("12345") && doc.getBoolean("filled")
+      )
+    );
 
-        verify(mockOrderHistoryCollection).insertOne(argThat(doc->
-                doc.getString("orderID").equals("12345") &&
-                        doc.getBoolean("filled"))
-        );
+    verify(mockActiveOrdersCollection).deleteOne(
+      eq(Filters.eq("orderId", "12345"))
+    );
 
-        verify(mockActiveOrdersCollection).deleteOne(
-                eq(Filters.eq("orderId","12345"))
-        );
+    verify(mockUsersCollection).updateOne(
+      eq(Filters.eq("userId", "userA")),
+      eq(new Document("$inc", new Document("balance", -500)))
+    );
 
-        verify(mockUsersCollection).updateOne(
-                eq(Filters.eq("userId", "userA")),
-                eq(new Document("$inc", new Document("balance", -500)))
-        );
+    verify(mockOrderHistoryCollection).insertOne(
+      argThat(
+        doc ->
+          doc.getString("orderID").equals("67890") && doc.getBoolean("filled")
+      )
+    );
 
-        verify(mockOrderHistoryCollection).insertOne(argThat(doc->
-                doc.getString("orderID").equals("67890") &&
-                        doc.getBoolean("filled"))
-        );
+    verify(mockActiveOrdersCollection).deleteOne(
+      eq(Filters.eq("orderId", "12345"))
+    );
 
-        verify(mockActiveOrdersCollection).deleteOne(
-                eq(Filters.eq("orderId","12345"))
-        );
-
-        verify(mockUsersCollection).updateOne(
-                eq(Filters.eq("userId", "userB")),
-                eq(new Document("$inc", new Document("balance", 500)))
-        );
-    }
-
-    //TODO
-    //test partial fill
-    //test one complete BUY order following two partial SELL orders
+    verify(mockUsersCollection).updateOne(
+      eq(Filters.eq("userId", "userB")),
+      eq(new Document("$inc", new Document("balance", 500)))
+    );
+  }
+  //TODO
+  //test partial fill
+  //test one complete BUY order following two partial SELL orders
 
 }

@@ -17,13 +17,13 @@ public class MatchingEngine {
 
     matchesFound = new ArrayList<>();
 
-    while (matchPossible(buyOrders,sellOrders)) {
-          processMatches(buyOrders.peek(), sellOrders.peek());
-        } 
-    
+    while (matchPossible(buyOrders, sellOrders)) {
+      processMatches(buyOrders.peek(), sellOrders.peek());
+    }
+
     return matchesFound;
   }
-    
+
   private static void processMatches(Order buy, Order sell) {
     int quantity = Math.min(buy.getQuantity(), sell.getQuantity());
     Ticker ticker = buy.getTicker();
@@ -46,12 +46,24 @@ public class MatchingEngine {
     try {
       matchesFound.add(
         mapper.writeValueAsString(
-          new MatchingDetails(buy.getId(), price, quantity, buyFilled, buy.getUserId())
+          new MatchingDetails(
+            buy.getId(),
+            price,
+            quantity,
+            buyFilled,
+            buy.getUserId()
+          )
         )
       );
       matchesFound.add(
         mapper.writeValueAsString(
-          new MatchingDetails(sell.getId(), price, quantity, sellFilled, sell.getUserId())
+          new MatchingDetails(
+            sell.getId(),
+            price,
+            quantity,
+            sellFilled,
+            sell.getUserId()
+          )
         )
       );
     } catch (JsonProcessingException e) {
@@ -66,9 +78,16 @@ public class MatchingEngine {
     if (sellFilled) sellOrders.poll();
   }
 
-  private static boolean matchPossible(PriorityQueue<Order> buyOrders, PriorityQueue<Order> sellOrders){
+  private static boolean matchPossible(
+    PriorityQueue<Order> buyOrders,
+    PriorityQueue<Order> sellOrders
+  ) {
     Order buy = buyOrders.peek();
     Order sell = sellOrders.peek();
-    return !buyOrders.isEmpty() && !sellOrders.isEmpty() && buy.getPrice() >= sell.getPrice();
+    return (
+      !buyOrders.isEmpty() &&
+      !sellOrders.isEmpty() &&
+      buy.getPrice() >= sell.getPrice()
+    );
   }
 }
