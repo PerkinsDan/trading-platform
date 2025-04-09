@@ -50,8 +50,8 @@ function MyTrades() {
         const userData = await userAccountResponse.json();
         const userTradeHistoryData = await userTradeHistoryResponse.json();
 
-        setCurrentTrades(activePositionsData.currentTrades || []);
-        setOldTrades(userTradeHistoryData.tradeHistory || []);
+        setCurrentTrades(activePositionsData || []);
+        setOldTrades(userTradeHistoryData || []);
         setTotalBalance(userData.balance || 0);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -121,7 +121,7 @@ function MyTrades() {
           </Typography>
         )}
         <Typography variant="h5" marginTop="2rem">
-          Old Trades
+          Trade History
         </Typography>
         {oldTrades.length > 0 ? (
           <TradeList trades={oldTrades} />

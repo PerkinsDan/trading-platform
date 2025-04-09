@@ -3,6 +3,7 @@ package com.setap.tradingplatformapi;
 import static com.setap.tradingplatformapi.database.DatabaseUtils.updateDb;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.setap.tradingplatformapi.database.DatabaseUtils;
 import com.setap.tradingplatformapi.database.MongoClientConnection;
@@ -13,6 +14,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
 import java.util.ArrayList;
+import java.util.List;
 import orderProcessor.Order;
 import orderProcessor.OrderProcessor;
 import org.bson.Document;
@@ -95,6 +97,7 @@ public class MainRouter {
       .get("/user-active-positions")
       .handler(ctx -> {
         String userId = ctx.request().getParam("userId");
+
         if (userId == null) {
           ctx
             .response()
@@ -102,40 +105,20 @@ public class MainRouter {
             .end("Missing userId query parameter");
         }
 
-        var usersCollection = MongoClientConnection.getCollection("users");
+        var activeOrdersCollection = MongoClientConnection.getCollection(
+          "activeOrders"
+        );
 
-        Bson userId_filter = Filters.eq("userId", userId);
-        var userDocuments = new ArrayList<JsonObject>();
-        usersCollection
-          .find(userId_filter)
-          .forEach(doc -> userDocuments.add(new JsonObject(doc.toJson())));
+        ArrayList<JsonObject> activeOrders = new ArrayList<>();
 
-        ctx
-          .response()
-          .putHeader("Content-Type", "application/json")
-          .end(userDocuments.toString());
-      });
-
-    router
-      .get("/user-trade-history")
-      .handler(ctx -> {
-        String userId = ctx.request().getParam("userId");
-        if (userId == null) {
-          ctx
-            .response()
-            .setStatusCode(400)
-            .end("Missing userId query parameter");
-          return;
-        }
-
-        // TODO: Update this for the actual trade history
-        // Placeholder logic for trade history
-        var tradeHistory = new ArrayList<JsonObject>();
+        activeOrdersCollection
+          .find(Filters.eq("userId", userId))
+          .forEach(doc -> activeOrders.add(new JsonObject(doc.toJson())));
 
         ctx
           .response()
           .putHeader("Content-Type", "application/json")
-          .end(new JsonObject().put("tradeHistory", tradeHistory).encode());
+          .end(activeOrders.toString());
       });
 
     router
@@ -206,6 +189,39 @@ public class MainRouter {
           .response()
           .putHeader("Content-Type", "application/json")
           .end(response.encode());
+      });
+
+    router
+      .get("/user-trade-history")
+      .handler(ctx -> {
+        String userId = ctx.request().getParam("userId");
+        if (userId == null) {
+          ctx
+            .response()
+            .setStatusCode(400)
+            .end("Missing userId query parameter");
+          return;
+        }
+
+        var orderHistoryCollection = MongoClientConnection.getCollection(
+          "orderHistory"
+        );
+
+        List<JsonObject> history = new ArrayList<>();
+
+        orderHistoryCollection
+          .find(Filters.eq("userId", userId))
+          .forEach(doc -> history.add(new JsonObject(doc.toJson())));
+
+        if (history.isEmpty()) {
+          ctx.response().setStatusCode(404).end("No history found");
+          return;
+        }
+
+        ctx
+          .response()
+          .putHeader("Content-Type", "application/json")
+          .end(history.toString());
       });
   }
 }

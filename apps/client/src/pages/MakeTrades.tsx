@@ -52,7 +52,7 @@ function MakeTrades() {
         width="100%"
         position="relative"
       >
-        {["AAPL", "MSFT", "GOOGLE", "AMZN", "TSLA", "META"].map(
+        {["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "META"].map(
           (stock, index) => (
             <TradingCard
               key={stock}
