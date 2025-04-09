@@ -20,18 +20,20 @@ class OrderProcessorTest {
   }
 
   @Test
-  void testOrderCancellation() {
-    Order order = new Order(OrderType.SELL, Ticker.A, 110.0, 50, "dummyID");
+  void testOrderCancellation(){
+    Order order = new Order(OrderType.SELL, Ticker.AAPL, 110.0, 50, "dummyID");
+
     orderProcessor.processOrder(order);
     assertTrue(orderProcessor.cancelOrder(order));
   }
 
   @Test
   void addBuyOrder() {
-    Order order = new Order(OrderType.BUY, Ticker.A, 100.0, 2000, "dummyID");
+    Order order = new Order(OrderType.BUY, Ticker.AAPL, 100.0, 2000,"dummyID");
+
     orderProcessor.processOrder(order);
 
-    TradeBook book = orderProcessor.getTradeBook(Ticker.A);
+    TradeBook book = orderProcessor.getTradeBook(Ticker.AAPL);
 
     PriorityQueue<Order> buyBook = book.getBuyOrders();
     assertTrue(buyBook.contains(order));
@@ -39,10 +41,11 @@ class OrderProcessorTest {
 
   @Test
   void addSellOrder() {
-    Order order = new Order(OrderType.SELL, Ticker.A, 100.0, 2000, "dummyID");
+    Order order = new Order(OrderType.SELL, Ticker.AAPL, 100.0, 2000,"dummyID");
+
     orderProcessor.processOrder(order);
 
-    TradeBook book = orderProcessor.getTradeBook(Ticker.A);
+    TradeBook book = orderProcessor.getTradeBook(Ticker.AAPL);
 
     PriorityQueue<Order> sellBook = book.getSellOrders();
     assertTrue(sellBook.contains(order));
@@ -50,19 +53,13 @@ class OrderProcessorTest {
 
   @Test
   void inTimeOrder() {
-    Order oldBuyOrder = new Order(OrderType.BUY, Ticker.A, 100.0, 2, "dummyID");
-    Order newBuyOrder = new Order(
-      OrderType.BUY,
-      Ticker.A,
-      100.0,
-      2000,
-      "dummyID"
-    );
+    Order oldBuyOrder = new Order(OrderType.BUY, Ticker.AAPL, 100.0, 2,"dummyID");
+    Order newBuyOrder = new Order(OrderType.BUY, Ticker.AAPL, 100.0, 2000,"dummyID");
 
     orderProcessor.processOrder(newBuyOrder);
     orderProcessor.processOrder(oldBuyOrder);
 
-    TradeBook book = orderProcessor.getTradeBook(Ticker.A);
+    TradeBook book = orderProcessor.getTradeBook(Ticker.AAPL);
     PriorityQueue<Order> buyQueue = book.getBuyOrders();
 
     assertEquals(
@@ -79,25 +76,13 @@ class OrderProcessorTest {
 
   @Test
   void sellByPriceDesc() {
-    Order cheapSellOrder = new Order(
-      OrderType.SELL,
-      Ticker.A,
-      95.0,
-      2000,
-      "dummyID"
-    );
-    Order expensiveSellOrder = new Order(
-      OrderType.SELL,
-      Ticker.A,
-      105.0,
-      2000,
-      "dummyID"
-    );
+    Order cheapSellOrder = new Order(OrderType.SELL, Ticker.AAPL, 95.0, 2000,"dummyID");
+    Order expensiveSellOrder = new Order(OrderType.SELL, Ticker.AAPL, 105.0, 2000,"dummyID");
 
     orderProcessor.processOrder(cheapSellOrder);
     orderProcessor.processOrder(expensiveSellOrder);
 
-    TradeBook book = orderProcessor.getTradeBook(Ticker.A);
+    TradeBook book = orderProcessor.getTradeBook(Ticker.AAPL);
     PriorityQueue<Order> sellBook = book.getSellOrders();
 
     assertEquals(
@@ -114,25 +99,13 @@ class OrderProcessorTest {
 
   @Test
   void buyByPriceAsc() {
-    Order cheapBuyOrder = new Order(
-      OrderType.BUY,
-      Ticker.A,
-      100.0,
-      2000,
-      "dummyID"
-    );
-    Order expensiveBuyOrder = new Order(
-      OrderType.BUY,
-      Ticker.A,
-      105.0,
-      2000,
-      "dummyID"
-    );
+    Order cheapBuyOrder = new Order(OrderType.BUY, Ticker.AAPL, 100.0, 2000,"dummyID");
+    Order expensiveBuyOrder = new Order(OrderType.BUY, Ticker.AAPL, 105.0, 2000,"dummyID");
 
     orderProcessor.processOrder(cheapBuyOrder);
     orderProcessor.processOrder(expensiveBuyOrder);
 
-    TradeBook book = orderProcessor.getTradeBook(Ticker.A);
+    TradeBook book = orderProcessor.getTradeBook(Ticker.AAPL);
     PriorityQueue<Order> buyQueue = book.getBuyOrders();
 
     assertEquals(
