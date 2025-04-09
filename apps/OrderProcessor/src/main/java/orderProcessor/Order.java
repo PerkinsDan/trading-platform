@@ -14,7 +14,13 @@ public class Order {
   private boolean filled;
   private final String UserId;
 
-  public Order(OrderType type, Ticker ticker, double price, int quantity, String UserId) {
+  public Order(
+    OrderType type,
+    Ticker ticker,
+    double price,
+    int quantity,
+    String UserId
+  ) {
     this.orderId = UUID.randomUUID();
     this.type = type;
     this.ticker = ticker;

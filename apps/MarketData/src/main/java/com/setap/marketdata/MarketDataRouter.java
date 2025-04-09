@@ -1,13 +1,14 @@
 package com.setap.marketdata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 import java.util.ArrayList;
 
 public class MarketDataRouter {
 
+  private static final String JSON_ERROR_MESSAGE = "Error converting to JSON";
   private final Router router;
   private final MarketDataService marketDataService;
 
@@ -18,36 +19,20 @@ public class MarketDataRouter {
     setupRoutes();
   }
 
-  private String convertToJson(Object object) {
-    try {
-      ObjectMapper mapper = new ObjectMapper()
-        .registerModule(new JavaTimeModule());
-
-      return mapper.writeValueAsString(object);
-    } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      return null;
-    }
-  }
-
   private void setupRoutes() {
     router
       .route("/latest-snapshot/:ticker")
       .handler(ctx -> {
         String ticker = ctx.request().getParam("ticker");
 
-        Snapshot snapshot = marketDataService.getLatestSnapshot(
-          Tickers.valueOf(ticker)
-        );
-
-        String res = convertToJson(snapshot);
-
-        if (res == null) {
-          ctx.response().setStatusCode(500).end("Error converting to JSON");
-          return;
+        try {
+          Snapshot snapshot = marketDataService.getLatestSnapshot(
+            Tickers.valueOf(ticker)
+          );
+          sendJsonResponse(ctx, snapshot);
+        } catch (Exception e) {
+          sendErrorResponse(ctx);
         }
-
-        ctx.response().end(res);
       });
 
     router
@@ -55,19 +40,30 @@ public class MarketDataRouter {
       .handler(ctx -> {
         String ticker = ctx.request().getParam("ticker");
 
-        ArrayList<Snapshot> timeSeries = marketDataService.getTimeSeries(
-          Tickers.valueOf(ticker)
-        );
-
-        String res = convertToJson(timeSeries);
-
-        if (res == null) {
-          ctx.response().setStatusCode(500).end("Error converting to JSON");
-          return;
+        try {
+          ArrayList<Snapshot> timeSeries = marketDataService.getTimeSeries(
+            Tickers.valueOf(ticker)
+          );
+          sendJsonResponse(ctx, timeSeries);
+        } catch (Exception e) {
+          sendErrorResponse(ctx);
         }
-
-        ctx.response().end(res);
       });
+  }
+
+  private void sendJsonResponse(RoutingContext ctx, Object data) {
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+
+      String response = objectMapper.writeValueAsString(data);
+      ctx.response().end(response);
+    } catch (Exception e) {
+      sendErrorResponse(ctx);
+    }
+  }
+
+  private void sendErrorResponse(RoutingContext ctx) {
+    ctx.response().setStatusCode(500).end(MarketDataRouter.JSON_ERROR_MESSAGE);
   }
 
   public Router getRouter() {
