@@ -34,11 +34,11 @@ public class OrderProcessor {
     return tradeBookMap.get(ticker);
   }
 
-  public Boolean cancelOrder(Order order){
+  public Boolean cancelOrder(Order order) {
     TradeBook book = orderProcessor.getTradeBook(order.getTicker());
     PriorityQueue<Order> orderQueue;
-    
-    if (order.getType() == OrderType.BUY){
+
+    if (order.getType() == OrderType.BUY) {
       orderQueue = book.getBuyOrders();
     } else {
       orderQueue = book.getSellOrders();
