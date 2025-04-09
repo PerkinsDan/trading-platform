@@ -33,6 +33,7 @@ public class MatchingEngineTest {
   @Test
   void noMatchWhenEmptyBuyQueue() {
     Order order = new Order(OrderType.SELL, Ticker.AAPL, 100.0, 50,"dummyID");
+    
     assertEquals(0, processor.processOrder(order).size());
   }
 

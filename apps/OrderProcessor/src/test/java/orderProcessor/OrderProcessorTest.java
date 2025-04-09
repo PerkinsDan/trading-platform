@@ -22,6 +22,7 @@ class OrderProcessorTest {
   @Test
   void testOrderCancellation(){
     Order order = new Order(OrderType.SELL, Ticker.AAPL, 110.0, 50, "dummyID");
+
     orderProcessor.processOrder(order);
     assertTrue(orderProcessor.cancelOrder(order));
   }
@@ -29,6 +30,7 @@ class OrderProcessorTest {
   @Test
   void addBuyOrder() {
     Order order = new Order(OrderType.BUY, Ticker.AAPL, 100.0, 2000,"dummyID");
+
     orderProcessor.processOrder(order);
 
     TradeBook book = orderProcessor.getTradeBook(Ticker.AAPL);
@@ -40,6 +42,7 @@ class OrderProcessorTest {
   @Test
   void addSellOrder() {
     Order order = new Order(OrderType.SELL, Ticker.AAPL, 100.0, 2000,"dummyID");
+
     orderProcessor.processOrder(order);
 
     TradeBook book = orderProcessor.getTradeBook(Ticker.AAPL);
