@@ -18,6 +18,8 @@ import orderProcessor.OrderProcessor;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import static com.setap.tradingplatformapi.database.DatabaseUtils.updateDb;
+
 public class MainRouter {
 
   Router router;
@@ -147,16 +149,13 @@ public class MainRouter {
       .handler(ctx -> {
         JsonObject body = ctx.getBodyAsJson();
 
-        MongoCollection<Document> ordersCollection =
-          MongoClientConnection.getCollection("orders");
-        MongoCollection<Document> usersCollection =
-          MongoClientConnection.getCollection("users");
+                    MongoCollection<Document> activeOrdersCollection = MongoClientConnection.getCollection("activeOrders");
+                    MongoCollection<Document> orderHistoryCollection = MongoClientConnection.getCollection("orderHistory");
+                    MongoCollection<Document> usersCollection = MongoClientConnection.getCollection("users");
 
-        Order order = DatabaseUtils.createOrderAndInsertIntoDatabase(
-          body,
-          ordersCollection
-        );
-        OrderProcessor orderProcessor = OrderProcessor.getInstance();
+
+                    Order order = DatabaseUtils.createOrderAndInsertIntoDatabase(body, activeOrdersCollection);
+                    OrderProcessor orderProcessor = OrderProcessor.getInstance();
 
         ArrayList<Document> matchesFoundAsMongoDBDocs =
           DatabaseUtils.processOrderAndParseMatchesFound(order, orderProcessor);
