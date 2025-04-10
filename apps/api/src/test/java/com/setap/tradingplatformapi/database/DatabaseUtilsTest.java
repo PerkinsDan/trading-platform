@@ -131,8 +131,8 @@ public class DatabaseUtilsTest {
         expectedMatches.add(Document.parse("{\"orderId\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"));
 >>>>>>> 4b94ddc (add tests, rename variables, add userId parameter to MatchingDetails)
 
-    assertEquals(expectedMatches, matchesFound);
-  }
+        assertEquals(expectedMatches, matchesFound);
+    }
 
     @Test
 <<<<<<< HEAD
@@ -334,16 +334,16 @@ public class DatabaseUtilsTest {
                 eq(new Document("$inc", new Document("balance", -500)))
         );
 
-    verify(mockOrderHistoryCollection).insertOne(
-      argThat(
-        doc ->
-          doc.getString("orderID").equals("67890") && doc.getBoolean("filled")
-      )
-    );
+        verify(mockOrderHistoryCollection).insertOne(
+                argThat(
+                        doc ->
+                                doc.getString("orderID").equals("67890") && doc.getBoolean("filled")
+                )
+        );
 
-    verify(mockActiveOrdersCollection).deleteOne(
-      eq(Filters.eq("orderId", "12345"))
-    );
+        verify(mockActiveOrdersCollection).deleteOne(
+                eq(Filters.eq("orderId", "12345"))
+        );
 
         verify(mockUsersCollection).updateOne(
                 eq(Filters.eq("userId", "userB")),
