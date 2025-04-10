@@ -1,9 +1,12 @@
 import { Stack, Typography } from "@mui/material";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 interface Trade {
   ticker: string;
   quantity: number;
   price: number;
+  type: string;
 }
 
 interface TradeListProps {
@@ -26,9 +29,16 @@ function TradeList({ trades }: TradeListProps) {
           }}
         >
           <Typography>{trade.ticker}</Typography>
-          <Typography>
-            {trade.quantity} @ ${trade.price.toFixed(2)}
-          </Typography>
+          <Stack direction="row">
+            <Typography>
+              {trade.quantity} @ ${trade.price.toFixed(2)}
+            </Typography>
+            {trade.type == "BUY" ? (
+              <ArrowDropUpIcon style={{ color: "green" }} />
+            ) : (
+              <ArrowDropDownIcon style={{ color: "red" }} />
+            )}
+          </Stack>
         </Stack>
       ))}
     </Stack>

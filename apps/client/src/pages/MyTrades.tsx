@@ -19,42 +19,53 @@ function MyTrades() {
         return;
       }
 
+      const userId = currentUser.uid;
+
       try {
-        const userId = currentUser.uid;
         const activePositionsResponse = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/user-active-positions?userId=${userId}`,
         );
-        const userTradeHistoryResponse = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL}/user-trade-history?userId=${userId}`,
-        );
-        const userAccountResponse = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL}/user-account?userId=${userId}`,
-        );
+
         if (!activePositionsResponse.ok) {
           const errorText = await activePositionsResponse.text();
           throw new Error(
             `Failed to fetch user active positions data: ${errorText}`,
           );
         }
-        if (!userAccountResponse.ok) {
-          const errorText = await userAccountResponse.text();
-          throw new Error(`Failed to fetch user account data: ${errorText}`);
-        }
+
+        setCurrentTrades((await activePositionsResponse.json()) || []);
+      } catch (error) {
+        console.log(error);
+      }
+      try {
+        const userTradeHistoryResponse = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/user-trade-history?userId=${userId}`,
+        );
         if (!userTradeHistoryResponse.ok) {
-          const errorText = await userAccountResponse.text();
+          const errorText = await userTradeHistoryResponse.text();
           throw new Error(
             `Failed to fetch user trade history data: ${errorText}`,
           );
         }
-        const activePositionsData = await activePositionsResponse.json();
-        const userData = await userAccountResponse.json();
-        const userTradeHistoryData = await userTradeHistoryResponse.json();
 
-        setCurrentTrades(activePositionsData || []);
-        setOldTrades(userTradeHistoryData || []);
-        setTotalBalance(userData.balance || 0);
+        setOldTrades((await userTradeHistoryResponse.json()) || []);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.log(error);
+      }
+      try {
+        const userAccountResponse = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/user-account?userId=${userId}`,
+        );
+        if (!userAccountResponse.ok) {
+          const errorText = await userAccountResponse.text();
+          throw new Error(`Failed to fetch user account data: ${errorText}`);
+        }
+
+        const userAccount = await userAccountResponse.json();
+
+        setTotalBalance(userAccount.balance || 0);
+      } catch (error) {
+        console.log(error);
       }
     };
 

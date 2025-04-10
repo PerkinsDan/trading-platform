@@ -3,7 +3,6 @@ package com.setap.tradingplatformapi;
 import static com.setap.tradingplatformapi.database.DatabaseUtils.updateDb;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.setap.tradingplatformapi.database.DatabaseUtils;
 import com.setap.tradingplatformapi.database.MongoClientConnection;
@@ -18,7 +17,6 @@ import java.util.List;
 import orderProcessor.Order;
 import orderProcessor.OrderProcessor;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 
 public class MainRouter {
 
@@ -176,7 +174,7 @@ public class MainRouter {
           .first();
 
         if (userDoc == null) {
-          ctx.response().setStatusCode(404).end("User not found");
+          ctx.response().setStatusCode(204).end("User not found");
           return;
         }
 
@@ -214,7 +212,7 @@ public class MainRouter {
           .forEach(doc -> history.add(new JsonObject(doc.toJson())));
 
         if (history.isEmpty()) {
-          ctx.response().setStatusCode(404).end("No history found");
+          ctx.response().setStatusCode(204).end("No history found");
           return;
         }
 
