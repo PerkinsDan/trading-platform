@@ -6,13 +6,13 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
 
-public class MainVerticle extends AbstractVerticle {
+public class ApiVerticle extends AbstractVerticle {
 
   @Override
   public void start(Promise<Void> startPromise) {
     HttpServer server = vertx.createHttpServer();
 
-    Router router = new MainRouter(vertx).router;
+    Router router = new ApiRouter(vertx).router;
 
     server
       .requestHandler(router)
@@ -24,6 +24,6 @@ public class MainVerticle extends AbstractVerticle {
   public static void main(String[] args) {
     System.out.println("Starting server...");
     Vertx vertx = Vertx.vertx();
-    vertx.deployVerticle(new MainVerticle());
+    vertx.deployVerticle(new ApiVerticle());
   }
 }

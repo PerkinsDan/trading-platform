@@ -93,29 +93,29 @@ public class DatabaseUtils {
       .find(Filters.eq("orderId", orderId))
       .first();
 
-    if (filled) {
-      if (previouslyPartiallyFilled == null) {
-        Document filledOrder = activeOrdersCollection
-          .find(Filters.eq("orderId", orderId))
-          .first();
-        filledOrder.put("filled", true);
-        orderHistoryCollection.insertOne(filledOrder);
-      } else {
-        orderHistoryCollection.updateOne(
-          Filters.eq("orderId", orderId),
-          new Document("$set", new Document("filled", true))
-        );
-      }
-
-      activeOrdersCollection.deleteOne(Filters.eq("orderId", orderId));
-    } else {
-      if (previouslyPartiallyFilled == null) {
         Document partiallyFilledOrder = activeOrdersCollection
-          .find(Filters.eq("orderId", orderId))
-          .first();
+                .find(Filters.eq("orderId", orderId))
+                .first();
 
-        orderHistoryCollection.insertOne(partiallyFilledOrder);
-      }
+        if (filled) {
+            if (previouslyPartiallyFilled == null) {
+                partiallyFilledOrder.put("filled", true);
+                orderHistoryCollection.insertOne(partiallyFilledOrder);
+            } else {
+                orderHistoryCollection.updateOne(
+                        Filters.eq("orderId", orderId),
+                        new Document("$set", new Document("filled", true))
+                );
+            }
+
+            activeOrdersCollection.deleteOne(
+                    Filters.eq("orderId", orderId)
+            );
+
+        } else {
+            if (previouslyPartiallyFilled == null) {
+                orderHistoryCollection.insertOne(partiallyFilledOrder);
+            }
 
       activeOrdersCollection.updateOne(
         Filters.eq("orderId", orderId),

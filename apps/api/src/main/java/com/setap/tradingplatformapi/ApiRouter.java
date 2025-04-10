@@ -18,11 +18,11 @@ import orderProcessor.Order;
 import orderProcessor.OrderProcessor;
 import org.bson.Document;
 
-public class MainRouter {
+public class ApiRouter {
 
   Router router;
 
-  MainRouter(Vertx vertx) {
+  ApiRouter(Vertx vertx) {
     router = Router.router(vertx);
     router.route().handler(BodyHandler.create());
     router
