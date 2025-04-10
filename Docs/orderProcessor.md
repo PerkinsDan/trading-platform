@@ -70,7 +70,6 @@ classDiagram
     	+ SELL
 	}
 	class Ticker{
-    	note "Replace these with actual tickers at some point"
     	<<enumeration>>
     	+ MSFT
     	+ AMZN
