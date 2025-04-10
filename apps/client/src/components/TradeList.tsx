@@ -34,9 +34,16 @@ function TradeList({ trades }: TradeListProps) {
               {trade.quantity} @ ${trade.price.toFixed(2)}
             </Typography>
             {trade.type == "BUY" ? (
-              <ArrowDropUpIcon style={{ color: "green" }} />
+              <Stack direction={"row"} style={{ color: "green" }}>
+                {" "}
+                <ArrowDropUpIcon />
+                <Typography>BUY</Typography>
+              </Stack>
             ) : (
-              <ArrowDropDownIcon style={{ color: "red" }} />
+              <Stack direction={"row"} style={{ color: "red" }}>
+                <ArrowDropDownIcon />
+                <Typography>SELL</Typography>
+              </Stack>
             )}
           </Stack>
         </Stack>
