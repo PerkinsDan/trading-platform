@@ -1,9 +1,10 @@
 import { Stack } from "@mui/material";
 import NavBar from "../components/NavBar";
 import TradingCard from "../components/TradingCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { auth } from "../firebaseConfig/firebase";
 
+const tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "META"];
 function MakeTrades() {
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const [tradeDetails, setTradeDetails] = useState({
@@ -11,6 +12,7 @@ function MakeTrades() {
     quantity: 0,
     price: 0,
   });
+  const [marketSnapshots, setMarketSnapshots] = useState();
 
   const handleTrade = async (stock: string) => {
     try {
@@ -40,20 +42,40 @@ function MakeTrades() {
     }
   };
 
-  return (
-    <Stack height="100%" width="100%" flexDirection="row">
-      <NavBar currentPage="make-trades" />
-      <Stack
-        display="grid"
-        gridTemplateColumns="repeat(3, 1fr)"
-        gridTemplateRows="auto"
-        gap="4rem"
-        padding="6rem"
-        width="100%"
-        position="relative"
-      >
-        {["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "META"].map(
-          (stock, index) => (
+  useEffect(() => {
+    const getTickerData = async () => {
+      const responses = await Promise.all(
+        tickers.map((ticker) => {
+          return fetch(
+            `${process.env.REACT_APP_MARKET_DATA_BASE_URL}/latest-snapshot/${ticker}`,
+          );
+        }),
+      );
+
+      const data = await Promise.all(
+        responses.map((response) => response.json()),
+      );
+
+      setMarketSnapshots(data);
+    };
+
+    getTickerData();
+  }, []);
+
+  if (marketSnapshots)
+    return (
+      <Stack height="100%" width="100%" flexDirection="row">
+        <NavBar currentPage="make-trades" />
+        <Stack
+          display="grid"
+          gridTemplateColumns="repeat(3, 1fr)"
+          gridTemplateRows="auto"
+          gap="4rem"
+          padding="6rem"
+          width="100%"
+          position="relative"
+        >
+          {tickers.map((stock, index) => (
             <TradingCard
               key={stock}
               stock={stock}
@@ -67,12 +89,14 @@ function MakeTrades() {
               setTradeDetails={setTradeDetails}
               onTrade={() => handleTrade(stock)}
               onClose={() => setExpandedCard(null)}
+              snapshot={marketSnapshots[index]}
             />
-          ),
-        )}
+          ))}
+        </Stack>
       </Stack>
-    </Stack>
-  );
+    );
+
+  return null;
 }
 
 export default MakeTrades;

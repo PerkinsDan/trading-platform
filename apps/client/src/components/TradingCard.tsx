@@ -21,6 +21,7 @@ interface TradingCardProps {
   >;
   onTrade: () => void;
   onClose: () => void; // Add onClose prop
+  snapshot: any;
 }
 
 function TradingCard({
@@ -33,6 +34,7 @@ function TradingCard({
   setTradeDetails,
   onTrade,
   onClose,
+  snapshot,
 }: TradingCardProps) {
   const row = Math.floor(index / 3) + 1;
   const col = (index % 3) + 1;
@@ -67,6 +69,7 @@ function TradingCard({
         padding="1rem"
       >
         <Typography variant="h5">{stock}</Typography>
+        <Typography>${snapshot.price}</Typography>
         {isExpanded && (
           <IconButton
             onClick={(e) => {

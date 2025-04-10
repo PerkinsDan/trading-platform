@@ -12,6 +12,9 @@ export default defineConfig(({ mode }) => {
       "process.env.REACT_APP_API_BASE_URL": JSON.stringify(
         env.REACT_APP_API_BASE_URL,
       ),
+      "process.env.REACT_APP_MARKET_DATA_BASE_URL": JSON.stringify(
+        env.REACT_APP_MARKET_DATA_BASE_URL,
+      ),
     },
     plugins: [react()],
   };

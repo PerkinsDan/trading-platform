@@ -1,6 +1,9 @@
 package com.setap.marketdata;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.setap.marketdata.constants.Tickers;
 import com.setap.marketdata.simulatedata.Snapshot;
 import io.vertx.core.Vertx;
@@ -30,7 +33,17 @@ public class MarketDataRouter {
         Snapshot snapshot = marketDataService.getLatestSnapshot(
           Tickers.valueOf(ticker)
         );
-        sendJsonResponse(ctx, snapshot);
+
+        ObjectMapper objectMapper = new ObjectMapper()
+          .registerModule(new JavaTimeModule());
+
+        String response = null;
+        try {
+          response = objectMapper.writeValueAsString(snapshot);
+        } catch (JsonProcessingException e) {
+          throw new RuntimeException(e);
+        }
+        ctx.response().end(response);
       });
 
     router

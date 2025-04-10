@@ -1,8 +1,10 @@
 package com.setap.marketdata;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.CorsHandler;
 
 public class MarketDataServiceMain {
 
@@ -18,6 +20,14 @@ public class MarketDataServiceMain {
     HttpServer server = vertx.createHttpServer();
 
     Router router = Router.router(vertx);
+    router
+      .route()
+      .handler(
+        CorsHandler.create()
+          .addOrigin("*")
+          .allowedHeader("Content-Type")
+          .allowedHeader("Authorization")
+      );
 
     Router marketDataRouter = new MarketDataRouter(
       vertx,
