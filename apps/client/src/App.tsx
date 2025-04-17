@@ -2,8 +2,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignIn from "./pages/SignIn";
 import MakeTrades from "./pages/MakeTrades";
 import MyTrades from "./pages/MyTrades";
-import ProtectedRoute from "./components/ProtectedRoute";
-import UnprotectedRoute from "./components/UnprotectedRoute";
+import ProtectedRoute from "./components/Routes/ProtectedRoute";
+import UnprotectedRoute from "./components/Routes/UnprotectedRoute";
 
 function App() {
   return (

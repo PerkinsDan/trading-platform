@@ -1,13 +1,7 @@
 import { Stack, Typography } from "@mui/material";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-
-interface Trade {
-  ticker: string;
-  quantity: number;
-  price: number;
-  type: string;
-}
+import { Trade } from "../../../types";
 
 interface TradeListProps {
   trades: Trade[];
