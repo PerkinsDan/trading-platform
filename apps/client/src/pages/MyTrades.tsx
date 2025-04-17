@@ -122,7 +122,7 @@ function MyTrades() {
           + £100 to balance
         </Button>
         <Typography variant="h5" marginTop="2rem">
-          Current Trades
+          Pending Trades
         </Typography>
         {currentTrades.length > 0 ? (
           <TradeList trades={currentTrades} />
