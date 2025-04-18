@@ -6,6 +6,7 @@ import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 import io.vertx.core.json.JsonObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +33,8 @@ public class DatabaseUtils {
         int quantity = body.getInteger("quantity");
         String userId = body.getString("userId");
 
-    OrderType type = OrderType.valueOf(typeStr);
-    Ticker ticker = Ticker.valueOf(tickerStr);
+        OrderType type = OrderType.valueOf(typeStr);
+        Ticker ticker = Ticker.valueOf(tickerStr);
 
         return new Order(type, userId, ticker, price, quantity);
     }
@@ -115,14 +116,14 @@ public class DatabaseUtils {
         return matchesFoundAsMongoDBDocs;
     }
 
-  public static void updateDb(
-    ArrayList<Document> matchesFoundAsMongoDBDocs,
-    MongoCollection<Document> activeOrdersCollection,
-    MongoCollection<Document> usersCollection,
-    MongoCollection<Document> orderHistoryCollection
-  ) {
-    Document buyOrder = matchesFoundAsMongoDBDocs.get(0);
-    Document sellOrder = matchesFoundAsMongoDBDocs.get(1);
+    public static void updateDb(
+            ArrayList<Document> matchesFoundAsMongoDBDocs,
+            MongoCollection<Document> activeOrdersCollection,
+            MongoCollection<Document> usersCollection,
+            MongoCollection<Document> orderHistoryCollection
+    ) {
+        Document buyOrder = matchesFoundAsMongoDBDocs.get(0);
+        Document sellOrder = matchesFoundAsMongoDBDocs.get(1);
 
         updateDbAccordingToPartiallyFilledOrNot(
                 buyOrder,
