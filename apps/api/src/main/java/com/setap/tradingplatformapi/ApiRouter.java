@@ -1,7 +1,5 @@
 package com.setap.tradingplatformapi;
 
-import static com.setap.tradingplatformapi.database.DatabaseUtils.updateDb;
-
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.setap.tradingplatformapi.database.DatabaseUtils;
@@ -12,216 +10,239 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
 import orderProcessor.Order;
 import orderProcessor.OrderProcessor;
 import org.bson.Document;
 
+import static com.setap.tradingplatformapi.database.DatabaseUtils.*;
+
 public class ApiRouter {
 
-  Router router;
+    Router router;
 
-  ApiRouter(Vertx vertx) {
-    router = Router.router(vertx);
-    router.route().handler(BodyHandler.create());
-    router
-      .route()
-      .handler(
-        CorsHandler.create("*")
-          .allowedHeader("Content-Type")
-          .allowedHeader("Authorization")
-      );
-    initialise();
-  }
+    ApiRouter(Vertx vertx) {
+        router = Router.router(vertx);
+        router.route().handler(BodyHandler.create());
+        router
+                .route()
+                .handler(
+                        CorsHandler.create("*")
+                                .allowedHeader("Content-Type")
+                                .allowedHeader("Authorization")
+                );
+        initialise();
+    }
 
-  void initialise() {
-    router
-      .route("/")
-      .handler(ctx -> {
-        HttpServerResponse response = ctx.response();
-        response.putHeader("content-type", "text/plain");
-        response.end("Hello World from Vert.x-Web!");
-      });
+    void initialise() {
+        router
+                .route("/")
+                .handler(ctx -> {
+                    HttpServerResponse response = ctx.response();
+                    response.putHeader("content-type", "text/plain");
+                    response.end("Hello World from Vert.x-Web!");
+                });
 
-    router
-      .post("/create-user")
-      .handler(ctx -> {
-        JsonObject body = ctx.getBodyAsJson();
-        String userId = body.getString("userId");
+        router
+                .post("/create-user")
+                .handler(ctx -> {
+                    JsonObject body = ctx.getBodyAsJson();
+                    String userId = body.getString("userId");
 
-        var usersCollection = MongoClientConnection.getCollection("users");
-        Document existingUser = usersCollection
-          .find(Filters.eq("userId", userId))
-          .first();
+                    var usersCollection = MongoClientConnection.getCollection("users");
+                    Document existingUser = usersCollection
+                            .find(Filters.eq("userId", userId))
+                            .first();
 
-        if (existingUser != null) {
-          ctx.response().setStatusCode(409).end("User already exists");
-          return;
-        }
+                    if (existingUser != null) {
+                        ctx.response().setStatusCode(409).end("User already exists");
+                        return;
+                    }
 
-        Document newUserDoc = new Document()
-          .append("userId", userId)
-          .append("balance", 0);
+                    Document newUserDoc = new Document()
+                            .append("userId", userId)
+                            .append("balance", 0)
+                            .append("portfolio", Collections.emptyList());
 
-        usersCollection.insertOne(newUserDoc);
+                    usersCollection.insertOne(newUserDoc);
 
-        ctx.response().end("User created successfully.");
-      });
+                    ctx.response().end("User created successfully.");
+                });
 
-    router
-      .post("/update-user-balance")
-      .handler(ctx -> {
-        JsonObject body = ctx.getBodyAsJson();
-        if (
-          body == null ||
-          !body.containsKey("userId") ||
-          !body.containsKey("moneyAddedToBalance")
-        ) {
-          ctx.response().setStatusCode(400).end("Invalid request body");
-          return;
-        }
-        String userId = body.getString("userId");
-        int moneyAddedToBalance = body.getInteger("moneyAddedToBalance");
-        var usersCollection = MongoClientConnection.getCollection("users");
-        usersCollection.updateOne(
-          Filters.eq("userId", userId),
-          new Document("$inc", new Document("balance", moneyAddedToBalance))
-        );
-        ctx.response().end("User balance updated successfully");
-      });
+        router
+                .post("/update-user-balance")
+                .handler(ctx -> {
+                    JsonObject body = ctx.getBodyAsJson();
+                    if (
+                            body == null ||
+                                    !body.containsKey("userId") ||
+                                    !body.containsKey("moneyAddedToBalance")
+                    ) {
+                        ctx.response().setStatusCode(400).end("Invalid request body");
+                        return;
+                    }
+                    String userId = body.getString("userId");
+                    int moneyAddedToBalance = body.getInteger("moneyAddedToBalance");
+                    var usersCollection = MongoClientConnection.getCollection("users");
+                    usersCollection.updateOne(
+                            Filters.eq("userId", userId),
+                            new Document("$inc", new Document("balance", moneyAddedToBalance))
+                    );
+                    ctx.response().end("User balance updated successfully");
+                });
 
-    router
-      .get("/user-active-positions")
-      .handler(ctx -> {
-        String userId = ctx.request().getParam("userId");
+        router
+                .get("/user-active-positions")
+                .handler(ctx -> {
+                    String userId = ctx.request().getParam("userId");
 
-        if (userId == null) {
-          ctx
-            .response()
-            .setStatusCode(400)
-            .end("Missing userId query parameter");
-        }
+                    if (userId == null) {
+                        ctx
+                                .response()
+                                .setStatusCode(400)
+                                .end("Missing userId query parameter");
+                    }
 
-        var activeOrdersCollection = MongoClientConnection.getCollection(
-          "activeOrders"
-        );
+                    var activeOrdersCollection = MongoClientConnection.getCollection(
+                            "activeOrders"
+                    );
 
-        ArrayList<JsonObject> activeOrders = new ArrayList<>();
+                    ArrayList<JsonObject> activeOrders = new ArrayList<>();
 
-        activeOrdersCollection
-          .find(Filters.eq("userId", userId))
-          .forEach(doc -> activeOrders.add(new JsonObject(doc.toJson())));
+                    activeOrdersCollection
+                            .find(Filters.eq("userId", userId))
+                            .forEach(doc -> activeOrders.add(new JsonObject(doc.toJson())));
 
-        ctx
-          .response()
-          .putHeader("Content-Type", "application/json")
-          .end(activeOrders.toString());
-      });
+                    ctx
+                            .response()
+                            .putHeader("Content-Type", "application/json")
+                            .end(activeOrders.toString());
+                });
 
-    router
-      .post("/create-order")
-      .handler(ctx -> {
-        JsonObject body = ctx.getBodyAsJson();
+        router
+                .post("/create-order")
+                .handler(ctx -> {
+                    JsonObject body = ctx.getBodyAsJson();
 
-        MongoCollection<Document> activeOrdersCollection =
-          MongoClientConnection.getCollection("activeOrders");
-        MongoCollection<Document> orderHistoryCollection =
-          MongoClientConnection.getCollection("orderHistory");
-        MongoCollection<Document> usersCollection =
-          MongoClientConnection.getCollection("users");
+                    MongoCollection<Document> activeOrdersCollection =
+                            MongoClientConnection.getCollection("activeOrders");
+                    MongoCollection<Document> orderHistoryCollection =
+                            MongoClientConnection.getCollection("orderHistory");
+                    MongoCollection<Document> usersCollection =
+                            MongoClientConnection.getCollection("users");
 
-        Order order = DatabaseUtils.createOrderAndInsertIntoDatabase(
-          body,
-          activeOrdersCollection
-        );
-        OrderProcessor orderProcessor = OrderProcessor.getInstance();
+                    String validationResult = passValidations(body, usersCollection);
 
-        ArrayList<Document> matchesFoundAsMongoDBDocs =
-          DatabaseUtils.processOrderAndParseMatchesFound(order, orderProcessor);
+                    if (!validationResult.equals("PASSED VALIDATIONS")) {
+                        ctx.response()
+                                .setStatusCode(422)
+                                .putHeader("Content-Type", "application/json")
+                                .end(new JsonObject().put("Error", validationResult).encode());
+                        return;
+                    }
 
-        if (!matchesFoundAsMongoDBDocs.isEmpty()) {
-          updateDb(
-            matchesFoundAsMongoDBDocs,
-            activeOrdersCollection,
-            usersCollection,
-            orderHistoryCollection
-          );
-        }
+                    Order order = DatabaseUtils.createOrder(body);
 
-        ctx
-          .response()
-          .setStatusCode(201)
-          .putHeader("Content-Type", "application/json")
-          .end("Order created");
-      });
+                    insertOrderIntoDatabase(
+                            order,
+                            activeOrdersCollection
+                    );
 
-    router
-      .get("/user-account")
-      .handler(ctx -> {
-        String userId = ctx.request().getParam("userId");
-        if (userId == null) {
-          ctx
-            .response()
-            .setStatusCode(400)
-            .end("Missing userId query parameter");
-          return;
-        }
+                    OrderProcessor orderProcessor = OrderProcessor.getInstance();
 
-        var usersCollection = MongoClientConnection.getCollection("users");
-        Document userDoc = usersCollection
-          .find(Filters.eq("userId", userId))
-          .first();
+                    ArrayList<Document> matchesFoundAsMongoDBDocs =
+                            DatabaseUtils.processOrderAndParseMatchesFound(
+                                    order,
+                                    orderProcessor
+                            );
 
-        if (userDoc == null) {
-          ctx.response().setStatusCode(204).end("User not found");
-          return;
-        }
+                    if (!matchesFoundAsMongoDBDocs.isEmpty()) {
+                        updateDb(
+                                matchesFoundAsMongoDBDocs,
+                                activeOrdersCollection,
+                                usersCollection,
+                                orderHistoryCollection
+                        );
+                    }
 
-        int balance = userDoc.getInteger("balance", 0);
-        JsonObject response = new JsonObject()
-          .put("userId", userId)
-          .put("balance", balance);
+                    ctx
+                            .response()
+                            .setStatusCode(201)
+                            .putHeader("Content-Type", "application/json")
+                            .end("Order created");
 
-        ctx
-          .response()
-          .putHeader("Content-Type", "application/json")
-          .end(response.encode());
-      });
+                });
 
-    router
-      .get("/user-trade-history")
-      .handler(ctx -> {
-        String userId = ctx.request().getParam("userId");
-        if (userId == null) {
-          ctx
-            .response()
-            .setStatusCode(400)
-            .end("Missing userId query parameter");
-          return;
-        }
+        router
+                .get("/user-account")
+                .handler(ctx -> {
+                    String userId = ctx.request().getParam("userId");
+                    if (userId == null) {
+                        ctx
+                                .response()
+                                .setStatusCode(400)
+                                .end("Missing userId query parameter");
+                        return;
+                    }
 
-        var orderHistoryCollection = MongoClientConnection.getCollection(
-          "orderHistory"
-        );
+                    var usersCollection = MongoClientConnection.getCollection("users");
+                    Document userDoc = usersCollection
+                            .find(Filters.eq("userId", userId))
+                            .first();
 
-        List<JsonObject> history = new ArrayList<>();
+                    if (userDoc == null) {
+                        ctx.response().setStatusCode(204).end("User not found");
+                        return;
+                    }
 
-        orderHistoryCollection
-          .find(Filters.eq("userId", userId))
-          .forEach(doc -> history.add(new JsonObject(doc.toJson())));
+                    int balance = userDoc.getInteger("balance", 0);
+                    JsonObject response = new JsonObject()
+                            .put("userId", userId)
+                            .put("balance", balance);
 
-        if (history.isEmpty()) {
-          ctx.response().setStatusCode(204).end("No history found");
-          return;
-        }
+                    ctx
+                            .response()
+                            .putHeader("Content-Type", "application/json")
+                            .end(response.encode());
+                });
 
-        ctx
-          .response()
-          .putHeader("Content-Type", "application/json")
-          .end(history.toString());
-      });
-  }
+        router
+                .get("/user-trade-history")
+                .handler(ctx -> {
+                    String userId = ctx.request().getParam("userId");
+                    if (userId == null) {
+                        ctx
+                                .response()
+                                .setStatusCode(400)
+                                .end("Missing userId query parameter");
+                        return;
+                    }
+
+                    var orderHistoryCollection = MongoClientConnection.getCollection(
+                            "orderHistory"
+                    );
+
+                    List<JsonObject> history = new ArrayList<>();
+
+                    orderHistoryCollection
+                            .find(Filters.eq("userId", userId))
+                            .forEach(doc -> history.add(new JsonObject(doc.toJson())));
+
+                    if (history.isEmpty()) {
+                        ctx.response().setStatusCode(204).end("No history found");
+                        return;
+                    }
+
+                    ctx
+                            .response()
+                            .putHeader("Content-Type", "application/json")
+                            .end(history.toString());
+                });
+    }
 }
 //create-order
 //create-user

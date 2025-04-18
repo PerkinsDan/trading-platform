@@ -9,19 +9,22 @@ public class MatchingDetails {
   int quantityChange;
   boolean filled;
   String userId;
+  Ticker ticker;
 
   public MatchingDetails(
     UUID orderId,
     double price,
     int quantityChange,
     boolean filled,
-    String userId
+    String userId,
+    Ticker ticker
   ) {
     this.orderId = orderId;
     this.price = price;
     this.quantityChange = quantityChange;
     this.filled = filled;
     this.userId = userId;
+    this.ticker = ticker;
   }
 
   public UUID getOrderID() {
@@ -43,4 +46,6 @@ public class MatchingDetails {
   public boolean isFilled() {
     return filled;
   }
+
+  public Ticker getTicker() {return ticker;}
 }

@@ -51,7 +51,8 @@ public class MatchingEngine {
             price,
             quantity,
             buyFilled,
-            buy.getUserId()
+            buy.getUserId(),
+            buy.getTicker()
           )
         )
       );
@@ -62,7 +63,8 @@ public class MatchingEngine {
             price,
             quantity,
             sellFilled,
-            sell.getUserId()
+            sell.getUserId(),
+            sell.getTicker()
           )
         )
       );
