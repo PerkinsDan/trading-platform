@@ -23,8 +23,20 @@ public class MatchingEngineTest {
 
   @Test
   void noMatchWhenPricesDiffer() {
-    Order buyOrder = new Order(OrderType.BUY, Ticker.AAPL, 100.0, 50,"dummyID");
-    Order sellOrder = new Order(OrderType.SELL, Ticker.AAPL, 110.0, 50,"dummyID");
+    Order buyOrder = new Order(
+      OrderType.BUY,
+      "dummyID",
+      Ticker.AAPL,
+      100.0,
+      50
+    );
+    Order sellOrder = new Order(
+      OrderType.SELL,
+      "dummyID",
+      Ticker.AAPL,
+      110.0,
+      50
+    );
 
     assertEquals(0, processor.processOrder(buyOrder).size());
     assertEquals(0, processor.processOrder(sellOrder).size());
@@ -32,15 +44,26 @@ public class MatchingEngineTest {
 
   @Test
   void noMatchWhenEmptyBuyQueue() {
-    Order order = new Order(OrderType.SELL, Ticker.AAPL, 100.0, 50,"dummyID");
-    
+    Order order = new Order(OrderType.SELL, "dummyID", Ticker.AAPL, 100.0, 50);
     assertEquals(0, processor.processOrder(order).size());
   }
 
   @Test
   void fullMatchRemovesOrders() {
-    Order sellOrder = new Order(OrderType.SELL, Ticker.AAPL, 100.0, 50,"dummyID");
-    Order buyOrder = new Order(OrderType.BUY, Ticker.AAPL, 100.0, 50,"dummyID");
+    Order sellOrder = new Order(
+      OrderType.SELL,
+      "dummyID",
+      Ticker.AAPL,
+      100.0,
+      50
+    );
+    Order buyOrder = new Order(
+      OrderType.BUY,
+      "dummyID",
+      Ticker.AAPL,
+      100.0,
+      50
+    );
 
     assertEquals(0, processor.processOrder(buyOrder).size());
     assertEquals(2, processor.processOrder(sellOrder).size());
@@ -48,8 +71,20 @@ public class MatchingEngineTest {
 
   @Test
   void partialFill() {
-    Order sellOrder = new Order(OrderType.SELL, Ticker.AAPL, 100.0, 50,"dummyID");
-    Order buyOrder = new Order(OrderType.BUY, Ticker.AAPL, 100.0, 30,"dummyID");
+    Order sellOrder = new Order(
+      OrderType.SELL,
+      "dummyID",
+      Ticker.AAPL,
+      100.0,
+      50
+    );
+    Order buyOrder = new Order(
+      OrderType.BUY,
+      "dummyID",
+      Ticker.AAPL,
+      100.0,
+      30
+    );
 
     processor.processOrder(buyOrder);
     assertEquals(2, processor.processOrder(sellOrder).size());

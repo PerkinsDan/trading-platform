@@ -46,12 +46,26 @@ public class MatchingEngine {
     try {
       matchesFound.add(
         mapper.writeValueAsString(
-          new MatchingDetails(buy.getId(), price, quantity, buyFilled)
+          new MatchingDetails(
+            buy.getId(),
+            price,
+            quantity,
+            buyFilled,
+            buy.getUserId(),
+            buy.getTicker()
+          )
         )
       );
       matchesFound.add(
         mapper.writeValueAsString(
-          new MatchingDetails(sell.getId(), price, quantity, sellFilled)
+          new MatchingDetails(
+            sell.getId(),
+            price,
+            quantity,
+            sellFilled,
+            sell.getUserId(),
+            sell.getTicker()
+          )
         )
       );
     } catch (JsonProcessingException e) {
