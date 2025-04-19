@@ -17,6 +17,7 @@ import java.util.List;
 
 import orderProcessor.Order;
 import orderProcessor.OrderProcessor;
+import orderProcessor.OrderType;
 import org.bson.Document;
 
 import static com.setap.tradingplatformapi.database.DatabaseUtils.*;
@@ -105,6 +106,7 @@ public class ApiRouter {
                                 .response()
                                 .setStatusCode(400)
                                 .end("Missing userId query parameter");
+                        return;
                     }
 
                     var activeOrdersCollection = MongoClientConnection.getCollection(
@@ -174,6 +176,48 @@ public class ApiRouter {
                             .setStatusCode(201)
                             .putHeader("Content-Type", "application/json")
                             .end("Order created");
+
+                });
+
+        router
+                .get("/cancel-order")
+                .handler(ctx -> {
+                    JsonObject body = ctx.getBodyAsJson();
+
+                    String orderId = body.getString("orderId");
+                    String userId = body.getString("userId");
+
+                    var activeOrdersCollection = MongoClientConnection.getCollection(
+                            "activeOrders"
+                    );
+
+                    var usersCollection = MongoClientConnection.getCollection("users");
+
+                    JsonObject orderJson = JsonObject.mapFrom(activeOrdersCollection
+                            .find(Filters.eq("orderId", orderId))
+                            .first());
+
+                    Order order = DatabaseUtils.createOrder(orderJson);
+
+                    OrderProcessor orderProcessor = OrderProcessor.getInstance();
+                    orderProcessor.cancelOrder(order);
+
+                    activeOrdersCollection.deleteOne(
+                            Filters.eq("orderId", orderId)
+                    );
+
+                    if(order.getType() == OrderType.BUY) {
+                        int amountToCreditBack = (int) order.getPrice() * order.getQuantity();
+
+                        usersCollection.updateOne(
+                                Filters.eq("userId",userId),
+                                new Document("$inc", new Document("balance", amountToCreditBack)
+                        ));
+                    }
+
+                    //TODO check if previously partially filled
+                    //if yes, update order to cancelled
+                    //if no, insert order, set cancelled field to true
 
                 });
 

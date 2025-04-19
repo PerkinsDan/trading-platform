@@ -149,6 +149,8 @@ public class DatabaseUtils {
         double price = order.getDouble("price");
         int balanceChange = (isBuy ? -(int) (quantityChange * price) : (int) (quantityChange * price));
 
+
+        //TODO create checkPreviouslyPartiallyFilled() method to reuse here and in cancel-order
         Document previouslyPartiallyFilled = orderHistoryCollection
                 .find(Filters.eq("orderId", orderId))
                 .first();
