@@ -15,8 +15,7 @@ Attributes
     marketDataServiceHolder : Singleton object for the class.
 
 Methods 
-    MarketDataService() : Constructor : creates service objedt and starts the Daemon
-    thread.
+    MarketDataService() - creates service object and starts the Daemon thread.
     getInstance() - MarketDataService : used to retreive the single instance of MarketDataService
-    getTimeSeries (Ticker) - TimeSeries : returns the TimeSeries associated with a Ticker in its entirety
-    getLatestSnapshot (Ticker) - Snapshot : Returns the Snapshot associated with the current time.
+    getTimeSeries(Ticker) - TimeSeries : returns the TimeSeries associated with a Ticker upto the current time
+    getLatestSnapshot(Ticker) - Snapshot : Returns the Snapshot associated with the current time.
