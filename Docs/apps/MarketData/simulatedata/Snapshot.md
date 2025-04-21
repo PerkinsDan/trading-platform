@@ -13,8 +13,8 @@ Snapshot is the base unit for market data in this application, it holds a timest
 
 **Attributes**
 
-* price : price for the stock at a partcular moment in time
-* timestamp : timestamp to specify what moment in time the price is for
+* price : price for the stock at a partcular moment in time.
+* timestamp : timestamp to specify what moment in time the price is for.
 * change : change in price from previous Snapshot.
 
 <br>

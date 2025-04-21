@@ -1,6 +1,6 @@
 **What does it do?**
 
-Enum class for the different tickers we use 
+Enum class for the different tickers we use.
 
 **Where do we use it?**
 

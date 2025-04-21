@@ -22,7 +22,9 @@ This class sets up the HTTP server for the market data API, we use it any time a
 **Methods**
 
 main(String[] args);
-* Main method which starts the Vertx http server by calling `startServer()`
+* Main method which starts the Vertx http server by calling `startServer()`.
 
 startServer(): 
-* Creates http server, defines base url path, creates a router and specifies to use the marketDataRouter to define endpoints, and opens a connection at port 12000.
+* Creates http server.
+* Defines base url path, creates a router and specifies to use the marketDataRouter to define endpoints.
+* Opens a connection at port 12000.

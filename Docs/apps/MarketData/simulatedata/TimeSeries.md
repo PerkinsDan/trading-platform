@@ -9,7 +9,7 @@ snapshots are considered based on the current time.
 
 **When do we use it?**
 
-Used by the `simulateData`class which aggregates Timeseries into a timeSeriesMap
+Used by the `simulateData`class which aggregates `TimeSeries` into a timeSeriesMap.
 
 <br>
 
@@ -23,15 +23,16 @@ a data point with an associated timestamp.
 **Methods**
 
 TimeSeries(): 
-* Constructor that initializes the `snapshots` list.
+* Constructor that initializes `snapshots`.
 
 addSnapshot(Snapshot snapshot):
-* Adds a new Snapshot to the `snapshots` list.
+* Adds a new Snapshot to `snapshots`.
 
 getSnapshots(): 
 * Returns a filtered list of Snapshots whose timestamps are not in the future.
 * This ensures that only valid snapshots up to the current time are returned.
 
 getLatestSnapshot(): 
-* Retrieves the most recent Snapshot from the `snapshots` list whose timestamp is before the current time. Returns `null` if no valid snapshots exist.
+* Retrieves the most recent Snapshot from `snapshots` whose timestamp is before the current time. 
+* Returns `null` if no valid snapshots exist.
 

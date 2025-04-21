@@ -18,8 +18,10 @@ This class defines endpoints and how to respond to requests made at those endpoi
 **Methods**
 
 MarketDataRouter(Vertx vertx, MarketDataService marketDataService)
+* Constructor: initialises router and merketDataService
+
 setupRoutes():
- 
+
 &nbsp;&nbsp;Defines two routes: Each route extracts the ticker parameter from the URL, calls the the appropriate method in &nbsp;&nbsp;marketDataService, and sends the response as JSON.
 
 * /latest-snapshot/:ticker: Fetches the latest market data snapshot for a given ticker symbol.
@@ -31,6 +33,6 @@ sendJsonResponse(Rounting ctx, Object data):
 * Sends the JSON response back to the client.
 * If JSON conversion fails, it calls sendErrorResponse().
     
-sendErrorRespo(RoutingContext ctx):
+sendErrorResponse(RoutingContext ctx):
 * Sends a 500 Internal Server Error response with the JSON_ERROR_MESSAGE.getRouter()
 * Exposes the router instance so it can be used elsewhere in the application.

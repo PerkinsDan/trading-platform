@@ -10,7 +10,7 @@ acts as the interface to the MarketData api.
 
 **When do we use it?**
 
-Anytime we need maket data: the front end LiquidityEngine. 
+Anytime we need maket data: the front-end LiquidityEngine. 
 
 <br>
 
