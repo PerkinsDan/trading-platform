@@ -1,0 +1,9 @@
+**What does it do?**    
+
+Enum class for BUY and SELL.
+
+<br>
+
+**Where do we use it?**
+
+When creating Orders, to specify if an order is a BUY or SELL.
