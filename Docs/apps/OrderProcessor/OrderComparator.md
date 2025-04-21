@@ -9,10 +9,10 @@ properly.
 
 **When do we use it?**
 
-OrderComparatoris used in the `TradeBook` class, which uses 
-the PriorityQueue data structure. PriorityQueues order what you put in them
+OrderComparator is used in the `TradeBook` class, which uses 
+the PriorityQueue data structure. PriorityQueues order elements
 using 'natural ordering' which generally means smallest first. We override 
-this beaviour by defining our own Comparator, which we call OrderComparator,
+this behaviour by defining our own Comparator, which we call OrderComparator,
 and use it to sort Orders in out TradeBooks in the specific way we want.
 
 <br>
@@ -26,7 +26,7 @@ and use it to sort Orders in out TradeBooks in the specific way we want.
 **Methods**
 
 compare (Order order1, Order order2)
-* Compares any two orders and returns either or -1 to determine which Order comes first in the queue.
+* Compares any two orders and returns either 1 or -1 to determine which Order comes first in the queue.
 
 <br>
 <br>
