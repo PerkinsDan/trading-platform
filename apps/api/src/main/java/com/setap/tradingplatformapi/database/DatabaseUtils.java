@@ -3,14 +3,12 @@ package com.setap.tradingplatformapi.database;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
-import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 import io.vertx.core.json.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import orderProcessor.Order;
 import orderProcessor.OrderProcessor;
@@ -39,6 +37,17 @@ public class DatabaseUtils {
         Ticker ticker = Ticker.valueOf(tickerStr);
 
         return new Order(type, userId, ticker, price, quantity);
+    }
+
+    public static boolean previouslyPartiallyFilled(String orderId){
+        MongoCollection<Document> orderHistoryCollection =
+                MongoClientConnection.getCollection("orderHistory");
+
+        Document previouslyPartiallyFilled = orderHistoryCollection
+                .find(Filters.eq("orderId", orderId))
+                .first();
+
+        return previouslyPartiallyFilled != null;
     }
 
     public static String passValidations(JsonObject body, MongoCollection<Document> usersCollection) {
@@ -149,18 +158,12 @@ public class DatabaseUtils {
         double price = order.getDouble("price");
         int balanceChange = (isBuy ? -(int) (quantityChange * price) : (int) (quantityChange * price));
 
-
-        //TODO create checkPreviouslyPartiallyFilled() method to reuse here and in cancel-order
-        Document previouslyPartiallyFilled = orderHistoryCollection
-                .find(Filters.eq("orderId", orderId))
-                .first();
-
         Document partiallyFilledOrder = activeOrdersCollection
                 .find(Filters.eq("orderId", orderId))
                 .first();
 
         if (filled) {
-            if (previouslyPartiallyFilled == null) {
+            if (previouslyPartiallyFilled(orderId)) {
                 assert partiallyFilledOrder != null : "Now-filled order has been partially filled before, but is not present in activeOrdersCollection";
                 partiallyFilledOrder.put("filled", true);
                 orderHistoryCollection.insertOne(partiallyFilledOrder);
@@ -176,7 +179,7 @@ public class DatabaseUtils {
             );
 
         } else {
-            if (previouslyPartiallyFilled == null) {
+            if (previouslyPartiallyFilled(orderId)) {
                 assert partiallyFilledOrder != null : "Partially-filled order has been partially filled before, but is not present in activeOrdersCollection";
                 orderHistoryCollection.insertOne(partiallyFilledOrder);
             }

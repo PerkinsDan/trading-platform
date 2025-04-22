@@ -227,9 +227,17 @@ public class ApiRouter {
 
 
 
-                    //TODO check if previously partially filled
-                    //if yes, update order to cancelled
-                    //if no, insert order, set cancelled field to true
+                    if (previouslyPartiallyFilled(orderId)) {
+                        orderHistoryCollection.updateOne(
+                                Filters.eq("orderId", orderId),
+                                new Document("$set", new Document("cancelled", true))
+                        );
+                    } else {
+                        Document orderDoc = order.toDoc();
+                        orderDoc.put("cancelled", true);
+
+                        orderHistoryCollection.insertOne(orderDoc);
+                    }
 
                 });
 
