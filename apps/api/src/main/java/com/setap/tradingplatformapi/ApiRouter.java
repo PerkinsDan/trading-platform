@@ -184,6 +184,28 @@ public class ApiRouter {
         // sample use of validationBuilder in this endpoint + other fixes
                 .get("/cancel-order")
                 .handler(ctx -> {
+                    JsonObject body = ctx.getBodyAsJson();
+
+                    String orderId = body.getString("orderId");
+                    String userId = body.getString("userId");
+
+                    var activeOrdersCollection = MongoClientConnection.getCollection(
+                            "activeOrders"
+                    );
+
+                    var orderHistoryCollection = MongoClientConnection.getCollection(
+                            "orderHistory"
+                    );
+
+                    var usersCollection = MongoClientConnection.getCollection(
+                            "users"
+                    );
+
+                    JsonObject orderJson = JsonObject.mapFrom(activeOrdersCollection
+                            .find(Filters.eq("orderId", orderId))
+                            .first());
+
+                    Order order = DatabaseUtils.createOrder(orderJson);
                     JsonObject body = ctx.body().asJsonObject();
 
                     Validation validation = new ValidationBuilder().
@@ -196,6 +218,33 @@ public class ApiRouter {
                     try {
                         if (validation.validate(body)){
 
+                    OrderProcessor orderProcessor = OrderProcessor.getInstance();
+                    orderProcessor.cancelOrder(order);
+
+                    activeOrdersCollection.deleteOne(
+                            Filters.eq("orderId", orderId)
+                    );
+
+                    if (order.getType() == OrderType.BUY) {
+                        int amountToCreditBack = (int) order.getPrice() * order.getQuantity();
+
+                        usersCollection.updateOne(
+                                Filters.eq("userId", userId),
+                                new Document("$inc", new Document("balance", amountToCreditBack)
+                                ));
+                    }
+
+                    if (previouslyPartiallyFilled(orderId)) {
+                        orderHistoryCollection.updateOne(
+                                Filters.eq("orderId", orderId),
+                                new Document("$set", new Document("cancelled", true))
+                        );
+                    } else {
+                        Document orderDoc = order.toDoc();
+                        orderDoc.put("cancelled", true);
+
+                        orderHistoryCollection.insertOne(orderDoc);
+                    }
                                 OrderProcessor orderProcessor = OrderProcessor.getInstance();
                                 if(orderProcessor.cancelOrder(body.getString("orderId")),body.getString("")){
 
