@@ -191,7 +191,13 @@ public class ApiRouter {
                             "activeOrders"
                     );
 
-                    var usersCollection = MongoClientConnection.getCollection("users");
+                    var orderHistoryCollection = MongoClientConnection.getCollection(
+                            "orderHistory"
+                    );
+
+                    var usersCollection = MongoClientConnection.getCollection(
+                            "users"
+                    );
 
                     JsonObject orderJson = JsonObject.mapFrom(activeOrdersCollection
                             .find(Filters.eq("orderId", orderId))
@@ -206,18 +212,26 @@ public class ApiRouter {
                             Filters.eq("orderId", orderId)
                     );
 
-                    if(order.getType() == OrderType.BUY) {
+                    if (order.getType() == OrderType.BUY) {
                         int amountToCreditBack = (int) order.getPrice() * order.getQuantity();
 
                         usersCollection.updateOne(
-                                Filters.eq("userId",userId),
+                                Filters.eq("userId", userId),
                                 new Document("$inc", new Document("balance", amountToCreditBack)
-                        ));
+                                ));
                     }
 
-                    //TODO check if previously partially filled
-                    //if yes, update order to cancelled
-                    //if no, insert order, set cancelled field to true
+                    if (previouslyPartiallyFilled(orderId)) {
+                        orderHistoryCollection.updateOne(
+                                Filters.eq("orderId", orderId),
+                                new Document("$set", new Document("cancelled", true))
+                        );
+                    } else {
+                        Document orderDoc = order.toDoc();
+                        orderDoc.put("cancelled", true);
+
+                        orderHistoryCollection.insertOne(orderDoc);
+                    }
 
                 });
 
