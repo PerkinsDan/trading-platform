@@ -29,12 +29,10 @@ public class TradeBook {
   public Boolean removeOrder(String orderId, String orderType){
 
     PriorityQueue<Order> targetQueue = (OrderType.valueOf(orderType) == OrderType.BUY) ? buyOrders : sellOrders;
-    Order orderToRemove=null;
 
     for (Order order : targetQueue){
       if (order.getId().toString().equals(orderId)){
-        orderToRemove = order;
-        return targetQueue.remove(orderToRemove);
+        return targetQueue.remove(order);
       }
     }
 
