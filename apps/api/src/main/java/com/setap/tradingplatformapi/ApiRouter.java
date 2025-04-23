@@ -2,6 +2,8 @@ package com.setap.tradingplatformapi;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.setap.tradingplatformapi.Validations.Validation;
+import com.setap.tradingplatformapi.Validations.ValidationBuilder;
 import com.setap.tradingplatformapi.database.DatabaseUtils;
 import com.setap.tradingplatformapi.database.MongoClientConnection;
 import io.vertx.core.Vertx;
@@ -182,28 +184,7 @@ public class ApiRouter {
         router
                 .get("/cancel-order")
                 .handler(ctx -> {
-                    JsonObject body = ctx.getBodyAsJson();
 
-                    String orderId = body.getString("orderId");
-                    String userId = body.getString("userId");
-
-                    var activeOrdersCollection = MongoClientConnection.getCollection(
-                            "activeOrders"
-                    );
-
-                    var orderHistoryCollection = MongoClientConnection.getCollection(
-                            "orderHistory"
-                    );
-
-                    var usersCollection = MongoClientConnection.getCollection(
-                            "users"
-                    );
-
-                    JsonObject orderJson = JsonObject.mapFrom(activeOrdersCollection
-                            .find(Filters.eq("orderId", orderId))
-                            .first());
-
-                    Order order = DatabaseUtils.createOrder(orderJson);
                     JsonObject body = ctx.body().asJsonObject();
 
                     Validation validation = new ValidationBuilder().
@@ -215,56 +196,29 @@ public class ApiRouter {
 
                     try {
                         if (validation.validate(body)){
-
-                    OrderProcessor orderProcessor = OrderProcessor.getInstance();
-                    orderProcessor.cancelOrder(order);
-
-                    activeOrdersCollection.deleteOne(
-                            Filters.eq("orderId", orderId)
-                    );
-
-                    if (order.getType() == OrderType.BUY) {
-                        int amountToCreditBack = (int) order.getPrice() * order.getQuantity();
-
-                        usersCollection.updateOne(
-                                Filters.eq("userId", userId),
-                                new Document("$inc", new Document("balance", amountToCreditBack)
-                                ));
-                    }
-
-                    if (previouslyPartiallyFilled(orderId)) {
-                        orderHistoryCollection.updateOne(
-                                Filters.eq("orderId", orderId),
-                                new Document("$set", new Document("cancelled", true))
-                        );
-                    } else {
-                        Document orderDoc = order.toDoc();
-                        orderDoc.put("cancelled", true);
-
-                        orderHistoryCollection.insertOne(orderDoc);
-                    }
                                 OrderProcessor orderProcessor = OrderProcessor.getInstance();
-                                if(orderProcessor.cancelOrder(body.getString("orderId")),body.getString("")){
+                                if(orderProcessor.cancelOrder(body.getString("orderId"),
+                                                              body.getString("ticker"),
+                                                              body.getString("type")))
+                                {
 
-                                        MongoCollection<Document> activeOrdersCollection =
-                                        MongoClientConnection.getCollection("activeOrders");
+                                MongoCollection<Document> activeOrdersCollection = MongoClientConnection.getCollection("activeOrders");
 
-                                        MongoCollection<Document> usersCollection =
-                                    MongoClientConnection.getCollection("users");
+                                MongoCollection<Document> usersCollection = MongoClientConnection.getCollection("users");
 
-           
-                                        activeOrdersCollection.deleteOne(
-                                                Filters.eq("orderId", body.getString("orderId"))
-                                        );
-           
-                                        if(order.getType() == OrderType.BUY) {
-                                            int amountToCreditBack = (int) order.getPrice() * order.getQuantity();
-           
-                                            usersCollection.updateOne(
-                                                    Filters.eq("userId",body.getString("userId")),
-                                                    new Document("$inc", new Document("balance", amountToCreditBack)
-                                            ));
-                                        }
+        
+                                activeOrdersCollection.deleteOne(
+                                        Filters.eq("orderId", body.getString("orderId"))
+                                );
+        
+                                if(order.getType() == OrderType.BUY) {
+                                        int amountToCreditBack = (int) order.getPrice() * order.getQuantity();
+        
+                                        usersCollection.updateOne(
+                                                Filters.eq("userId",body.getString("userId")),
+                                                new Document("$inc", new Document("balance", amountToCreditBack)
+                                        ));
+                                }
                                 }
                             }
                 } catch (Exception e) {
