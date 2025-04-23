@@ -25,4 +25,19 @@ public class TradeBook {
   public PriorityQueue<Order> getSellOrders() {
     return sellOrders;
   }
+
+  public Boolean removeOrder(String orderId, String orderType){
+
+    PriorityQueue<Order> targetQueue = (OrderType.valueOf(orderType) == OrderType.BUY) ? buyOrders : sellOrders;
+
+    for (Order order : targetQueue){
+      if (order.getId().toString().equals(orderId)){
+        return targetQueue.remove(order);
+      }
+    }
+
+    return false;
+      
+  }
+    
 }

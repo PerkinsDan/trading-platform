@@ -3,7 +3,6 @@ package orderProcessor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.PriorityQueue;
 
 public class OrderProcessor {
 
@@ -34,17 +33,10 @@ public class OrderProcessor {
     return tradeBookMap.get(ticker);
   }
 
-  public Boolean cancelOrder(Order order) {
-    TradeBook book = orderProcessor.getTradeBook(order.getTicker());
-    PriorityQueue<Order> orderQueue;
-
-    if (order.getType() == OrderType.BUY) {
-      orderQueue = book.getBuyOrders();
-    } else {
-      orderQueue = book.getSellOrders();
-    }
-
-    return orderQueue.remove(order);
+  public Boolean cancelOrder(String orderId, String orderTicker, String orderType) {
+    
+      TradeBook book = orderProcessor.getTradeBook(Ticker.valueOf(orderTicker));
+      return book.removeOrder(orderId, orderType);
   }
 
   public void resetInstance() {
