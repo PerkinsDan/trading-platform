@@ -2,6 +2,8 @@ package com.setap.tradingplatformapi;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.setap.tradingplatformapi.Validations.Validation;
+import com.setap.tradingplatformapi.Validations.ValidationBuilder;
 import com.setap.tradingplatformapi.database.DatabaseUtils;
 import com.setap.tradingplatformapi.database.MongoClientConnection;
 import io.vertx.core.Vertx;
@@ -178,42 +180,52 @@ public class ApiRouter {
                             .end("Order created");
 
                 });
-
         router
+        // sample use of validationBuilder in this endpoint + other fixes
                 .get("/cancel-order")
                 .handler(ctx -> {
-                    JsonObject body = ctx.getBodyAsJson();
+                    JsonObject body = ctx.body().asJsonObject();
 
-                    String orderId = body.getString("orderId");
-                    String userId = body.getString("userId");
+                    Validation validation = new ValidationBuilder().validateOrderId().validateUserId().build();
 
-                    var activeOrdersCollection = MongoClientConnection.getCollection(
-                            "activeOrders"
-                    );
+                    try {
+                        if (validation.validate(body)){
+                                Order order = DatabaseUtils.createOrder(body);
+                                
+                                OrderProcessor orderProcessor = OrderProcessor.getInstance();
+                                if(orderProcessor.cancelOrder(order)){
 
-                    var usersCollection = MongoClientConnection.getCollection("users");
+                                        MongoCollection<Document> activeOrdersCollection =
+                                        MongoClientConnection.getCollection("activeOrders");
 
-                    JsonObject orderJson = JsonObject.mapFrom(activeOrdersCollection
-                            .find(Filters.eq("orderId", orderId))
-                            .first());
+                                        MongoCollection<Document> usersCollection =
+                                    MongoClientConnection.getCollection("users");
 
-                    Order order = DatabaseUtils.createOrder(orderJson);
+           
+                                        activeOrdersCollection.deleteOne(
+                                                Filters.eq("orderId", body.getString("orderId"))
+                                        );
+           
+                                        if(order.getType() == OrderType.BUY) {
+                                            int amountToCreditBack = (int) order.getPrice() * order.getQuantity();
+           
+                                            usersCollection.updateOne(
+                                                    Filters.eq("userId",body.getString("userId")),
+                                                    new Document("$inc", new Document("balance", amountToCreditBack)
+                                            ));
+                                        }
 
-                    OrderProcessor orderProcessor = OrderProcessor.getInstance();
-                    orderProcessor.cancelOrder(order);
+                                }
 
-                    activeOrdersCollection.deleteOne(
-                            Filters.eq("orderId", orderId)
-                    );
 
-                    if(order.getType() == OrderType.BUY) {
-                        int amountToCreditBack = (int) order.getPrice() * order.getQuantity();
 
-                        usersCollection.updateOne(
-                                Filters.eq("userId",userId),
-                                new Document("$inc", new Document("balance", amountToCreditBack)
-                        ));
-                    }
+                            }
+                } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                }
+
+
 
                     //TODO check if previously partially filled
                     //if yes, update order to cancelled

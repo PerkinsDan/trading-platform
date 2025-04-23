@@ -1,6 +1,6 @@
 package com.setap.tradingplatformapi.Validations;
 
-import io.vertx.core.json.JsonObject;
+//import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 // import whatever you need for valdiations 
@@ -9,7 +9,7 @@ import org.bson.Document;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Projections;
+//import com.mongodb.client.model.Projections;
 import com.setap.tradingplatformapi.database.MongoClientConnection;
 
 public class ValidationBuilder{
@@ -48,7 +48,6 @@ public class ValidationBuilder{
             try {
                 return validation.validate(body);
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return false;
