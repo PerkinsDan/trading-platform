@@ -34,15 +34,11 @@ public class TradeBook {
     for (Order order : targetQueue){
       if (order.getId().toString().equals(orderId)){
         orderToRemove = order;
-        break;
+        return targetQueue.remove(orderToRemove);
       }
     }
 
-    if (orderToRemove == null){
-      return false;
-    } else {
-      return targetQueue.remove(orderToRemove);
-    }
+    return false;
       
   }
     
