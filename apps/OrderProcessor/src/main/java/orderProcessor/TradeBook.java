@@ -25,4 +25,8 @@ public class TradeBook {
   public PriorityQueue<Order> getSellOrders() {
     return sellOrders;
   }
+
+  public Order getOrderById(String uuid, String type){
+    if (type)
+  }
 }
