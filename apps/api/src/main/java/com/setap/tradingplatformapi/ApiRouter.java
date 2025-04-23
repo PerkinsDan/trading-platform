@@ -186,14 +186,18 @@ public class ApiRouter {
                 .handler(ctx -> {
                     JsonObject body = ctx.body().asJsonObject();
 
-                    Validation validation = new ValidationBuilder().validateOrderId().validateUserId().build();
+                    Validation validation = new ValidationBuilder().
+                                                validateOrderId().
+                                                validateUserId().
+                                                validateTicker().
+                                                validateOrderType().
+                                                build();
 
                     try {
                         if (validation.validate(body)){
-                                Order order = DatabaseUtils.createOrder(body);
-                                
+
                                 OrderProcessor orderProcessor = OrderProcessor.getInstance();
-                                if(orderProcessor.cancelOrder(order)){
+                                if(orderProcessor.cancelOrder(body.getString("orderId")),body.getString("")){
 
                                         MongoCollection<Document> activeOrdersCollection =
                                         MongoClientConnection.getCollection("activeOrders");
@@ -214,11 +218,7 @@ public class ApiRouter {
                                                     new Document("$inc", new Document("balance", amountToCreditBack)
                                             ));
                                         }
-
                                 }
-
-
-
                             }
                 } catch (Exception e) {
                         // TODO Auto-generated catch block
