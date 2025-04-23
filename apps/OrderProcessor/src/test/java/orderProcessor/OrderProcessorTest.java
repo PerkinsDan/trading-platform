@@ -24,7 +24,8 @@ class OrderProcessorTest {
     Order order = new Order(OrderType.SELL, Ticker.AAPL, 110.0, 50, "dummyID");
 
     orderProcessor.processOrder(order);
-    assertTrue(orderProcessor.cancelOrder(order));
+    Boolean result = orderProcessor.cancelOrder(order.getId().toString(), order.getTicker().name(), order.getType().name());
+    assertTrue(result);
   }
 
   @Test
