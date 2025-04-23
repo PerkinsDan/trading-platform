@@ -2,8 +2,6 @@ package com.setap.tradingplatformapi;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
-import com.setap.tradingplatformapi.Validations.Validation;
-import com.setap.tradingplatformapi.Validations.ValidationBuilder;
 import com.setap.tradingplatformapi.database.DatabaseUtils;
 import com.setap.tradingplatformapi.database.MongoClientConnection;
 import io.vertx.core.Vertx;
@@ -180,8 +178,8 @@ public class ApiRouter {
                             .end("Order created");
 
                 });
+
         router
-        // sample use of validationBuilder in this endpoint + other fixes
                 .get("/cancel-order")
                 .handler(ctx -> {
                     JsonObject body = ctx.getBodyAsJson();
