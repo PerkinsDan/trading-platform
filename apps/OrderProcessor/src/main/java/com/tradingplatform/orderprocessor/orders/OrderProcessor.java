@@ -4,8 +4,6 @@ import com.tradingplatform.orderprocessor.matching.MatchingEngine;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.UUID;
 
 public class OrderProcessor {
 
@@ -38,24 +36,9 @@ public class OrderProcessor {
 
   public Boolean cancelOrder(String orderId, String orderTicker, String orderType) {
     
-    try {
       TradeBook book = orderProcessor.getTradeBook(Ticker.valueOf(orderTicker));
-      PriorityQueue<Order> orderQueue;
-
-      if (OrderType.valueOf(orderType) == OrderType.BUY) {
-        orderQueue = book.getBuyOrders();
-      } else {
-        orderQueue = book.getSellOrders();
-      }
-      
-      return orderQueue.remove(order);
-    } catch (Exception e) {
-      // TODO: handle exception
-    }
-    
+      return book.removeOrder(orderId, orderType);
   }
-
-  private Ticker getTickerFromString()
 
   public void resetInstance() {
     orderProcessor = null;
