@@ -32,14 +32,12 @@ public class TradeBook {
       ? buyOrders
       : sellOrders;
 
-    for (Order order : targetQueue){
-      if (order.getId().toString().equals(orderId)){
-        orderToRemove = order;
-        return targetQueue.remove(orderToRemove);
+    for (Order order : targetQueue) {
+      if (order.getId().toString().equals(orderId)) {
+        return targetQueue.remove(order);
       }
     }
 
     return false;
-      
   }
 }
