@@ -2,6 +2,9 @@ package com.setap.tradingplatformapi;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.setap.tradingplatformapi.Validations.Validation;
+import com.setap.tradingplatformapi.Validations.ValidationBuilder;
+import com.setap.tradingplatformapi.Validations.ValidationResult;
 import com.setap.tradingplatformapi.database.DatabaseUtils;
 import com.setap.tradingplatformapi.database.MongoClientConnection;
 import io.vertx.core.Vertx;
@@ -128,7 +131,7 @@ public class ApiRouter {
         router
                 .post("/create-order")
                 .handler(ctx -> {
-                    JsonObject body = ctx.getBodyAsJson();
+                    JsonObject body = ctx.body().asJsonObject();
 
                     MongoCollection<Document> activeOrdersCollection =
                             MongoClientConnection.getCollection("activeOrders");
@@ -136,46 +139,60 @@ public class ApiRouter {
                             MongoClientConnection.getCollection("orderHistory");
                     MongoCollection<Document> usersCollection =
                             MongoClientConnection.getCollection("users");
+                    
+                    //Create  and use POC validationBuilder object, we might wanna have validaions that
+                    //check that the price and quantity are valid too.
+                    Validation validation = new ValidationBuilder().
+                                                validateUserId().
+                                                validateOrderType().
+                                                validateTicker().
+                                                build();
+                    ValidationResult result = validation.validate(body);
 
-                    String validationResult = passValidations(body, usersCollection);
+                    try {
+                        if (result.isValid){
+                                //unchanged logic from previous create-order/ endpoint
+                                Order order = DatabaseUtils.createOrder(body);
 
-                    if (!validationResult.equals("PASSED VALIDATIONS")) {
-                        ctx.response()
-                                .setStatusCode(422)
-                                .putHeader("Content-Type", "application/json")
-                                .end(new JsonObject().put("Error", validationResult).encode());
-                        return;
+                                insertOrderIntoDatabase(
+                                        order,
+                                        activeOrdersCollection
+                                );
+
+                                OrderProcessor orderProcessor = OrderProcessor.getInstance();
+
+                                ArrayList<Document> matchesFoundAsMongoDBDocs =
+                                        DatabaseUtils.processOrderAndParseMatchesFound(
+                                                order,
+                                                orderProcessor
+                                        );
+
+                                if (!matchesFoundAsMongoDBDocs.isEmpty()) {
+                                        updateDb(
+                                                matchesFoundAsMongoDBDocs,
+                                                activeOrdersCollection,
+                                                usersCollection,
+                                                orderHistoryCollection
+                                        );
+                                }
+
+                                ctx.response().
+                                        setStatusCode(201).
+                                        putHeader("Content-Type", "application/json").
+                                        end("Order created");
+                        } else {
+                                ctx.response().
+                                setStatusCode(400).
+                                putHeader("Content-Type", "application/json").
+                                end("Error - Validation Error : " + result.errorMessage);
+                        }
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        ctx.response().
+                        setStatusCode(500).
+                        putHeader("Content-Type", "application/json").
+                        end("Internal Server Error : if were here sthg has gone quite wrong");
                     }
-
-                    Order order = DatabaseUtils.createOrder(body);
-
-                    insertOrderIntoDatabase(
-                            order,
-                            activeOrdersCollection
-                    );
-
-                    OrderProcessor orderProcessor = OrderProcessor.getInstance();
-
-                    ArrayList<Document> matchesFoundAsMongoDBDocs =
-                            DatabaseUtils.processOrderAndParseMatchesFound(
-                                    order,
-                                    orderProcessor
-                            );
-
-                    if (!matchesFoundAsMongoDBDocs.isEmpty()) {
-                        updateDb(
-                                matchesFoundAsMongoDBDocs,
-                                activeOrdersCollection,
-                                usersCollection,
-                                orderHistoryCollection
-                        );
-                    }
-
-                    ctx
-                            .response()
-                            .setStatusCode(201)
-                            .putHeader("Content-Type", "application/json")
-                            .end("Order created");
 
                 });
 
@@ -206,7 +223,7 @@ public class ApiRouter {
                     Order order = DatabaseUtils.createOrder(orderJson);
 
                     OrderProcessor orderProcessor = OrderProcessor.getInstance();
-                    orderProcessor.cancelOrder(order);
+                    orderProcessor.cancelOrder(orderId, orderId, orderId);
 
                     activeOrdersCollection.deleteOne(
                             Filters.eq("orderId", orderId)

@@ -2,8 +2,9 @@ package com.setap.tradingplatformapi.Validations;
 
 import io.vertx.core.json.JsonObject;
 
+@FunctionalInterface
 public interface Validation {
 
-    Boolean validate(JsonObject body) throws Exception;
+    ValidationResult validate(JsonObject body);
 
 }

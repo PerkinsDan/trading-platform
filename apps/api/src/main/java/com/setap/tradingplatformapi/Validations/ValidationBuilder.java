@@ -32,61 +32,81 @@ public class ValidationBuilder{
         .collect(Collectors.toSet());
 
     public ValidationBuilder validateUserId(){
-        MongoCollection<Document> usersCollection =
-                            MongoClientConnection.getCollection("users");
-        validations.add(body -> 
 
-            body.containsKey("userId") &&
-            ! body.getString("userId").isBlank() &&
-            usersCollection.find(Filters.eq("userId", body.getString("userId"))).first() != null
-            
-        );
+        MongoCollection<Document> usersCollection =
+        MongoClientConnection.getCollection("users"); 
+
+        validations.add(body -> {
+            if (!body.containsKey("userId") || body.getString("userId").isBlank()){
+                return ValidationResult.fail("userId is missing or blank");
+            }
+            if (usersCollection.find(Filters.eq("userId", body.getString("userId"))).first() == null){
+                return ValidationResult.fail("Invalid userId : no such user exists in the database");
+            }
+            return ValidationResult.ok();
+        });
         return this;
     }
 
     public ValidationBuilder validateOrderId(){
+        
         MongoCollection<Document> activeOrdersCollection =
-                            MongoClientConnection.getCollection("activeOrders");
-        validations.add(body -> 
-            body.containsKey("orderId") && 
-            !body.getString("orderId").isBlank() &&
-            activeOrdersCollection.find(Filters.eq("orderId", body.getString("orderId"))).first() != null
+        MongoClientConnection.getCollection("activeOrders");
 
-        );
+        validations.add(body -> {
+            if (!body.containsKey("orderId") || body.getString("orderId").isBlank()){
+                return ValidationResult.fail("orderId is missing or blank");
+            }
+            if (activeOrdersCollection.find(Filters.eq("orderId", body.getString("orderId"))).first() == null){
+                return ValidationResult.fail("Invalid orderId : no such exists in the database");
+            }
+            return ValidationResult.ok();
+        });
+
         return this;
     }
 
     public ValidationBuilder validateOrderType(){
 
-        validations.add(body ->
-            body.containsKey("type")&&
-            !body.getString("type").isBlank()&&
-            ValidOrderTypes.contains(body.getString("types"))
-        );
+        validations.add(body -> {
+            if (!body.containsKey("type") || body.getString("type").isBlank()){
+                return ValidationResult.fail("OrderType is missing or blank");
+            }
+            if (!ValidOrderTypes.contains(body.getString("type"))){
+                return ValidationResult.fail("Invalid Order Type : Must be a BUY or SELL");
+            }
+            return ValidationResult.ok();
+        });
+
         return this;
     }
 
     public ValidationBuilder validateTicker(){
 
-        validations.add(body ->
-            body.containsKey("ticker")&&
-            !body.getString("ticker").isBlank()&&
-            ValidOrderTypes.contains(body.getString("ticker"))
-        );
+        validations.add(body -> {
+            if (!body.containsKey("ticker") || body.getString("ticker").isBlank()){
+                return ValidationResult.fail("Ticker is missing or blank");
+            }
+            if (!ValidTickers.contains(body.getString("ticker"))){
+                return ValidationResult.fail("Invalid Ticker : This is not traded");
+            }
+            return ValidationResult.ok();
+        });
         return this;
     }
 
     //add more methods the above as needed, ie validateSufficientStockForSell(), validateSufficientFundsForBuy() ...
 
     public Validation build() {
-        return body -> validations.stream().allMatch(validation -> {
-            try {
-                return validation.validate(body);
-            } catch (Exception e) {
-                e.printStackTrace();
+        return body -> {
+            for (Validation validation : validations) {
+                ValidationResult result = validation.validate(body);
+                if (!result.isValid) {
+                    return result;
+                }
             }
-            return false;
-        });
+            return ValidationResult.ok();
+        };
     }
     
 
