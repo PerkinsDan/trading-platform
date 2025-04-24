@@ -1,21 +1,29 @@
 import { Button, Stack, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { LogoutRounded, Schedule, TrendingUp } from "@mui/icons-material";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig/firebase";
 
-function NavBar({ currentPage }: { currentPage?: string }) {
+function NavBar() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const currentPage = location.pathname.split("/")[1];
 
   return (
     <Stack
-      height="100%"
-      minWidth="6rem"
-      maxWidth="6rem"
+      height="100vh"
+      width={"6rem"}
       gap="2rem"
-      justifyContent="center"
+      justifyContent="between"
       alignItems="center"
-      sx={{ backgroundColor: "#5533ff22", borderRadius: "0 2rem 2rem 0" }}
+      sx={{
+        backgroundColor: "#5533ff22",
+        borderRadius: "0 2rem 2rem 0",
+        boxShadow: 10,
+        position: "sticky",
+        top: 0,
+      }}
     >
       <Button
         onClick={() => {
@@ -25,7 +33,6 @@ function NavBar({ currentPage }: { currentPage?: string }) {
           flexDirection: "column",
           width: "80%",
           marginTop: "auto",
-
           color: currentPage === "make-trades" ? "ffffff" : "#7e7e7e",
         }}
       >
