@@ -4,3 +4,18 @@ export interface Trade {
   price: number;
   type: string;
 }
+
+export interface Snapshot {
+  price: number;
+  timestamp: [number, number];
+  change: number;
+}
+
+export enum Ticker {
+  AAPL,
+  MSFT,
+  GOOGL,
+  AMZN,
+  TSLA,
+  META,
+}

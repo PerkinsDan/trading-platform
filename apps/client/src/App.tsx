@@ -4,19 +4,30 @@ import MakeTrades from "./pages/MakeTrades";
 import MyTrades from "./pages/MyTrades";
 import ProtectedRoute from "./components/Routes/ProtectedRoute";
 import UnprotectedRoute from "./components/Routes/UnprotectedRoute";
+import TickerTrades from "./pages/TickerTrades";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route
-          path="make-trades"
-          element={
-            <ProtectedRoute>
-              <MakeTrades />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="make-trades">
+          <Route
+            index
+            element={
+              <ProtectedRoute>
+                <MakeTrades />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path=":ticker"
+            element={
+              <ProtectedRoute>
+                <TickerTrades />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
         <Route
           path="my-trades"
           element={
