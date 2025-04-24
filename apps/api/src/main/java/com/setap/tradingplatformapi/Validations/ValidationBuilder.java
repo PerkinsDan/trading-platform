@@ -1,10 +1,8 @@
 package com.setap.tradingplatformapi.Validations;
 
-//import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-// import whatever you need for valdiations 
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,7 +10,6 @@ import org.bson.Document;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
-//import com.mongodb.client.model.Projections;
 import com.setap.tradingplatformapi.database.MongoClientConnection;
 import orderProcessor.OrderType;
 import orderProcessor.Ticker;
@@ -58,7 +55,7 @@ public class ValidationBuilder{
                 return ValidationResult.fail("orderId is missing or blank");
             }
             if (activeOrdersCollection.find(Filters.eq("orderId", body.getString("orderId"))).first() == null){
-                return ValidationResult.fail("Invalid orderId : no such exists in the database");
+                return ValidationResult.fail("Invalid orderId : no such order exists in the database");
             }
             return ValidationResult.ok();
         });

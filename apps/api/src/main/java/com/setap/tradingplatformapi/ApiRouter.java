@@ -223,7 +223,7 @@ public class ApiRouter {
                     Order order = DatabaseUtils.createOrder(orderJson);
 
                     OrderProcessor orderProcessor = OrderProcessor.getInstance();
-                    orderProcessor.cancelOrder(orderId, orderId, orderId);
+                    orderProcessor.cancelOrder(order);
 
                     activeOrdersCollection.deleteOne(
                             Filters.eq("orderId", orderId)
