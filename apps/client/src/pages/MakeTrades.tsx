@@ -42,8 +42,6 @@ function MakeTrades() {
             <TradingCard
               key={stock}
               stock={stock}
-              //   tradeDetails={tradeDetails}
-              //   setTradeDetails={setTradeDetails}
               snapshot={marketSnapshots[index]}
             />
           ))}

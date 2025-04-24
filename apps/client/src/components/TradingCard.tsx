@@ -4,10 +4,6 @@ import { Snapshot } from "../../types";
 
 interface TradingCardProps {
   stock: string;
-  //   tradeDetails: { type: string; quantity: number; price: number };
-  //   setTradeDetails: React.Dispatch<
-  //     React.SetStateAction<{ type: string; quantity: number; price: number }>
-  //   >;
   snapshot?: Snapshot;
 }
 

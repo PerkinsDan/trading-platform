@@ -24,7 +24,7 @@ enum Direction {
 
 interface TradeDetails {
   ticker: Ticker | null;
-  type?: Direction; // Make type optional to ensure it's explicitly selected
+  type?: Direction;
   quantity: number;
   price: number;
   userId: string | null;
@@ -45,7 +45,6 @@ const TickerTrades = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleTrade = async (stock: string) => {
-    // Validation
     if (!tradeDetails.type) {
       setError("Please select a trade type (Buy or Sell).");
       return;
