@@ -2,13 +2,12 @@ package com.tradingplatform.orderprocessor.routers;
 
 import static com.tradingplatform.orderprocessor.database.DatabaseUtils.*;
 
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.tradingplatform.orderprocessor.OrderProcessorService;
-import com.tradingplatform.orderprocessor.database.DatabaseUtils;
 import com.tradingplatform.orderprocessor.database.MongoClientConnection;
 import com.tradingplatform.orderprocessor.orders.Order;
 import com.tradingplatform.orderprocessor.orders.OrderType;
+import com.tradingplatform.orderprocessor.orders.Ticker;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
@@ -37,14 +36,7 @@ public class OrdersRouter {
       .handler(ctx -> {
         JsonObject body = ctx.getBodyAsJson();
 
-        MongoCollection<Document> activeOrdersCollection =
-          MongoClientConnection.getCollection("activeOrders");
-        MongoCollection<Document> orderHistoryCollection =
-          MongoClientConnection.getCollection("orderHistory");
-        MongoCollection<Document> usersCollection =
-          MongoClientConnection.getCollection("users");
-
-        String validationResult = passValidations(body, usersCollection);
+        String validationResult = passValidations(body);
 
         if (!validationResult.equals("PASSED VALIDATIONS")) {
           ctx
@@ -52,23 +44,19 @@ public class OrdersRouter {
             .setStatusCode(422)
             .putHeader("Content-Type", "application/json")
             .end(new JsonObject().put("Error", validationResult).encode());
+
           return;
         }
 
-        Order order = DatabaseUtils.createOrder(body);
-        insertOrderIntoDatabase(order, activeOrdersCollection);
+        Order order = createOrder(body);
+        insertOrderIntoDatabase(order);
 
         ArrayList<String> matchesFound = orderProcessorService.processOrder(
           order
         );
 
         if (!matchesFound.isEmpty()) {
-          updateDb(
-            matchesFound,
-            activeOrdersCollection,
-            usersCollection,
-            orderHistoryCollection
-          );
+          updateCollectionsWithMatches(matchesFound);
         }
 
         ctx
@@ -102,7 +90,7 @@ public class OrdersRouter {
           activeOrdersCollection.find(Filters.eq("orderId", orderId)).first()
         );
 
-        Order order = DatabaseUtils.createOrder(orderJson);
+        Order order = createOrder(orderJson);
 
         orderProcessorService.cancelOrder(orderId, ticker, type);
 
@@ -135,5 +123,18 @@ public class OrdersRouter {
           .putHeader("Content-Type", "application/json")
           .end("Order cancelled");
       });
+  }
+
+  public static Order createOrder(JsonObject body) {
+    String typeStr = body.getString("type");
+    String tickerStr = body.getString("ticker");
+    double price = body.getDouble("price");
+    int quantity = body.getInteger("quantity");
+    String userId = body.getString("userId");
+
+    OrderType type = OrderType.valueOf(typeStr);
+    Ticker ticker = Ticker.valueOf(tickerStr);
+
+    return new Order(type, userId, ticker, price, quantity);
   }
 }
