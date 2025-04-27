@@ -5,10 +5,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
-import com.tradingplatform.orderprocessor.OrderProcessorService;
 import com.tradingplatform.orderprocessor.orders.Order;
-import com.tradingplatform.orderprocessor.orders.OrderType;
-import com.tradingplatform.orderprocessor.orders.Ticker;
 import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,19 +13,6 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 public class DatabaseUtils {
-
-  public static Order createOrder(JsonObject body) {
-    String typeStr = body.getString("type");
-    String tickerStr = body.getString("ticker");
-    double price = body.getDouble("price");
-    int quantity = body.getInteger("quantity");
-    String userId = body.getString("userId");
-
-    OrderType type = OrderType.valueOf(typeStr);
-    Ticker ticker = Ticker.valueOf(tickerStr);
-
-    return new Order(type, userId, ticker, price, quantity);
-  }
 
   public static boolean previouslyPartiallyFilled(String orderId) {
     MongoCollection<Document> orderHistoryCollection =
@@ -41,11 +25,13 @@ public class DatabaseUtils {
     return previouslyPartiallyFilled != null;
   }
 
-  public static String passValidations(
-    JsonObject body,
-    MongoCollection<Document> usersCollection
-  ) {
+  public static String passValidations(JsonObject body) {
     //TODO SPLIT INTO METHODS
+
+    MongoCollection<Document> usersCollection =
+      MongoClientConnection.getCollection("users");
+
+    System.out.println(body);
 
     String typeStr = body.getString("type");
     boolean isBuy = typeStr.equals("BUY");
@@ -121,62 +107,46 @@ public class DatabaseUtils {
     return "PASSED VALIDATIONS";
   }
 
-  public static void insertOrderIntoDatabase(
-    Order order,
-    MongoCollection<Document> activeOrdersCollection
+  public static void updateCollectionsWithMatches(
+    ArrayList<String> matchesFound
   ) {
-    Document orderDoc = order.toDoc();
-    activeOrdersCollection.insertOne(orderDoc);
-  }
+    ArrayList<Document> matchesFoundAsMongoDBDocs = convertMatchesToDocs(
+      matchesFound
+    );
 
-  public static ArrayList<Document> processOrderAndParseMatchesFound(
-    Order order,
-    OrderProcessorService orderProcessor
-  ) {
-    ArrayList<String> matchesFound = orderProcessor.processOrder(order);
-
-    ArrayList<Document> matchesFoundAsMongoDBDocs = new ArrayList<>();
-
-    for (String match : matchesFound) {
-      Document doc = Document.parse(match);
-      matchesFoundAsMongoDBDocs.add(doc);
-    }
-
-    return matchesFoundAsMongoDBDocs;
-  }
-
-  public static void updateDb(
-    ArrayList<Document> matchesFoundAsMongoDBDocs,
-    MongoCollection<Document> activeOrdersCollection,
-    MongoCollection<Document> usersCollection,
-    MongoCollection<Document> orderHistoryCollection
-  ) {
     Document buyOrder = matchesFoundAsMongoDBDocs.get(0);
     Document sellOrder = matchesFoundAsMongoDBDocs.get(1);
 
-    updateDbAccordingToPartiallyFilledOrNot(
-      buyOrder,
-      true,
-      activeOrdersCollection,
-      usersCollection,
-      orderHistoryCollection
-    );
-    updateDbAccordingToPartiallyFilledOrNot(
-      sellOrder,
-      false,
-      activeOrdersCollection,
-      usersCollection,
-      orderHistoryCollection
-    );
+    updateDbAccordingToPartiallyFilledOrNot(buyOrder, true);
+    updateDbAccordingToPartiallyFilledOrNot(sellOrder, false);
+  }
+
+  private static ArrayList<Document> convertMatchesToDocs(
+    ArrayList<String> matchesFound
+  ) {
+    ArrayList<Document> docs = new ArrayList<>();
+
+    for (String match : matchesFound) {
+      Document doc = Document.parse(match);
+      docs.add(doc);
+    }
+
+    return docs;
   }
 
   public static void updateDbAccordingToPartiallyFilledOrNot(
     Document order,
-    boolean isBuy,
-    MongoCollection<Document> activeOrdersCollection,
-    MongoCollection<Document> usersCollection,
-    MongoCollection<Document> orderHistoryCollection
+    boolean isBuy
   ) {
+    MongoCollection<Document> activeOrdersCollection =
+      MongoClientConnection.getCollection("activeOrders");
+
+    MongoCollection<Document> usersCollection =
+      MongoClientConnection.getCollection("users");
+
+    MongoCollection<Document> orderHistoryCollection =
+      MongoClientConnection.getCollection("orderHistory");
+
     boolean filled = order.getBoolean("filled");
     String orderId = order.getString("orderID");
     String userId = order.getString("userId");

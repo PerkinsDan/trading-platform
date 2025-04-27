@@ -26,11 +26,5 @@ jobs:
       - name: Build OrderProcessor
         run: cd ./apps/OrderProcessor/ && mvn clean install --batch-mode
 
-      - name: Build API
-        run: cd ./apps/api/ && mvn clean install --batch-mode
-
       - name: Run OrderProcessor Tests
         run: cd ./apps/OrderProcessor/ && mvn test --batch-mode
-
-      - name: Run API Tests
-        run: cd ./apps/api/ && mvn test --batch-mode

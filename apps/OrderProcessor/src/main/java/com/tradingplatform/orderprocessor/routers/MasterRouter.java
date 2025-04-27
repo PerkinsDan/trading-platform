@@ -10,8 +10,8 @@ public class MasterRouter {
   public MasterRouter(Vertx vertx) {
     router = Router.router(vertx);
 
-    Orders orders = new Orders(vertx);
-    router.route("/orders/*").subRouter(orders.getRouter());
+    OrdersRouter ordersRouter = new OrdersRouter(vertx);
+    router.route("/orders/*").subRouter(ordersRouter.getRouter());
 
     UsersRouter usersRouter = new UsersRouter(vertx);
     router.route("/users/*").subRouter(usersRouter.getRouter());

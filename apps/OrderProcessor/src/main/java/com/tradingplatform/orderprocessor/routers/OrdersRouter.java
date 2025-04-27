@@ -5,46 +5,54 @@ import static com.tradingplatform.orderprocessor.database.DatabaseUtils.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.tradingplatform.orderprocessor.OrderProcessorService;
-import com.tradingplatform.orderprocessor.database.DatabaseUtils;
 import com.tradingplatform.orderprocessor.database.MongoClientConnection;
 import com.tradingplatform.orderprocessor.orders.Order;
 import com.tradingplatform.orderprocessor.orders.OrderType;
+import com.tradingplatform.orderprocessor.orders.Ticker;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 import java.util.ArrayList;
 import org.bson.Document;
 
-public class Orders {
+public class OrdersRouter {
 
   private final Router router;
   private final OrderProcessorService orderProcessorService;
 
-  public Router getRouter() {
-    return router;
-  }
-
-  Orders(Vertx vertx) {
+  OrdersRouter(Vertx vertx) {
     router = Router.router(vertx);
     orderProcessorService = OrderProcessorService.getInstance();
 
     initialise();
   }
 
+  public static Order createOrder(JsonObject body) {
+    String typeStr = body.getString("type");
+    String tickerStr = body.getString("ticker");
+    double price = body.getDouble("price");
+    int quantity = body.getInteger("quantity");
+    String userId = body.getString("userId");
+
+    OrderType type = OrderType.valueOf(typeStr);
+    Ticker ticker = Ticker.valueOf(tickerStr);
+
+    return new Order(type, userId, ticker, price, quantity);
+  }
+
+  public Router getRouter() {
+    return router;
+  }
+
   void initialise() {
     router
-      .post("/create-order")
+      .post("/create")
+      .handler(BodyHandler.create())
       .handler(ctx -> {
-        JsonObject body = ctx.getBodyAsJson();
+        JsonObject body = ctx.body().asJsonObject();
 
-        MongoCollection<Document> activeOrdersCollection =
-          MongoClientConnection.getCollection("activeOrders");
-        MongoCollection<Document> orderHistoryCollection =
-          MongoClientConnection.getCollection("orderHistory");
-        MongoCollection<Document> usersCollection =
-          MongoClientConnection.getCollection("users");
-
-        String validationResult = passValidations(body, usersCollection);
+        String validationResult = passValidations(body);
 
         if (!validationResult.equals("PASSED VALIDATIONS")) {
           ctx
@@ -52,39 +60,38 @@ public class Orders {
             .setStatusCode(422)
             .putHeader("Content-Type", "application/json")
             .end(new JsonObject().put("Error", validationResult).encode());
+
           return;
         }
 
-        Order order = DatabaseUtils.createOrder(body);
+        Order order = createOrder(body);
 
-        insertOrderIntoDatabase(order, activeOrdersCollection);
+        MongoCollection<Document> activeOrdersCollection =
+          MongoClientConnection.getCollection("activeOrders");
 
-        ArrayList<Document> matchesFoundAsMongoDBDocs =
-          DatabaseUtils.processOrderAndParseMatchesFound(
-            order,
-            orderProcessorService
-          );
+        Document orderDoc = order.toDoc();
+        activeOrdersCollection.insertOne(orderDoc);
 
-        if (!matchesFoundAsMongoDBDocs.isEmpty()) {
-          updateDb(
-            matchesFoundAsMongoDBDocs,
-            activeOrdersCollection,
-            usersCollection,
-            orderHistoryCollection
-          );
+        ArrayList<String> matchesFound = orderProcessorService.processOrder(
+          order
+        );
+
+        if (!matchesFound.isEmpty()) {
+          updateCollectionsWithMatches(matchesFound);
         }
 
         ctx
           .response()
-          .setStatusCode(201)
+          .setStatusCode(200)
           .putHeader("Content-Type", "application/json")
           .end("Order created");
       });
 
     router
-      .post("/cancel-order")
+      .post("/cancel")
+      .handler(BodyHandler.create())
       .handler(ctx -> {
-        JsonObject body = ctx.getBodyAsJson();
+        JsonObject body = ctx.body().asJsonObject();
 
         String orderId = body.getString("orderId");
         String userId = body.getString("userId");
@@ -105,7 +112,17 @@ public class Orders {
           activeOrdersCollection.find(Filters.eq("orderId", orderId)).first()
         );
 
-        Order order = DatabaseUtils.createOrder(orderJson);
+        if (orderJson == null) {
+          ctx
+            .response()
+            .setStatusCode(404)
+            .putHeader("Content-Type", "application/json")
+            .end("Order cannot be cancelled... Order does not exist");
+
+          return;
+        }
+
+        Order order = createOrder(orderJson);
 
         orderProcessorService.cancelOrder(orderId, ticker, type);
 
@@ -132,11 +149,7 @@ public class Orders {
           orderHistoryCollection.insertOne(orderDoc);
         }
 
-        ctx
-          .response()
-          .setStatusCode(201)
-          .putHeader("Content-Type", "application/json")
-          .end("Order cancelled");
+        ctx.response().setStatusCode(200);
       });
   }
 }

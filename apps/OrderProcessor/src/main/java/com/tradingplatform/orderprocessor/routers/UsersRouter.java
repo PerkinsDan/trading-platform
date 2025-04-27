@@ -5,6 +5,7 @@ import com.tradingplatform.orderprocessor.database.MongoClientConnection;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,8 +27,9 @@ public class UsersRouter {
   private void setupRoutes() {
     router
       .post("/create")
+      .handler(BodyHandler.create())
       .handler(ctx -> {
-        JsonObject body = ctx.getBodyAsJson();
+        JsonObject body = ctx.body().asJsonObject();
         String userId = body.getString("userId");
 
         var usersCollection = MongoClientConnection.getCollection("users");
@@ -52,8 +54,9 @@ public class UsersRouter {
 
     router
       .post("/update-balance")
+      .handler(BodyHandler.create())
       .handler(ctx -> {
-        JsonObject body = ctx.getBodyAsJson();
+        JsonObject body = ctx.body().asJsonObject();
         if (
           body == null ||
           !body.containsKey("userId") ||
