@@ -32,9 +32,9 @@ public class OrdersRouter {
 
   void initialise() {
     router
-      .post("/create-order")
+      .post("/create")
       .handler(ctx -> {
-        JsonObject body = ctx.getBodyAsJson();
+        JsonObject body = ctx.body().asJsonObject();
 
         String validationResult = passValidations(body);
 
@@ -61,15 +61,15 @@ public class OrdersRouter {
 
         ctx
           .response()
-          .setStatusCode(201)
+          .setStatusCode(200)
           .putHeader("Content-Type", "application/json")
           .end("Order created");
       });
 
     router
-      .post("/cancel-order")
+      .post("/cancel")
       .handler(ctx -> {
-        JsonObject body = ctx.getBodyAsJson();
+        JsonObject body = ctx.body().asJsonObject();
 
         String orderId = body.getString("orderId");
         String userId = body.getString("userId");
@@ -89,6 +89,16 @@ public class OrdersRouter {
         JsonObject orderJson = JsonObject.mapFrom(
           activeOrdersCollection.find(Filters.eq("orderId", orderId)).first()
         );
+
+        if (orderJson == null) {
+          ctx
+            .response()
+            .setStatusCode(404)
+            .putHeader("Content-Type", "application/json")
+            .end("Order cannot be cancelled... Order does not exist");
+
+          return;
+        }
 
         Order order = createOrder(orderJson);
 
@@ -117,11 +127,7 @@ public class OrdersRouter {
           orderHistoryCollection.insertOne(orderDoc);
         }
 
-        ctx
-          .response()
-          .setStatusCode(201)
-          .putHeader("Content-Type", "application/json")
-          .end("Order cancelled");
+        ctx.response().setStatusCode(200);
       });
   }
 
