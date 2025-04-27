@@ -1,8 +1,9 @@
-package com.tradingplatform.orderprocessor;
+package com.tradingplatform.orderprocessor.matching;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.tradingplatform.orderprocessor.OrderProcessorService;
 import com.tradingplatform.orderprocessor.orders.Order;
 import com.tradingplatform.orderprocessor.orders.OrderType;
 import com.tradingplatform.orderprocessor.orders.Ticker;
