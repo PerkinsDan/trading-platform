@@ -19,15 +19,28 @@ public class OrdersRouter {
   private final Router router;
   private final OrderProcessorService orderProcessorService;
 
-  public Router getRouter() {
-    return router;
-  }
-
   OrdersRouter(Vertx vertx) {
     router = Router.router(vertx);
     orderProcessorService = OrderProcessorService.getInstance();
 
     initialise();
+  }
+
+  public static Order createOrder(JsonObject body) {
+    String typeStr = body.getString("type");
+    String tickerStr = body.getString("ticker");
+    double price = body.getDouble("price");
+    int quantity = body.getInteger("quantity");
+    String userId = body.getString("userId");
+
+    OrderType type = OrderType.valueOf(typeStr);
+    Ticker ticker = Ticker.valueOf(tickerStr);
+
+    return new Order(type, userId, ticker, price, quantity);
+  }
+
+  public Router getRouter() {
+    return router;
   }
 
   void initialise() {
@@ -129,18 +142,5 @@ public class OrdersRouter {
 
         ctx.response().setStatusCode(200);
       });
-  }
-
-  public static Order createOrder(JsonObject body) {
-    String typeStr = body.getString("type");
-    String tickerStr = body.getString("ticker");
-    double price = body.getDouble("price");
-    int quantity = body.getInteger("quantity");
-    String userId = body.getString("userId");
-
-    OrderType type = OrderType.valueOf(typeStr);
-    Ticker ticker = Ticker.valueOf(tickerStr);
-
-    return new Order(type, userId, ticker, price, quantity);
   }
 }
