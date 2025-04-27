@@ -11,7 +11,6 @@
     <properties>
         <maven.compiler.source>23</maven.compiler.source>
         <maven.compiler.target>23</maven.compiler.target>
-        <vertx.verticle>com.tradingplatform.orderprocessor.ApiVerticle</vertx.verticle>
     </properties>
 
     <build>

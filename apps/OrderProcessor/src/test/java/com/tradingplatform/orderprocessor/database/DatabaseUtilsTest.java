@@ -7,8 +7,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
+import com.tradingplatform.orderprocessor.OrderProcessorService;
 import com.tradingplatform.orderprocessor.orders.Order;
-import com.tradingplatform.orderprocessor.orders.OrderProcessor;
 import com.tradingplatform.orderprocessor.orders.OrderType;
 import com.tradingplatform.orderprocessor.orders.Ticker;
 import java.util.ArrayList;
@@ -34,14 +34,14 @@ public class DatabaseUtilsTest {
   MongoCollection<Document> mockOrderHistoryCollection;
 
   @Mock
-  OrderProcessor mockOrderProcessor;
+  OrderProcessorService mockOrderProcessor;
 
   @BeforeEach
   void setup() {
     mockActiveOrdersCollection = Mockito.mock(MongoCollection.class);
     mockUsersCollection = Mockito.mock(MongoCollection.class);
     mockOrderHistoryCollection = Mockito.mock(MongoCollection.class);
-    mockOrderProcessor = Mockito.mock(OrderProcessor.class);
+    mockOrderProcessor = Mockito.mock(OrderProcessorService.class);
   }
 
   @Test

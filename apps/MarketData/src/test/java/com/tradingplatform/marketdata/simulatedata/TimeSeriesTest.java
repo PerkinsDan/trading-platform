@@ -1,4 +1,4 @@
-package com.setap.marketdata.simulatedata;
+package com.tradingplatform.marketdata.simulatedata;
 
 import static org.junit.jupiter.api.Assertions.*;
 

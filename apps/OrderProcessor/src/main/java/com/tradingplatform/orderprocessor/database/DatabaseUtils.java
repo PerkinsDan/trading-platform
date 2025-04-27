@@ -5,8 +5,8 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
+import com.tradingplatform.orderprocessor.OrderProcessorService;
 import com.tradingplatform.orderprocessor.orders.Order;
-import com.tradingplatform.orderprocessor.orders.OrderProcessor;
 import com.tradingplatform.orderprocessor.orders.OrderType;
 import com.tradingplatform.orderprocessor.orders.Ticker;
 import io.vertx.core.json.JsonObject;
@@ -17,7 +17,8 @@ import org.bson.conversions.Bson;
 
 public class DatabaseUtils {
 
-  static OrderProcessor orderprocessor = OrderProcessor.getInstance();
+  static OrderProcessorService orderprocessor =
+    OrderProcessorService.getInstance();
 
   public DatabaseUtils() {}
 
@@ -135,7 +136,7 @@ public class DatabaseUtils {
 
   public static ArrayList<Document> processOrderAndParseMatchesFound(
     Order order,
-    OrderProcessor orderprocessor
+    OrderProcessorService orderprocessor
   ) {
     ArrayList<String> matchesFound = orderprocessor.processOrder(order);
     ArrayList<Document> matchesFoundAsMongoDBDocs = new ArrayList<>();

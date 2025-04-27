@@ -1,9 +1,9 @@
-package com.setap.marketdata;
+package com.tradingplatform.marketdata;
 
-import static com.setap.marketdata.constants.Tickers.AAPL;
+import static com.tradingplatform.marketdata.constants.Tickers.AAPL;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.setap.marketdata.simulatedata.Snapshot;
+import com.tradingplatform.marketdata.simulatedata.Snapshot;
 import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

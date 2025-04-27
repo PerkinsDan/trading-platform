@@ -7,45 +7,35 @@ import com.mongodb.client.model.Filters;
 import com.tradingplatform.orderprocessor.database.DatabaseUtils;
 import com.tradingplatform.orderprocessor.database.MongoClientConnection;
 import com.tradingplatform.orderprocessor.orders.Order;
-import com.tradingplatform.orderprocessor.orders.OrderProcessor;
 import com.tradingplatform.orderprocessor.orders.OrderType;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.handler.BodyHandler;
-import io.vertx.ext.web.handler.CorsHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.bson.Document;
 
-public class ApiRouter {
+public class OrderProcessorRouter {
 
-  Router router;
+  private final Router router;
+  private final OrderProcessorService orderProcessorService;
 
-  ApiRouter(Vertx vertx) {
+  public Router getRouter() {
+    return router;
+  }
+
+  OrderProcessorRouter(
+    Vertx vertx,
+    OrderProcessorService orderProcessorService
+  ) {
     router = Router.router(vertx);
-    router.route().handler(BodyHandler.create());
-    router
-      .route()
-      .handler(
-        CorsHandler.create("*")
-          .allowedHeader("Content-Type")
-          .allowedHeader("Authorization")
-      );
+    this.orderProcessorService = orderProcessorService;
+
     initialise();
   }
 
   void initialise() {
-    router
-      .route("/")
-      .handler(ctx -> {
-        HttpServerResponse response = ctx.response();
-        response.putHeader("content-type", "text/plain");
-        response.end("Hello World from Vert.x-Web!");
-      });
-
     router
       .post("/create-user")
       .handler(ctx -> {
@@ -150,10 +140,11 @@ public class ApiRouter {
 
         insertOrderIntoDatabase(order, activeOrdersCollection);
 
-        OrderProcessor orderProcessor = OrderProcessor.getInstance();
-
         ArrayList<Document> matchesFoundAsMongoDBDocs =
-          DatabaseUtils.processOrderAndParseMatchesFound(order, orderProcessor);
+          DatabaseUtils.processOrderAndParseMatchesFound(
+            order,
+            orderProcessorService
+          );
 
         if (!matchesFoundAsMongoDBDocs.isEmpty()) {
           updateDb(
@@ -197,8 +188,7 @@ public class ApiRouter {
 
         Order order = DatabaseUtils.createOrder(orderJson);
 
-        OrderProcessor orderProcessor = OrderProcessor.getInstance();
-        orderProcessor.cancelOrder(orderId, ticker, type);
+        orderProcessorService.cancelOrder(orderId, ticker, type);
 
         activeOrdersCollection.deleteOne(Filters.eq("orderId", orderId));
 

@@ -1,24 +1,27 @@
-package com.tradingplatform.orderprocessor.orders;
+package com.tradingplatform.orderprocessor;
 
 import com.tradingplatform.orderprocessor.matching.MatchingEngine;
+import com.tradingplatform.orderprocessor.orders.Order;
+import com.tradingplatform.orderprocessor.orders.Ticker;
+import com.tradingplatform.orderprocessor.orders.TradeBook;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OrderProcessor {
+public class OrderProcessorService {
 
-  private static OrderProcessor orderProcessor = null;
+  private static OrderProcessorService orderProcessor = null;
   private static final Map<Ticker, TradeBook> tradeBookMap = new HashMap<>();
 
-  private OrderProcessor() {
+  private OrderProcessorService() {
     for (Ticker ticker : Ticker.values()) {
       tradeBookMap.put(ticker, new TradeBook());
     }
   }
 
-  public static OrderProcessor getInstance() {
+  public static OrderProcessorService getInstance() {
     if (orderProcessor == null) {
-      orderProcessor = new OrderProcessor();
+      orderProcessor = new OrderProcessorService();
     }
     return orderProcessor;
   }
