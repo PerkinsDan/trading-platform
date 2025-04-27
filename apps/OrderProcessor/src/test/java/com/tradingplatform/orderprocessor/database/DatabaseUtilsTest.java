@@ -45,20 +45,19 @@ public class DatabaseUtilsTest {
   }
 
   @Test
-  void testProcessOrderAndParseMatchesFound() {
-    Order order = new Order(OrderType.BUY, "userA", Ticker.AAPL, 50.0, 10);
+  void testConvertMatchesToDocs() {
+    ArrayList<String> fakeMatchesToBeProcessed = new ArrayList<>();
+    fakeMatchesToBeProcessed.add(
+      "{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
+    );
 
-    List<String> fakeMatchesToBeProcessed = List.of(
-      "{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}",
+    fakeMatchesToBeProcessed.add(
       "{\"orderID\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
     );
 
-    Mockito.when(
-      mockOrderProcessor.processOrder(ArgumentMatchers.any(Order.class))
-    ).thenReturn(new ArrayList<>(fakeMatchesToBeProcessed));
-
-    ArrayList<Document> matchesFound =
-      DatabaseUtils.processOrderAndParseMatchesFound(order, mockOrderProcessor);
+    ArrayList<Document> matchesFound = DatabaseUtils.convertMatchesToDocs(
+      fakeMatchesToBeProcessed
+    );
 
     ArrayList<Document> expectedMatches = new ArrayList<>();
     expectedMatches.add(

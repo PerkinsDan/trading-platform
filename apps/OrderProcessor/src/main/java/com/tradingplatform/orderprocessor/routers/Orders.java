@@ -56,14 +56,14 @@ public class Orders {
         }
 
         Order order = DatabaseUtils.createOrder(body);
-
         insertOrderIntoDatabase(order, activeOrdersCollection);
 
+        ArrayList<String> matchesFound = orderProcessorService.processOrder(
+          order
+        );
+
         ArrayList<Document> matchesFoundAsMongoDBDocs =
-          DatabaseUtils.processOrderAndParseMatchesFound(
-            order,
-            orderProcessorService
-          );
+          DatabaseUtils.convertMatchesToDocs(matchesFound);
 
         if (!matchesFoundAsMongoDBDocs.isEmpty()) {
           updateDb(
