@@ -2,6 +2,7 @@ package com.tradingplatform.orderprocessor;
 
 import static com.tradingplatform.orderprocessor.database.MongoClientConnection.createConnection;
 
+import com.tradingplatform.orderprocessor.routers.MasterRouter;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
@@ -12,7 +13,6 @@ public class OrderProcessorServiceMain {
   private static OrderProcessorService orderProcessorService;
 
   public static void main(String[] args) {
-    orderProcessorService = OrderProcessorService.getInstance();
     startServer();
   }
 
@@ -30,12 +30,8 @@ public class OrderProcessorServiceMain {
           .allowedHeader("Authorization")
       );
 
-    Router orderProcessorRouter = new OrderProcessorRouter(
-      vertx,
-      orderProcessorService
-    ).getRouter();
-
-    router.route().subRouter(orderProcessorRouter);
+    Router masterRouter = new MasterRouter(vertx).getRouter();
+    router.route().subRouter(masterRouter);
 
     server.requestHandler(router).listen(8080);
 

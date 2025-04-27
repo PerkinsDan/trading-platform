@@ -17,11 +17,6 @@ import org.bson.conversions.Bson;
 
 public class DatabaseUtils {
 
-  static OrderProcessorService orderprocessor =
-    OrderProcessorService.getInstance();
-
-  public DatabaseUtils() {}
-
   public static Order createOrder(JsonObject body) {
     String typeStr = body.getString("type");
     String tickerStr = body.getString("ticker");
@@ -136,14 +131,17 @@ public class DatabaseUtils {
 
   public static ArrayList<Document> processOrderAndParseMatchesFound(
     Order order,
-    OrderProcessorService orderprocessor
+    OrderProcessorService orderProcessor
   ) {
-    ArrayList<String> matchesFound = orderprocessor.processOrder(order);
+    ArrayList<String> matchesFound = orderProcessor.processOrder(order);
+
     ArrayList<Document> matchesFoundAsMongoDBDocs = new ArrayList<>();
+
     for (String match : matchesFound) {
       Document doc = Document.parse(match);
       matchesFoundAsMongoDBDocs.add(doc);
     }
+
     return matchesFoundAsMongoDBDocs;
   }
 
