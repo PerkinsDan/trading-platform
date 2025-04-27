@@ -129,20 +129,17 @@ public class DatabaseUtils {
     activeOrdersCollection.insertOne(orderDoc);
   }
 
-  public static ArrayList<Document> processOrderAndParseMatchesFound(
-    Order order,
-    OrderProcessorService orderProcessor
+  public static ArrayList<Document> convertMatchesToDocs(
+    ArrayList<String> matchesFound
   ) {
-    ArrayList<String> matchesFound = orderProcessor.processOrder(order);
-
-    ArrayList<Document> matchesFoundAsMongoDBDocs = new ArrayList<>();
+    ArrayList<Document> docs = new ArrayList<>();
 
     for (String match : matchesFound) {
       Document doc = Document.parse(match);
-      matchesFoundAsMongoDBDocs.add(doc);
+      docs.add(doc);
     }
 
-    return matchesFoundAsMongoDBDocs;
+    return docs;
   }
 
   public static void updateDb(
