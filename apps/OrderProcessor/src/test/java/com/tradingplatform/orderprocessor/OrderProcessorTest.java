@@ -32,7 +32,11 @@ class OrderProcessorTest {
         50
       );
     orderProcessor.processOrder(order);
-    Boolean result = orderProcessor.cancelOrder(order);
+    Boolean result = orderProcessor.cancelOrder(
+      order.getId().toString(),
+      order.getTicker().name(),
+      order.getType().name()
+    );
     assertTrue(result);
   }
 
