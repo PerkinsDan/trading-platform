@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Trade } from "../../types";
 import { useAuth } from "../context/AuthContext";
 
-const useFetchTrades = (endpoint: string) => {
+const useFetchTrades = (endpoint: string, reload = 0) => {
   const [trades, setTrades] = useState<Trade[]>([]);
   const currentUser = useAuth();
 
@@ -23,14 +23,15 @@ const useFetchTrades = (endpoint: string) => {
           throw new Error(`Failed to fetch data: ${errorText}`);
         }
 
-        setTrades((await response.json()) || []);
+        const txt= await response.text();
+        setTrades(txt ? JSON.parse(txt) as Trade[] : []);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchTrades();
-  }, [currentUser, endpoint]);
+  }, [currentUser, endpoint, reload]);
 
   return trades;
 };

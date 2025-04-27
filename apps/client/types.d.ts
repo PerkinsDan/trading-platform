@@ -1,4 +1,5 @@
 export interface Trade {
+  orderId : string;
   ticker: string;
   quantity: number;
   price: number;
