@@ -1,0 +1,48 @@
+package com.tradingplatform.orderprocessor.orders;
+
+import com.tradingplatform.orderprocessor.matching.MatchingEngine;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+public class OrderProcessor {
+
+  private static OrderProcessor orderProcessor = null;
+  private static final Map<Ticker, TradeBook> tradeBookMap = new HashMap<>();
+
+  private OrderProcessor() {
+    for (Ticker ticker : Ticker.values()) {
+      tradeBookMap.put(ticker, new TradeBook());
+    }
+  }
+
+  public static OrderProcessor getInstance() {
+    if (orderProcessor == null) {
+      orderProcessor = new OrderProcessor();
+    }
+    return orderProcessor;
+  }
+
+  public ArrayList<String> processOrder(Order order) {
+    TradeBook book = orderProcessor.getTradeBook(order.getTicker());
+    book.addToBook(order);
+
+    return MatchingEngine.match(orderProcessor.getTradeBook(order.getTicker()));
+  }
+
+  public TradeBook getTradeBook(Ticker ticker) {
+    return tradeBookMap.get(ticker);
+  }
+
+  public Boolean cancelOrder(Order order) {
+    TradeBook book = orderProcessor.getTradeBook(order.getTicker());
+    return book.removeOrder(
+      order.getId().toString(),
+      order.getType().toString()
+    );
+  }
+
+  public void resetInstance() {
+    orderProcessor = null;
+  }
+}
