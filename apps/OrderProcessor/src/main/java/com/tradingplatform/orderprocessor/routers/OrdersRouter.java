@@ -9,11 +9,17 @@ import com.tradingplatform.orderprocessor.database.MongoClientConnection;
 import com.tradingplatform.orderprocessor.orders.Order;
 import com.tradingplatform.orderprocessor.orders.OrderType;
 import com.tradingplatform.orderprocessor.orders.Ticker;
+import com.tradingplatform.orderprocessor.validations.Validation;
+import com.tradingplatform.orderprocessor.validations.ValidationBuilder;
+import com.tradingplatform.orderprocessor.validations.ValidationResult;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
-import java.util.ArrayList;
 import org.bson.Document;
 
 public class OrdersRouter {
@@ -50,43 +56,67 @@ public class OrdersRouter {
       .post("/create")
       .handler(BodyHandler.create())
       .handler(ctx -> {
-        JsonObject body = ctx.body().asJsonObject();
+          JsonObject body = ctx.body().asJsonObject();
 
-        String validationResult = passValidations(body);
+          MongoCollection<Document> activeOrdersCollection =
+                  MongoClientConnection.getCollection("activeOrders");
+          MongoCollection<Document> orderHistoryCollection =
+                  MongoClientConnection.getCollection("orderHistory");
+          MongoCollection<Document> usersCollection =
+                  MongoClientConnection.getCollection("users");
 
-        if (!validationResult.equals("PASSED VALIDATIONS")) {
-          ctx
-            .response()
-            .setStatusCode(422)
-            .putHeader("Content-Type", "application/json")
-            .end(new JsonObject().put("Error", validationResult).encode());
+          //Create  and use POC validationBuilder object, we might wanna have validaions that
+          //check that the price and quantity are valid too.
+          Validation validation = new ValidationBuilder().
+                                      validateUserId().
+                                      validateOrderType().
+                                      validateTicker().
+                                      build();
+          ValidationResult result = validation.validate(body);
 
-          return;
-        }
+          try {
+              if (result.isValid){
+                      //unchanged logic from previous create-order/ endpoint
+                      // Order order = DatabaseUtils.createOrder(body);
 
-        Order order = createOrder(body);
+                      // insertOrderIntoDatabase(
+                      //         order,
+                      //         activeOrdersCollection
+                      // );
 
-        MongoCollection<Document> activeOrdersCollection =
-          MongoClientConnection.getCollection("activeOrders");
+                      // OrderProcessorService orderProcessor = OrderProcessorService.getInstance();
 
-        Document orderDoc = order.toDoc();
-        activeOrdersCollection.insertOne(orderDoc);
+                      // ArrayList<Document> matchesFoundAsMongoDBDocs =
+                      //         DatabaseUtils.processOrderAndParseMatchesFound(
+                      //                 order,
+                      //                 orderProcessor
+                      //         );
 
-        ArrayList<String> matchesFound = orderProcessorService.processOrder(
-          order
-        );
+                      // if (!matchesFoundAsMongoDBDocs.isEmpty()) {
+                      //   matchesFoundAsMongoDBDocs.replaceAll(doc -> doc.toJson());
+                      //   updateCollectionsWithMatches(matchesFoundAsMongoDBDocs);
+               
+                      // }
 
-        if (!matchesFound.isEmpty()) {
-          updateCollectionsWithMatches(matchesFound);
-        }
-
-        ctx
-          .response()
-          .setStatusCode(200)
-          .putHeader("Content-Type", "application/json")
-          .end("Order created");
+                      ctx.response().
+                              setStatusCode(201).
+                              putHeader("Content-Type", "application/json").
+                              end("Order created");
+              } else {
+                      ctx.response().
+                      setStatusCode(400).
+                      putHeader("Content-Type", "application/json").
+                      end("Error - Validation Error : " + result.errorMessage);
+              }
+          } catch (Exception e) {
+              e.printStackTrace();
+              ctx.response().
+              setStatusCode(500).
+              putHeader("Content-Type", "application/json").
+              end("Internal Server Error : if were here sthg has gone quite wrong");
+          }
       });
-
+      
     router
       .post("/cancel")
       .handler(BodyHandler.create())
