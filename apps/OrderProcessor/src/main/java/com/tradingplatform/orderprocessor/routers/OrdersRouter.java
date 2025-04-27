@@ -12,6 +12,7 @@ import com.tradingplatform.orderprocessor.orders.Ticker;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 import java.util.ArrayList;
 import org.bson.Document;
 
@@ -47,6 +48,7 @@ public class OrdersRouter {
   void initialise() {
     router
       .post("/create")
+      .handler(BodyHandler.create())
       .handler(ctx -> {
         JsonObject body = ctx.body().asJsonObject();
 
@@ -87,6 +89,7 @@ public class OrdersRouter {
 
     router
       .post("/cancel")
+      .handler(BodyHandler.create())
       .handler(ctx -> {
         JsonObject body = ctx.body().asJsonObject();
 

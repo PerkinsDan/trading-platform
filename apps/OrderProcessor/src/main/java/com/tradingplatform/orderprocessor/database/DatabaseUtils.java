@@ -31,6 +31,8 @@ public class DatabaseUtils {
     MongoCollection<Document> usersCollection =
       MongoClientConnection.getCollection("users");
 
+    System.out.println(body);
+
     String typeStr = body.getString("type");
     boolean isBuy = typeStr.equals("BUY");
     String userId = body.getString("userId");
