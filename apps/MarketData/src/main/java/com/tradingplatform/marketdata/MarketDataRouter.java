@@ -1,11 +1,10 @@
-package com.setap.marketdata;
+package com.tradingplatform.marketdata;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.setap.marketdata.constants.Tickers;
-import com.setap.marketdata.simulatedata.Snapshot;
+import com.tradingplatform.marketdata.constants.Tickers;
+import com.tradingplatform.marketdata.simulatedata.Snapshot;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -18,7 +17,7 @@ public class MarketDataRouter {
   private final MarketDataService marketDataService;
 
   public MarketDataRouter(Vertx vertx, MarketDataService marketDataService) {
-    this.router = Router.router(vertx);
+    router = Router.router(vertx);
     this.marketDataService = marketDataService;
 
     setupRoutes();

@@ -1,8 +1,8 @@
-package com.setap.marketdata;
+package com.tradingplatform.marketdata;
 
-import com.setap.marketdata.constants.Tickers;
-import com.setap.marketdata.simulatedata.SimulateData;
-import com.setap.marketdata.simulatedata.Snapshot;
+import com.tradingplatform.marketdata.constants.Tickers;
+import com.tradingplatform.marketdata.simulatedata.SimulateData;
+import com.tradingplatform.marketdata.simulatedata.Snapshot;
 import java.time.LocalTime;
 import java.util.ArrayList;
 

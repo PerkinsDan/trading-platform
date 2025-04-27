@@ -17,10 +17,15 @@ public class MongoClientConnection {
   private static MongoClient mongoClient;
   private static MongoDatabase database;
 
-  public static MongoCollection<Document> getCollection(String collection) {
+  public static boolean createConnection() {
     if (mongoClient == null) {
       initClient();
     }
+
+    return true;
+  }
+
+  public static MongoCollection<Document> getCollection(String collection) {
     return database.getCollection(collection);
   }
 
@@ -48,9 +53,5 @@ public class MongoClientConnection {
       System.err.println("Failed to connect to MongoDB: " + e.getMessage());
       e.printStackTrace();
     }
-  }
-
-  public static void main(String[] args) {
-    initClient();
   }
 }

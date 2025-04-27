@@ -1,17 +1,18 @@
-package com.setap.marketdata;
+package com.tradingplatform.orderprocessor;
+
+import static com.tradingplatform.orderprocessor.database.MongoClientConnection.createConnection;
 
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.CorsHandler;
 
-public class MarketDataServiceMain {
+public class OrderProcessorServiceMain {
 
-  private static MarketDataService marketDataService;
+  private static OrderProcessorService orderProcessorService;
 
   public static void main(String[] args) {
-    marketDataService = MarketDataService.getInstance();
+    orderProcessorService = OrderProcessorService.getInstance();
     startServer();
   }
 
@@ -29,19 +30,15 @@ public class MarketDataServiceMain {
           .allowedHeader("Authorization")
       );
 
-    Router marketDataRouter = new MarketDataRouter(
+    Router orderProcessorRouter = new OrderProcessorRouter(
       vertx,
-      marketDataService
+      orderProcessorService
     ).getRouter();
 
-    router
-      .route("/")
-      .handler(ctx -> {
-        ctx.response().end("Welcome to the Market Data Service");
-      });
-
-    router.route().subRouter(marketDataRouter);
+    router.route().subRouter(orderProcessorRouter);
 
     server.requestHandler(router).listen(12000);
+
+    if (!createConnection()) System.exit(-1);
   }
 }

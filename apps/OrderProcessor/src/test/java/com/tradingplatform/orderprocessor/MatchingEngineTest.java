@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.tradingplatform.orderprocessor.orders.Order;
-import com.tradingplatform.orderprocessor.orders.OrderProcessor;
 import com.tradingplatform.orderprocessor.orders.OrderType;
 import com.tradingplatform.orderprocessor.orders.Ticker;
 import org.junit.jupiter.api.AfterEach;
@@ -13,11 +12,11 @@ import org.junit.jupiter.api.Test;
 
 public class MatchingEngineTest {
 
-  private OrderProcessor processor;
+  private OrderProcessorService processor;
 
   @BeforeEach
   void setUp() {
-    processor = OrderProcessor.getInstance();
+    processor = OrderProcessorService.getInstance();
   }
 
   @AfterEach

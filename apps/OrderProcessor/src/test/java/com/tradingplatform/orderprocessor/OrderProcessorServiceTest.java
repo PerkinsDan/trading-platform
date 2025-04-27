@@ -7,13 +7,13 @@ import com.tradingplatform.orderprocessor.orders.Order;
 import java.util.PriorityQueue;
 import org.junit.jupiter.api.*;
 
-class OrderProcessorTest {
+class OrderProcessorServiceTest {
 
-  private OrderProcessor orderProcessor;
+  private OrderProcessorService orderProcessor;
 
   @BeforeEach
   void setUp() {
-    orderProcessor = OrderProcessor.getInstance();
+    orderProcessor = OrderProcessorService.getInstance();
   }
 
   @AfterEach

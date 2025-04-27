@@ -1,6 +1,6 @@
-package com.setap.marketdata.simulatedata;
+package com.tradingplatform.marketdata.simulatedata;
 
-import static com.setap.marketdata.constants.Tickers.AAPL;
+import static com.tradingplatform.marketdata.constants.Tickers.AAPL;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalTime;
