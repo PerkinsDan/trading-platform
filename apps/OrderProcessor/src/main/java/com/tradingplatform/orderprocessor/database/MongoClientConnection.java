@@ -1,4 +1,4 @@
-package com.setap.tradingplatformapi.database;
+package com.tradingplatform.orderprocessor.database;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;

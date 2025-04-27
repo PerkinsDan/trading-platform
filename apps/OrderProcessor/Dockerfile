@@ -6,18 +6,14 @@ WORKDIR /app
 RUN apk add --no-cache maven
 
 # Copy the entire project
-COPY . /app/apps
-
-# Build and install the order-processor module
-WORKDIR /app/apps/OrderProcessor
-RUN mvn clean install -DskipTests
+COPY ../api /app/apps
 
 # Build the trading-platform-api module
-WORKDIR /app/apps/api
+WORKDIR /app/apps/OrderProcessor
 RUN mvn clean package -DskipTests
 
 # Copy the built JAR to the final location
-RUN cp target/trading-platform-api-1.0-SNAPSHOT.jar /app/app.jar
+RUN cp target/order-processor-1.0-SNAPSHOT.jar /app/app.jar
 
 EXPOSE 8080
 

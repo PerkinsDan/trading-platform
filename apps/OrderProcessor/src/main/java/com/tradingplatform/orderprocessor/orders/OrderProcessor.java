@@ -1,5 +1,6 @@
-package orderProcessor;
+package com.tradingplatform.orderprocessor.orders;
 
+import com.tradingplatform.orderprocessor.matching.MatchingEngine;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,10 +34,12 @@ public class OrderProcessor {
     return tradeBookMap.get(ticker);
   }
 
-  public Boolean cancelOrder(String orderId, String orderTicker, String orderType) {
-    
-      TradeBook book = orderProcessor.getTradeBook(Ticker.valueOf(orderTicker));
-      return book.removeOrder(orderId, orderType);
+  public Boolean cancelOrder(Order order) {
+    TradeBook book = orderProcessor.getTradeBook(order.getTicker());
+    return book.removeOrder(
+      order.getId().toString(),
+      order.getType().toString()
+    );
   }
 
   public void resetInstance() {

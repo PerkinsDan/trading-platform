@@ -1,4 +1,4 @@
-package orderProcessor;
+package com.tradingplatform.orderprocessor.orders;
 
 public enum Ticker {
   AAPL,

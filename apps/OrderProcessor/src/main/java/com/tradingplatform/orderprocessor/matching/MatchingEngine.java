@@ -1,7 +1,10 @@
-package orderProcessor;
+package com.tradingplatform.orderprocessor.matching;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tradingplatform.orderprocessor.orders.Order;
+import com.tradingplatform.orderprocessor.orders.Ticker;
+import com.tradingplatform.orderprocessor.orders.TradeBook;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 

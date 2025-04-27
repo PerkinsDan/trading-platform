@@ -1,8 +1,8 @@
-package com.setap.tradingplatformapi.database;
+package com.tradingplatform.orderprocessor.database;
 
+import com.tradingplatform.orderprocessor.orders.Order;
 import java.util.ArrayList;
 import java.util.UUID;
-import orderProcessor.Order;
 
 public class User {
 

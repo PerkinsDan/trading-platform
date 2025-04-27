@@ -1,8 +1,12 @@
-package orderProcessor;
+package com.tradingplatform.orderprocessor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.tradingplatform.orderprocessor.orders.Order;
+import com.tradingplatform.orderprocessor.orders.OrderProcessor;
+import com.tradingplatform.orderprocessor.orders.OrderType;
+import com.tradingplatform.orderprocessor.orders.Ticker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

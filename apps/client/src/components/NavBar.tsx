@@ -54,8 +54,8 @@ function NavBar() {
       </Button>
       <Button
         onClick={async () => {
-          await signOut(auth); // Sign out the user
-          navigate("/sign-in"); // Redirect to sign-in
+          await signOut(auth);
+          navigate("/sign-in");
         }}
         sx={{
           flexDirection: "column",

@@ -1,4 +1,4 @@
-package orderProcessor;
+package com.tradingplatform.orderprocessor.orders;
 
 import java.util.PriorityQueue;
 
@@ -26,18 +26,18 @@ public class TradeBook {
     return sellOrders;
   }
 
-  public Boolean removeOrder(String orderId, String orderType){
+  public Boolean removeOrder(String orderId, String orderType) {
+    PriorityQueue<Order> targetQueue = (OrderType.valueOf(orderType) ==
+        OrderType.BUY)
+      ? buyOrders
+      : sellOrders;
 
-    PriorityQueue<Order> targetQueue = (OrderType.valueOf(orderType) == OrderType.BUY) ? buyOrders : sellOrders;
-
-    for (Order order : targetQueue){
-      if (order.getId().toString().equals(orderId)){
+    for (Order order : targetQueue) {
+      if (order.getId().toString().equals(orderId)) {
         return targetQueue.remove(order);
       }
     }
 
     return false;
-      
   }
-    
 }

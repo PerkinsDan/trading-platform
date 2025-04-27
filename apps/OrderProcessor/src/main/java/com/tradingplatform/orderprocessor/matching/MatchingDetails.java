@@ -1,5 +1,6 @@
-package orderProcessor;
+package com.tradingplatform.orderprocessor.matching;
 
+import com.tradingplatform.orderprocessor.orders.Ticker;
 import java.util.UUID;
 
 public class MatchingDetails {
@@ -47,5 +48,7 @@ public class MatchingDetails {
     return filled;
   }
 
-  public Ticker getTicker() {return ticker;}
+  public Ticker getTicker() {
+    return ticker;
+  }
 }

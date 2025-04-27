@@ -1,4 +1,4 @@
-package orderProcessor;
+package com.tradingplatform.orderprocessor.orders;
 
 import java.util.UUID;
 import org.bson.Document;

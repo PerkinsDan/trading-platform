@@ -1,4 +1,4 @@
-package com.setap.tradingplatformapi;
+package com.tradingplatform.orderprocessor;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
