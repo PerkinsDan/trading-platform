@@ -2,6 +2,7 @@ package com.tradingplatform.orderprocessor.routers;
 
 import static com.tradingplatform.orderprocessor.database.DatabaseUtils.*;
 
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.tradingplatform.orderprocessor.OrderProcessorService;
 import com.tradingplatform.orderprocessor.database.MongoClientConnection;
@@ -62,7 +63,12 @@ public class OrdersRouter {
         }
 
         Order order = createOrder(body);
-        insertOrderIntoDatabase(order);
+
+        MongoCollection<Document> activeOrdersCollection =
+          MongoClientConnection.getCollection("activeOrders");
+
+        Document orderDoc = order.toDoc();
+        activeOrdersCollection.insertOne(orderDoc);
 
         ArrayList<String> matchesFound = orderProcessorService.processOrder(
           order
