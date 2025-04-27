@@ -1,5 +1,7 @@
 package com.tradingplatform.orderprocessor;
 
+import static com.tradingplatform.orderprocessor.database.DatabaseUtils.*;
+
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.tradingplatform.orderprocessor.database.DatabaseUtils;
@@ -133,10 +135,7 @@ public class ApiRouter {
         MongoCollection<Document> usersCollection =
           MongoClientConnection.getCollection("users");
 
-        String validationResult = DatabaseUtils.passValidations(
-          body,
-          usersCollection
-        );
+        String validationResult = passValidations(body, usersCollection);
 
         if (!validationResult.equals("PASSED VALIDATIONS")) {
           ctx
@@ -149,7 +148,7 @@ public class ApiRouter {
 
         Order order = DatabaseUtils.createOrder(body);
 
-        DatabaseUtils.insertOrderIntoDatabase(order, activeOrdersCollection);
+        insertOrderIntoDatabase(order, activeOrdersCollection);
 
         OrderProcessor orderProcessor = OrderProcessor.getInstance();
 
@@ -157,7 +156,7 @@ public class ApiRouter {
           DatabaseUtils.processOrderAndParseMatchesFound(order, orderProcessor);
 
         if (!matchesFoundAsMongoDBDocs.isEmpty()) {
-          DatabaseUtils.updateDb(
+          updateDb(
             matchesFoundAsMongoDBDocs,
             activeOrdersCollection,
             usersCollection,
@@ -173,12 +172,14 @@ public class ApiRouter {
       });
 
     router
-      .get("/cancel-order")
+      .post("/cancel-order")
       .handler(ctx -> {
         JsonObject body = ctx.getBodyAsJson();
 
         String orderId = body.getString("orderId");
         String userId = body.getString("userId");
+        String ticker = body.getString("ticker");
+        String type = body.getString("type");
 
         var activeOrdersCollection = MongoClientConnection.getCollection(
           "activeOrders"
@@ -197,7 +198,7 @@ public class ApiRouter {
         Order order = DatabaseUtils.createOrder(orderJson);
 
         OrderProcessor orderProcessor = OrderProcessor.getInstance();
-        orderProcessor.cancelOrder(order);
+        orderProcessor.cancelOrder(orderId, ticker, type);
 
         activeOrdersCollection.deleteOne(Filters.eq("orderId", orderId));
 
@@ -210,7 +211,7 @@ public class ApiRouter {
           );
         }
 
-        if (DatabaseUtils.previouslyPartiallyFilled(orderId)) {
+        if (previouslyPartiallyFilled(orderId)) {
           orderHistoryCollection.updateOne(
             Filters.eq("orderId", orderId),
             new Document("$set", new Document("cancelled", true))
@@ -221,6 +222,12 @@ public class ApiRouter {
 
           orderHistoryCollection.insertOne(orderDoc);
         }
+
+        ctx
+          .response()
+          .setStatusCode(201)
+          .putHeader("Content-Type", "application/json")
+          .end("Order cancelled");
       });
 
     router
@@ -290,10 +297,3 @@ public class ApiRouter {
       });
   }
 }
-//create-order
-//create-user
-//user-active-positions
-//user-trade-history
-//orders
-//update-user-balance
-//user-account (to get balance)

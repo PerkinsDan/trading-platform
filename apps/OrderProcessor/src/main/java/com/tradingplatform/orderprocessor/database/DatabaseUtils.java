@@ -184,15 +184,10 @@ public class DatabaseUtils {
     String tickerStr = order.getString("ticker");
 
     int quantityChange = order.getInteger("quantityChange");
-    int signedQuantityChange =
-      (isBuy
-          ? order.getInteger("quantityChange")
-          : -order.getInteger("quantityChange"));
+    int signedQuantityChange = (isBuy ? quantityChange : -quantityChange);
     double price = order.getDouble("price");
-    int balanceChange =
-      (isBuy
-          ? -(int) (quantityChange * price)
-          : (int) (quantityChange * price));
+    double balanceChange =
+      (isBuy ? -(quantityChange * price) : (quantityChange * price));
 
     Document partiallyFilledOrder = activeOrdersCollection
       .find(Filters.eq("orderId", orderId))
