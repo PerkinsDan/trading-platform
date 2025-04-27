@@ -15,7 +15,7 @@ import io.vertx.ext.web.Router;
 import java.util.ArrayList;
 import org.bson.Document;
 
-public class Orders {
+public class OrdersRouter {
 
   private final Router router;
   private final OrderProcessorService orderProcessorService;
@@ -24,7 +24,7 @@ public class Orders {
     return router;
   }
 
-  Orders(Vertx vertx) {
+  OrdersRouter(Vertx vertx) {
     router = Router.router(vertx);
     orderProcessorService = OrderProcessorService.getInstance();
 

@@ -5,7 +5,6 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
-import com.tradingplatform.orderprocessor.OrderProcessorService;
 import com.tradingplatform.orderprocessor.orders.Order;
 import com.tradingplatform.orderprocessor.orders.OrderType;
 import com.tradingplatform.orderprocessor.orders.Ticker;
@@ -129,19 +128,6 @@ public class DatabaseUtils {
     activeOrdersCollection.insertOne(orderDoc);
   }
 
-  private static ArrayList<Document> convertMatchesToDocs(
-    ArrayList<String> matchesFound
-  ) {
-    ArrayList<Document> docs = new ArrayList<>();
-
-    for (String match : matchesFound) {
-      Document doc = Document.parse(match);
-      docs.add(doc);
-    }
-
-    return docs;
-  }
-
   public static void updateDb(
     ArrayList<String> matchesFound,
     MongoCollection<Document> activeOrdersCollection,
@@ -169,6 +155,19 @@ public class DatabaseUtils {
       usersCollection,
       orderHistoryCollection
     );
+  }
+
+  private static ArrayList<Document> convertMatchesToDocs(
+    ArrayList<String> matchesFound
+  ) {
+    ArrayList<Document> docs = new ArrayList<>();
+
+    for (String match : matchesFound) {
+      Document doc = Document.parse(match);
+      docs.add(doc);
+    }
+
+    return docs;
   }
 
   public static void updateDbAccordingToPartiallyFilledOrNot(
