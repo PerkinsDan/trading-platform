@@ -180,12 +180,14 @@ public class ApiRouter {
                 });
 
         router
-                .get("/cancel-order")
+                .post("/cancel-order")
                 .handler(ctx -> {
                     JsonObject body = ctx.getBodyAsJson();
 
                     String orderId = body.getString("orderId");
                     String userId = body.getString("userId");
+                    String ticker = body.getString("ticker");
+                    String type = body.getString("type");
 
                     var activeOrdersCollection = MongoClientConnection.getCollection(
                             "activeOrders"
@@ -206,7 +208,7 @@ public class ApiRouter {
                     Order order = DatabaseUtils.createOrder(orderJson);
 
                     OrderProcessor orderProcessor = OrderProcessor.getInstance();
-                    orderProcessor.cancelOrder(order);
+                    orderProcessor.cancelOrder(orderId,ticker,type);
 
                     activeOrdersCollection.deleteOne(
                             Filters.eq("orderId", orderId)
@@ -233,6 +235,11 @@ public class ApiRouter {
                         orderHistoryCollection.insertOne(orderDoc);
                     }
 
+                    ctx
+                            .response()
+                            .setStatusCode(201)
+                            .putHeader("Content-Type", "application/json")
+                            .end("Order cancelled");
                 });
 
         router
