@@ -105,14 +105,6 @@ public class DatabaseUtils {
     return "PASSED VALIDATIONS";
   }
 
-  public static void insertOrderIntoDatabase(Order order) {
-    MongoCollection<Document> activeOrdersCollection =
-      MongoClientConnection.getCollection("activeOrders");
-
-    Document orderDoc = order.toDoc();
-    activeOrdersCollection.insertOne(orderDoc);
-  }
-
   public static void updateCollectionsWithMatches(
     ArrayList<String> matchesFound
   ) {
