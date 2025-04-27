@@ -1,4 +1,4 @@
-package com.setap.tradingplatformapi.Validations;
+package com.tradingplatform.orderprocessor.validations;
 
 import io.vertx.core.json.JsonObject;
 

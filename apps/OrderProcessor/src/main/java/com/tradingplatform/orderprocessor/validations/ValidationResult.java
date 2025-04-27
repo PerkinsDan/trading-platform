@@ -1,4 +1,4 @@
-package com.setap.tradingplatformapi.Validations;
+package com.tradingplatform.orderprocessor.validations;
 
 public class ValidationResult {
     public final boolean isValid;
