@@ -37,7 +37,7 @@ public class OrderProcessorServiceMain {
 
     router.route().subRouter(orderProcessorRouter);
 
-    server.requestHandler(router).listen(12000);
+    server.requestHandler(router).listen(8080);
 
     if (!createConnection()) System.exit(-1);
   }

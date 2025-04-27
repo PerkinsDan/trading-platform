@@ -20,10 +20,7 @@ function TradingCard({ stock, snapshot }: TradingCardProps) {
         boxShadow: 10,
         transition: "all 0.5s ease",
       }}
-      onClick={() => {
-        console.log("Clicked on stock: ", stock);
-        navigate("/make-trades/" + stock);
-      }}
+      onClick={() => navigate("/make-trades/" + stock)}
     >
       <Stack
         flexDirection="row"
