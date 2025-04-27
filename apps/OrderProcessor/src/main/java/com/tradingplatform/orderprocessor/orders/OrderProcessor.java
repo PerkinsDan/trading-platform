@@ -34,12 +34,13 @@ public class OrderProcessor {
     return tradeBookMap.get(ticker);
   }
 
-  public Boolean cancelOrder(Order order) {
-    TradeBook book = orderProcessor.getTradeBook(order.getTicker());
-    return book.removeOrder(
-      order.getId().toString(),
-      order.getType().toString()
-    );
+  public Boolean cancelOrder(
+    String orderId,
+    String orderTicker,
+    String orderType
+  ) {
+    TradeBook book = orderProcessor.getTradeBook(Ticker.valueOf(orderTicker));
+    return book.removeOrder(orderId, orderType);
   }
 
   public void resetInstance() {
