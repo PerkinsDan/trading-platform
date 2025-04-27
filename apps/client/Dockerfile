@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY package*.json ./
 
+ENV PORT=5173
+
 RUN npm install
 
 RUN npm i -g serve
