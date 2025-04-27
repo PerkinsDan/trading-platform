@@ -4,10 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-
-    <groupId>com.setap.tradingplatform</groupId>
+    <groupId>com.tradingplatform</groupId>
     <artifactId>market-data</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>23</maven.compiler.source>
+        <maven.compiler.target>23</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <build>
         <plugins>
@@ -18,7 +23,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.setap.marketdata.MarketDataServiceMain</mainClass>
+                            <mainClass>com.tradingplatform.marketdata.MarketDataServiceMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -37,7 +42,7 @@
                             <createDependencyReducedPom>true</createDependencyReducedPom>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.setap.marketdata.MarketDataServiceMain</mainClass>
+                                    <mainClass>com.tradingplatform.marketdata.MarketDataServiceMain</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -47,11 +52,6 @@
         </plugins>
     </build>
 
-    <properties>
-        <maven.compiler.source>23</maven.compiler.source>
-        <maven.compiler.target>23</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -67,6 +67,11 @@
             <groupId>io.vertx</groupId>
             <artifactId>vertx-web</artifactId>
             <version>4.5.14</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.109.Final</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
