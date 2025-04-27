@@ -129,7 +129,7 @@ public class DatabaseUtils {
     activeOrdersCollection.insertOne(orderDoc);
   }
 
-  public static ArrayList<Document> convertMatchesToDocs(
+  private static ArrayList<Document> convertMatchesToDocs(
     ArrayList<String> matchesFound
   ) {
     ArrayList<Document> docs = new ArrayList<>();
@@ -143,11 +143,15 @@ public class DatabaseUtils {
   }
 
   public static void updateDb(
-    ArrayList<Document> matchesFoundAsMongoDBDocs,
+    ArrayList<String> matchesFound,
     MongoCollection<Document> activeOrdersCollection,
     MongoCollection<Document> usersCollection,
     MongoCollection<Document> orderHistoryCollection
   ) {
+    ArrayList<Document> matchesFoundAsMongoDBDocs = convertMatchesToDocs(
+      matchesFound
+    );
+
     Document buyOrder = matchesFoundAsMongoDBDocs.get(0);
     Document sellOrder = matchesFoundAsMongoDBDocs.get(1);
 

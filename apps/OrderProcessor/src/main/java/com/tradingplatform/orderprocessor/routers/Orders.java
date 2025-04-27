@@ -62,12 +62,9 @@ public class Orders {
           order
         );
 
-        ArrayList<Document> matchesFoundAsMongoDBDocs =
-          DatabaseUtils.convertMatchesToDocs(matchesFound);
-
-        if (!matchesFoundAsMongoDBDocs.isEmpty()) {
+        if (!matchesFound.isEmpty()) {
           updateDb(
-            matchesFoundAsMongoDBDocs,
+            matchesFound,
             activeOrdersCollection,
             usersCollection,
             orderHistoryCollection

@@ -45,36 +45,6 @@ public class DatabaseUtilsTest {
   }
 
   @Test
-  void testConvertMatchesToDocs() {
-    ArrayList<String> fakeMatchesToBeProcessed = new ArrayList<>();
-    fakeMatchesToBeProcessed.add(
-      "{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
-    );
-
-    fakeMatchesToBeProcessed.add(
-      "{\"orderID\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
-    );
-
-    ArrayList<Document> matchesFound = DatabaseUtils.convertMatchesToDocs(
-      fakeMatchesToBeProcessed
-    );
-
-    ArrayList<Document> expectedMatches = new ArrayList<>();
-    expectedMatches.add(
-      Document.parse(
-        "{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
-      )
-    );
-    expectedMatches.add(
-      Document.parse(
-        "{\"orderID\":\"67890\",\"userId\":\"userB\",\"price\":50.0,\"quantityChange\":10,\"filled\":true}"
-      )
-    );
-
-    assertEquals(expectedMatches, matchesFound);
-  }
-
-  @Test
   void testUpdateDbForFulfilledOrderNotPreviouslyPartiallyFilled() {
     Document buyOrderDoc = Document.parse(
       "{\"orderID\":\"12345\",\"userId\":\"userA\",\"price\":50.0,\"quantityChange\":10,\"filled\":true,\"ticker\":\"AAPL\"}"
