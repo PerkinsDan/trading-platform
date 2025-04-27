@@ -1,8 +1,8 @@
 services:
   api:
     build:
-      context: ./apps
-      dockerfile: api/Dockerfile
+      context: ./apps/OrderProcessor
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     restart: always
@@ -19,10 +19,8 @@ services:
     build:
       context: ./apps/client
       dockerfile: Dockerfile
-      args:
-        - REACT_APP_FIREBASE_API_KEY=${REACT_APP_FIREBASE_API_KEY}
     ports:
-      - "3000:3000"
+      - "5173:5173"
     restart: always
     depends_on:
       - api
