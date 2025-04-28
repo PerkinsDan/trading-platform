@@ -153,7 +153,7 @@ public class ValidationBuilderTest{
             ValidationResult result = validation.validate(requestBody);
     
             assertFalse(result.isValid);
-            assertEquals(result.errorMessage, "OrderType is missing or blank");
+            assertEquals(result.errorMessage, "orderId is missing or blank");
         }
         @Test
         public void failOnInvalidOrderId_OrderIdIsEmpty(){
@@ -163,7 +163,7 @@ public class ValidationBuilderTest{
             ValidationResult result = validation.validate(requestBody);
     
             assertFalse(result.isValid);
-            assertEquals(result.errorMessage,"OrderType is missing or blank");
+            assertEquals(result.errorMessage,"orderId is missing or blank");
         }
 
 
@@ -206,22 +206,22 @@ public class ValidationBuilderTest{
         public void failOnInvalidUserId_UserIdIsMissing(){
     
             requestBody.remove("orderId");
-            Validation validation = new ValidationBuilder().validateOrderType().build();
+            Validation validation = new ValidationBuilder().validateUserId().build();
             ValidationResult result = validation.validate(requestBody);
     
             assertFalse(result.isValid);
-            assertEquals(result.errorMessage, "OrderType is missing or blank");
+            assertEquals(result.errorMessage, "userId is missing or blank");
         }
 
         @Test
         public void failOnInvalidUserId_UserIdIsEmpty(){
     
             requestBody.put("orderId", " ");
-            Validation validation = new ValidationBuilder().validateOrderType().build();
+            Validation validation = new ValidationBuilder().validateUserId().build();
             ValidationResult result = validation.validate(requestBody);
     
             assertFalse(result.isValid);
-            assertEquals(result.errorMessage,"OrderType is missing or blank");
+            assertEquals(result.errorMessage,"userId is missing or blank");
         }
 
         @Test
