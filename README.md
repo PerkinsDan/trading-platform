@@ -10,6 +10,8 @@ A trading platform for our group assignment (Software Engineering Tools Techniqu
 
 `docker compose up`
 
+The UI is hosted on `http://localhost:5173/`
+
 On Mac?
 When trying to commit you may run into:
 
@@ -23,4 +25,18 @@ In this case run:
 ```zsh
 $ chmod ug+x .husky/*
 (This makes the pre-commit file executable and you can rerun the git commit)
+```
+
+### For development
+
+Inside `apps/client/.env :
+```
+VITE_APP_FIREBASE_API_KEY = ######
+VITE_APP_ORDER_PROCESSOR_BASE_URL = http://localhost:8080
+VITE_APP_MARKET_DATA_BASE_URL = http://localhost:12000
+```
+
+Inside `apps/OrderProcessor/.env :
+```
+DB_URI = #####
 ```

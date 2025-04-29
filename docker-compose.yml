@@ -1,5 +1,7 @@
 services:
   orderprocessor:
+    env_file:
+      - apps/OrderProcessor/.env
     build:
       context: ./apps/OrderProcessor
       dockerfile: Dockerfile
