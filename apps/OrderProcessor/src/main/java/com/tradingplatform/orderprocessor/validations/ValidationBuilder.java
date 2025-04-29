@@ -30,13 +30,14 @@ public class ValidationBuilder{
 
     public ValidationBuilder validateUserId(){
 
-        MongoCollection<Document> usersCollection =
-        MongoClientConnection.getCollection("users"); 
+
 
         validations.add(body -> {
             if (!body.containsKey("userId") || body.getString("userId").isBlank()){
                 return ValidationResult.fail("userId is missing or blank");
             }
+            MongoCollection<Document> usersCollection =
+            MongoClientConnection.getCollection("users"); 
             if (usersCollection.find(Filters.eq("userId", body.getString("userId"))).first() == null){
                 return ValidationResult.fail("Invalid userId : no such user exists in the database");
             }
@@ -47,13 +48,14 @@ public class ValidationBuilder{
 
     public ValidationBuilder validateOrderId(){
         
-        MongoCollection<Document> activeOrdersCollection =
-        MongoClientConnection.getCollection("activeOrders");
+   
 
         validations.add(body -> {
             if (!body.containsKey("orderId") || body.getString("orderId").isBlank()){
                 return ValidationResult.fail("orderId is missing or blank");
             }
+            MongoCollection<Document> activeOrdersCollection =
+            MongoClientConnection.getCollection("activeOrders");
             if (activeOrdersCollection.find(Filters.eq("orderId", body.getString("orderId"))).first() == null){
                 return ValidationResult.fail("Invalid orderId : no such order exists in the database");
             }

@@ -51,8 +51,7 @@ public class ValidationBuilderTest{
         + "\"type\": \"BUY\", "
         + "\"ticker\": \"GOOGL\", "
         + "\"price\": 123, "
-        + "\"quantity\": 30, "
-        + "\"userId\": \"userB\""
+        + "\"quantity\": 30"
         + "}";
 
         requestBody = new JsonObject(json);
@@ -182,6 +181,8 @@ public class ValidationBuilderTest{
 
             assertFalse(result.isValid);
             assertEquals("Invalid orderId : no such order exists in the database", result.errorMessage);  
+
+            mockMongoClientConnection.close();
         }
 
         @Test
@@ -198,14 +199,17 @@ public class ValidationBuilderTest{
             ValidationResult result = validationBuilder.build().validate(requestBody);
 
             assertTrue(result.isValid);
-            assertNull(result.errorMessage);  
+            assertNull(result.errorMessage); 
+
+            mockMongoClientConnection.close();
+
         }
 
         //test values for userId        
         @Test
         public void failOnInvalidUserId_UserIdIsMissing(){
     
-            requestBody.remove("orderId");
+            requestBody.remove("userId");
             Validation validation = new ValidationBuilder().validateUserId().build();
             ValidationResult result = validation.validate(requestBody);
     
@@ -216,7 +220,7 @@ public class ValidationBuilderTest{
         @Test
         public void failOnInvalidUserId_UserIdIsEmpty(){
     
-            requestBody.put("orderId", " ");
+            requestBody.put("userId", " ");
             Validation validation = new ValidationBuilder().validateUserId().build();
             ValidationResult result = validation.validate(requestBody);
     
@@ -238,7 +242,8 @@ public class ValidationBuilderTest{
             ValidationResult result = validationBuilder.build().validate(requestBody);
 
             assertFalse(result.isValid);
-            assertEquals("Invalid orderId : no such order exists in the database", result.errorMessage);  
+            assertEquals("Invalid userId : no such user exists in the database", result.errorMessage);  
+            mockMongoClientConnection.close();
         }
 
         @Test
@@ -256,6 +261,7 @@ public class ValidationBuilderTest{
 
             assertTrue(result.isValid);
             assertNull(result.errorMessage);  
+            mockMongoClientConnection.close();
         }
 
 
