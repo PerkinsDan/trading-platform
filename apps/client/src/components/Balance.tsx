@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import BalanceSummary from "./BalanceSummary";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
-import { USER_ACCOUNT_ENDPOINT } from "../constants/endpoints";
+import { UPDATE_USER_BALANCE_ENDPOINT, USER_ACCOUNT_ENDPOINT } from "../constants/endpoints";
 
 const Balance = () => {
   const [totalBalance, setTotalBalance] = useState(0);
@@ -47,7 +47,7 @@ const Balance = () => {
 
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/update-user-balance`,
+        UPDATE_USER_BALANCE_ENDPOINT,
         {
           method: "POST",
           headers: {

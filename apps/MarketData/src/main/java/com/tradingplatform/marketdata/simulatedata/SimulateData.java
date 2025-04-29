@@ -53,5 +53,6 @@ public class SimulateData {
         rollingTimeStamp = rollingTimeStamp.plusMinutes(5);
       }
     }
+    System.out.println("Finished generating simulated data");
   }
 }

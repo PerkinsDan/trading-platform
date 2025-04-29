@@ -2,6 +2,7 @@ import { Button, Container, Typography, Box } from "@mui/material";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../firebaseConfig/firebase";
 import { useNavigate } from "react-router-dom";
+import { CREATE_USER_ENDPOINT } from "../constants/endpoints";
 
 function SignIn() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ function SignIn() {
 
       // API call to add/get user
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/create-user`,
+        CREATE_USER_ENDPOINT,
         {
           method: "POST",
           headers: {
