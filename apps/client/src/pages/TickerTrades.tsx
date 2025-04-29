@@ -40,7 +40,7 @@ const TickerTrades = () => {
     type: undefined,
     quantity: 0,
     price: 0,
-    userId: auth.currentUser?.uid || null,
+    userId: auth!!.currentUser?.uid || null,
   });
   const [error, setError] = useState<string | null>(null);
 
