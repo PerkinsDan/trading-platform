@@ -54,7 +54,7 @@ function NavBar() {
       </Button>
       <Button
         onClick={async () => {
-          await signOut(auth);
+          await signOut(auth!!);
           navigate("/sign-in");
         }}
         sx={{
