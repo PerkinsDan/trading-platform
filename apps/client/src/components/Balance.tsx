@@ -47,7 +47,7 @@ const Balance = () => {
 
     try {
       const response = await fetch(
-        `${UPDATE_USER_BALANCE_ENDPOINT}/update-user-balance`,
+        UPDATE_USER_BALANCE_ENDPOINT,
         {
           method: "POST",
           headers: {

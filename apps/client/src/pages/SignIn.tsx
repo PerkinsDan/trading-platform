@@ -24,7 +24,7 @@ function SignIn() {
 
       // API call to add/get user
       const response = await fetch(
-        `${CREATE_USER_ENDPOINT}/create-user`,
+        CREATE_USER_ENDPOINT,
         {
           method: "POST",
           headers: {
