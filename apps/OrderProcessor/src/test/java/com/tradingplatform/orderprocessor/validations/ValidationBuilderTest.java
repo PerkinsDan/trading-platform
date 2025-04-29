@@ -1,3 +1,7 @@
+/*Note : mockStatic can behave erratically, for any tests that use a static mock for MongoClientConnection need a
+'mockMongoClientCollection.close()' at the end or all the following tests that use the static mock will also fail
+becuase the `mockMongoCLientConnection.close() was not reached`
+ */
 package com.tradingplatform.orderprocessor.validations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -7,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -42,6 +47,8 @@ public class ValidationBuilderTest{
     @Mock
     private FindIterable<Document> mockFindIterable;
 
+    private MockedStatic<MongoClientConnection> mockMongoClientConnection;
+
     @BeforeEach
     public void setUp(){
         // define a valid request body we can modify for each test
@@ -57,6 +64,13 @@ public class ValidationBuilderTest{
         requestBody = new JsonObject(json);
 
         MockitoAnnotations.openMocks(this);
+
+        mockMongoClientConnection = mockStatic(MongoClientConnection.class);
+    }
+
+    @AfterEach
+    public void reset(){
+        mockMongoClientConnection.close();
     }
     
     // Test values for Tickers
@@ -169,8 +183,6 @@ public class ValidationBuilderTest{
         @Test
         public void failOnInvalidOrderId_OrderIdDoesNotExist() {
 
-            MockedStatic<MongoClientConnection> mockMongoClientConnection = mockStatic(MongoClientConnection.class);
-
             mockMongoClientConnection.when(() -> MongoClientConnection.getCollection("activeOrders")).thenReturn(activeOrdersCollection);
 
             when(activeOrdersCollection.find(Filters.eq("orderId", "TestOrderId"))).thenReturn(mockFindIterable);
@@ -180,15 +192,11 @@ public class ValidationBuilderTest{
             ValidationResult result = validationBuilder.build().validate(requestBody);
 
             assertFalse(result.isValid);
-            assertEquals("Invalid orderId : no such order exists in the database", result.errorMessage);  
-
-            mockMongoClientConnection.close();
+            assertEquals("Invalid orderId : no such order exists in the database", result.errorMessage);              
         }
 
         @Test
         public void passOnValidOrderId() {
-
-            MockedStatic<MongoClientConnection> mockMongoClientConnection = mockStatic(MongoClientConnection.class);
 
             mockMongoClientConnection.when(() -> MongoClientConnection.getCollection("activeOrders")).thenReturn(activeOrdersCollection);
 
@@ -200,9 +208,6 @@ public class ValidationBuilderTest{
 
             assertTrue(result.isValid);
             assertNull(result.errorMessage); 
-
-            mockMongoClientConnection.close();
-
         }
 
         //test values for userId        
@@ -231,8 +236,6 @@ public class ValidationBuilderTest{
         @Test
         public void failOnInvalidUserId_UserIdDoesNotExist() {
 
-            MockedStatic<MongoClientConnection> mockMongoClientConnection = mockStatic(MongoClientConnection.class);
-
             mockMongoClientConnection.when(() -> MongoClientConnection.getCollection("users")).thenReturn(usersCollection);
 
             when(usersCollection.find(Filters.eq("userId", "TestUserId"))).thenReturn(mockFindIterable);
@@ -243,13 +246,10 @@ public class ValidationBuilderTest{
 
             assertFalse(result.isValid);
             assertEquals("Invalid userId : no such user exists in the database", result.errorMessage);  
-            mockMongoClientConnection.close();
         }
 
         @Test
         public void passOnValidUserId() {
-
-            MockedStatic<MongoClientConnection> mockMongoClientConnection = mockStatic(MongoClientConnection.class);
 
             mockMongoClientConnection.when(() -> MongoClientConnection.getCollection("users")).thenReturn(usersCollection);
 
@@ -260,8 +260,7 @@ public class ValidationBuilderTest{
             ValidationResult result = validationBuilder.build().validate(requestBody);
 
             assertTrue(result.isValid);
-            assertNull(result.errorMessage);  
-            mockMongoClientConnection.close();
+            assertNull(result.errorMessage);   
         }
 
 
