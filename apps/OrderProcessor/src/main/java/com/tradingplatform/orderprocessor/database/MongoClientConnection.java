@@ -30,8 +30,7 @@ public class MongoClientConnection {
   }
 
   private static void initClient() {
-    Dotenv dotenv = Dotenv.load();
-    String connectionString = dotenv.get("DB_URI");
+    String connectionString = System.getenv("DB_URI");
     if (connectionString == null || connectionString.isEmpty()) {
       throw new IllegalStateException(
         "DB_URI is not set in the environment variables."
