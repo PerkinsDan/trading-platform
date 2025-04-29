@@ -47,7 +47,7 @@ const Balance = () => {
 
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/update-user-balance`,
+        `${import.meta.env.VITE_APP_API_BASE_URL}/update-user-balance`,
         {
           method: "POST",
           headers: {

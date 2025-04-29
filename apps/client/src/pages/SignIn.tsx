@@ -23,7 +23,7 @@ function SignIn() {
 
       // API call to add/get user
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/create-user`,
+        `${import.meta.env.VITE_APP_API_BASE_URL}/create-user`,
         {
           method: "POST",
           headers: {

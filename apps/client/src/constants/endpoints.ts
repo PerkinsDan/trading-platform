@@ -1,5 +1,4 @@
-const ORDER_PROCESSOR_BASE_URL = import.meta.env
-  .VITE_APP_ORDER_PROCESSOR_BASE_URL;
+const ORDER_PROCESSOR_BASE_URL = import.meta.env.VITE_APP_ORDER_PROCESSOR_BASE_URL;
 
 export const TRADES_PENDING_ENDPOINT = `${ORDER_PROCESSOR_BASE_URL}/users/active-positions?userId=`;
 export const TRADES_HISTORY_ENDPOINT = `${ORDER_PROCESSOR_BASE_URL}/users/trade-history?userId=`;
