@@ -6,10 +6,10 @@ WORKDIR /app
 RUN apk add --no-cache maven
 
 # Copy the entire project
-COPY ../api /app/apps
+COPY . /app/apps
 
 # Build the trading-platform-api module
-WORKDIR /app/apps/OrderProcessor
+WORKDIR /app/apps/
 RUN mvn clean package -DskipTests
 
 # Copy the built JAR to the final location
