@@ -71,7 +71,9 @@ public class OrdersRouter {
                                       validateUserId().
                                       validateOrderType().
                                       validateTicker().
+                                      validateUserBalanceAndPorfolio().
                                       build();
+        
           ValidationResult result = validation.validate(body);
 
           try {

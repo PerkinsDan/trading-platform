@@ -10,9 +10,12 @@ import org.bson.Document;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.tradingplatform.orderprocessor.database.DatabaseUtils;
 import com.tradingplatform.orderprocessor.database.MongoClientConnection;
 import com.tradingplatform.orderprocessor.orders.OrderType;
 import com.tradingplatform.orderprocessor.orders.Ticker;
+
+import static com.tradingplatform.orderprocessor.database.DatabaseUtils.*;
 
 public class ValidationBuilder{
 
@@ -93,8 +96,16 @@ public class ValidationBuilder{
         });
         return this;
     }
-
-    //add more methods the above as needed, ie validateSufficientStockForSell(), validateSufficientFundsForBuy() ...
+    public ValidationBuilder validateUserBalanceAndPorfolio(){
+        validations.add(body ->{
+            if (body.getString("type").equals("SELL")){
+                    return userPortfolioIsSufficientForSell(body);
+            } else{
+                return userBalanceIsSufficientForBuy(body);
+            }
+        });
+        return this;
+    }
 
     public Validation build() {
         return body -> {
