@@ -17,6 +17,16 @@ import org.bson.conversions.Bson;
 
 public class DatabaseUtils {
 
+  public static void creditUser(String userId, double amountToAdd){
+    
+    var usersCollection = MongoClientConnection.getCollection("users"); 
+    
+    usersCollection.updateOne(
+      Filters.eq("userId", userId),
+      new Document("$inc", new Document("balance", amountToAdd))
+    );
+  }
+
   public static boolean previouslyPartiallyFilled(String orderId) {
     MongoCollection<Document> orderHistoryCollection =
       MongoClientConnection.getCollection("orderHistory");

@@ -78,32 +78,24 @@ public class OrdersRouter {
 
           try {
               if (result.isValid){
-                      //unchanged logic from previous create-order/ endpoint
-                      // Order order = DatabaseUtils.createOrder(body);
+                      Order order = createOrder(body);
 
-                      // insertOrderIntoDatabase(
-                      //         order,
-                      //         activeOrdersCollection
-                      // );
-
-                      // OrderProcessorService orderProcessor = OrderProcessorService.getInstance();
-
-                      // ArrayList<Document> matchesFoundAsMongoDBDocs =
-                      //         DatabaseUtils.processOrderAndParseMatchesFound(
-                      //                 order,
-                      //                 orderProcessor
-                      //         );
-
-                      // if (!matchesFoundAsMongoDBDocs.isEmpty()) {
-                      //   matchesFoundAsMongoDBDocs.replaceAll(doc -> doc.toJson());
-                      //   updateCollectionsWithMatches(matchesFoundAsMongoDBDocs);
-               
-                      // }
-
-                      ctx.response().
-                              setStatusCode(201).
-                              putHeader("Content-Type", "application/json").
-                              end("Order created");
+                      Document orderDoc = order.toDoc();
+                      activeOrdersCollection.insertOne(orderDoc);
+              
+                      ArrayList<String> matchesFound = orderProcessorService.processOrder(
+                        order
+                      );
+              
+                      if (!matchesFound.isEmpty()) {
+                        updateCollectionsWithMatches(matchesFound);
+                      }
+              
+                      ctx
+                        .response()
+                        .setStatusCode(200)
+                        .putHeader("Content-Type", "application/json")
+                        .end("Order created");
               } else {
                       ctx.response().
                       setStatusCode(400).
@@ -125,63 +117,67 @@ public class OrdersRouter {
       .handler(ctx -> {
         JsonObject body = ctx.body().asJsonObject();
 
-        String orderId = body.getString("orderId");
-        String userId = body.getString("userId");
-        String ticker = body.getString("ticker");
-        String type = body.getString("type");
+        Validation validation = new ValidationBuilder().
+                                    validateOrderId().
+                                    validateUserId().
+                                    validateOrderToCancelBelongsToUser().
+                                    build();
 
-        var activeOrdersCollection = MongoClientConnection.getCollection(
-          "activeOrders"
-        );
+        ValidationResult result = validation.validate(body);
 
-        var orderHistoryCollection = MongoClientConnection.getCollection(
-          "orderHistory"
-        );
+        if (result.isValid){
 
-        var usersCollection = MongoClientConnection.getCollection("users");
+          var activeOrdersCollection = MongoClientConnection.getCollection(
+            "activeOrders"
+          );
+          
+          //Golden source of information
+          Document orderDoc = activeOrdersCollection
+          .find(Filters.eq("orderId", body.getString("orderId")))
+          .first();
 
-        JsonObject orderJson = JsonObject.mapFrom(
-          activeOrdersCollection.find(Filters.eq("orderId", orderId)).first()
-        );
+          String orderId = orderDoc.getString("orderId");
+          String userId = orderDoc.getString("userId");
+          String ticker = orderDoc.getString("ticker");
+          String type = orderDoc.getString("type");
+          
+          //remove order from OrderProcessor, so we dont match it
+          orderProcessorService.cancelOrder(orderId, ticker, type);
+          
+          //remove order fromactive orders collection
+          activeOrdersCollection.deleteOne(Filters.eq("orderId", orderId));
 
-        if (orderJson == null) {
+          // if it was a buy order we credit money back to the user
+          if (type.equals("BUY")) {
+            double amountToCreditBack = orderDoc.getDouble("price") * orderDoc.getInteger("quantity");
+            creditUser(userId, amountToCreditBack);
+          }
+          
+          //setting cancelled where we need to 
+          var orderHistoryCollection = MongoClientConnection.getCollection(
+            "orderHistory"
+          );
+  
+          if (previouslyPartiallyFilled(orderId)) {
+            orderHistoryCollection.updateOne(
+              Filters.eq("orderId", orderId),
+              new Document("$set", new Document("cancelled", true))
+            );
+          } else {
+            orderDoc.put("cancelled", true);
+            orderHistoryCollection.insertOne(orderDoc);
+          }
+  
+          ctx.response().setStatusCode(200);
+
+        } else {
           ctx
-            .response()
-            .setStatusCode(404)
-            .putHeader("Content-Type", "application/json")
-            .end("Order cannot be cancelled... Order does not exist");
-
+          .response()
+          .setStatusCode(404)
+          .putHeader("Content-Type", "application/json")
+          .end("Error cancelling order : " + result.errorMessage);
           return;
         }
-
-        Order order = createOrder(orderJson);
-
-        orderProcessorService.cancelOrder(orderId, ticker, type);
-
-        activeOrdersCollection.deleteOne(Filters.eq("orderId", orderId));
-
-        if (order.getType() == OrderType.BUY) {
-          int amountToCreditBack = (int) order.getPrice() * order.getQuantity();
-
-          usersCollection.updateOne(
-            Filters.eq("userId", userId),
-            new Document("$inc", new Document("balance", amountToCreditBack))
-          );
-        }
-
-        if (previouslyPartiallyFilled(orderId)) {
-          orderHistoryCollection.updateOne(
-            Filters.eq("orderId", orderId),
-            new Document("$set", new Document("cancelled", true))
-          );
-        } else {
-          Document orderDoc = order.toDoc();
-          orderDoc.put("cancelled", true);
-
-          orderHistoryCollection.insertOne(orderDoc);
-        }
-
-        ctx.response().setStatusCode(200);
       });
   }
 }

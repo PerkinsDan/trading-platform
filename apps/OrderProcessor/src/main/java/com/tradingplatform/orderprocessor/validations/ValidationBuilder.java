@@ -10,7 +10,6 @@ import org.bson.Document;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
-import com.tradingplatform.orderprocessor.database.DatabaseUtils;
 import com.tradingplatform.orderprocessor.database.MongoClientConnection;
 import com.tradingplatform.orderprocessor.orders.OrderType;
 import com.tradingplatform.orderprocessor.orders.Ticker;
@@ -102,6 +101,27 @@ public class ValidationBuilder{
                     return userPortfolioIsSufficientForSell(body);
             } else{
                 return userBalanceIsSufficientForBuy(body);
+            }
+        });
+        return this;
+    }
+
+    public ValidationBuilder validateOrderToCancelBelongsToUser(){
+        MongoCollection<Document> activeOrderCollection = MongoClientConnection.getCollection("activeOrders");
+
+        validations.add(body -> {
+            Document orderDoc = activeOrderCollection
+            .find(Filters.eq("orderId", body.getString("orderId")))
+            .first();
+
+            if(orderDoc != null){
+                if (orderDoc.getString("userId").equals(body.getString("userId"))){
+                    return ValidationResult.ok();
+                } else {
+                    return ValidationResult.fail("Error : The order you are trying to cancel doesnt belong to you");
+                }
+            } else {
+                return ValidationResult.fail("Invalid Order Id - No such order could be found.");
             }
         });
         return this;
