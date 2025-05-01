@@ -189,7 +189,7 @@ public class OrdersRouter {
           ctx.response().
           setStatusCode(500).
           putHeader("Content-Type", "application/json").
-          end("Internal Server Error : Unexcpected error while cancelling order - Order could not be cancelled.");
+          end("Internal Server Error : Unexpected error while cancelling order - Order could not be cancelled.");
           return;
         }
       });

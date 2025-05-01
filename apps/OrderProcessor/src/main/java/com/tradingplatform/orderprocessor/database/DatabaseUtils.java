@@ -65,7 +65,10 @@ public class DatabaseUtils {
   public static ValidationResult userPortfolioIsSufficientForSell(JsonObject body){
 
     boolean isSell = body.getString("type").equals("SELL");
-
+    
+    if(!isSell){
+      return ValidationResult.fail(" Error validating quantity owned is sufficient : Order Type is not a SELL");
+    }
     MongoCollection<Document> usersCollection =
     MongoClientConnection.getCollection("users");
 
@@ -86,15 +89,14 @@ public class DatabaseUtils {
         numStock = portfolio.getFirst().getInteger("quantity", 0);
       }
     }
-    if (isSell) {
-      if (numStock < body.getInteger("quantity")){
-        return ValidationResult.fail("Insufficient quantity of stock owned to place this order");
-      } else {
-        return ValidationResult.ok();
-      }
-    } else {
-      return ValidationResult.fail(" Error validating quantity owned is sufficient : Order Type is not a SELL");
+    
+    if (numStock < body.getInteger("quantity")){
+      return ValidationResult.fail("Insufficient quantity of stock owned to place this order");
     }
+      
+    return ValidationResult.ok();
+    
+  
   }
 
   public static void updateCollectionsWithMatches(
