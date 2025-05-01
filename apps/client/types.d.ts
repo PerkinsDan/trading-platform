@@ -24,5 +24,4 @@ export enum Ticker {
 export interface Stock {
   ticker: Ticker;
   quantity: number;
-  //TODO add live price
 }
