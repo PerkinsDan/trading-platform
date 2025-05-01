@@ -14,6 +14,8 @@ import com.tradingplatform.orderprocessor.database.MongoClientConnection;
 import com.tradingplatform.orderprocessor.orders.OrderType;
 import com.tradingplatform.orderprocessor.orders.Ticker;
 
+import io.vertx.core.json.JsonObject;
+
 import static com.tradingplatform.orderprocessor.database.DatabaseUtils.*;
 
 public class ValidationBuilder{
@@ -30,20 +32,87 @@ public class ValidationBuilder{
         .map(Enum::name)
         .collect(Collectors.toSet());
 
-    public ValidationBuilder validateUserId(){
+    private Boolean missingOrEmpty(JsonObject body, String attribute){
 
+            if (!body.containsKey(attribute) || body.getString(attribute).isBlank()){
+                return true;
+            }
+            return false;
+    }
 
+    public ValidationBuilder validateAttribute(String attribute){
+        // wrapper to access missingOrEmpty outside the Builder class
+        validations.add(body -> {
+            if (!missingOrEmpty(body, attribute)){
+                return ValidationResult.ok();
+            } else {
+                return ValidationResult.fail("Validation Error : " + attribute + " is missing or blank");
+            }
+        });
+        return this;
+    }
+
+    public ValidationBuilder validatePrice(){
+        validations.add(body -> {
+            if(!missingOrEmpty(body, "price"))
+                try {
+                    Double price = Double.parseDouble(body.getString("price"));
+                    if (price <= 0){
+                        return ValidationResult.fail("Price cannot be equal to or less than 0.");
+                    }
+                } catch (Exception e) {
+                    if (e instanceof NumberFormatException){
+                        return ValidationResult.fail("Validation Error : Price is invalid.");
+                    }
+                }
+            else{
+                return ValidationResult.fail("Validation Error : Price is missing or blank");
+
+            }
+
+            return ValidationResult.ok();
+
+        });
+        return this;
+    }
+
+    public ValidationBuilder validateQuantity(){
 
         validations.add(body -> {
-            if (!body.containsKey("userId") || body.getString("userId").isBlank()){
-                return ValidationResult.fail("userId is missing or blank");
-            }
-            MongoCollection<Document> usersCollection =
-            MongoClientConnection.getCollection("users"); 
-            if (usersCollection.find(Filters.eq("userId", body.getString("userId"))).first() == null){
-                return ValidationResult.fail("Invalid userId : no such user exists in the database");
+            if(!missingOrEmpty(body,"quantity")){
+                try{
+                    int quantity = Integer.parseInt(body.getString("quantity"));
+                    if (quantity <= 0){
+                        return ValidationResult.fail("Price cannot be equal to or less than 0.");
+                    }
+                } catch (Exception e){
+                    if (e instanceof NumberFormatException){
+                        return ValidationResult.fail("Validation Error : Quantity is invalid ");
+                    }
+                }
+            } else {
+                return ValidationResult.fail("Validation Error : Quantity is missing or blank");
             }
             return ValidationResult.ok();
+        });
+        return this;
+
+    }
+
+    public ValidationBuilder validateUserId(){
+
+        validations.add(body -> {
+            if (!missingOrEmpty(body,"userId")){
+                MongoCollection<Document> usersCollection =
+                MongoClientConnection.getCollection("users"); 
+                if (usersCollection.find(Filters.eq("userId", body.getString("userId"))).first() == null){
+                    return ValidationResult.fail("Invalid userId : no such user exists in the database");
+                }
+                return ValidationResult.ok();
+
+            } else {
+                return ValidationResult.fail("Validation Error : userId is missing or blank");
+            }
         });
         return this;
     }
@@ -51,43 +120,44 @@ public class ValidationBuilder{
     public ValidationBuilder validateOrderId(){
         
         validations.add(body -> {
-            if (!body.containsKey("orderId") || body.getString("orderId").isBlank()){
-                return ValidationResult.fail("orderId is missing or blank");
-            }
-            MongoCollection<Document> activeOrdersCollection =
-            MongoClientConnection.getCollection("activeOrders");
-            if (activeOrdersCollection.find(Filters.eq("orderId", body.getString("orderId"))).first() == null){
-                return ValidationResult.fail("Invalid orderId : no such order exists in the database");
+            if (!missingOrEmpty(body,"orderId")){
+                MongoCollection<Document> activeOrdersCollection =
+                MongoClientConnection.getCollection("activeOrders");
+                if (activeOrdersCollection.find(Filters.eq("orderId", body.getString("orderId"))).first() == null){
+                    return ValidationResult.fail("Invalid orderId : no such order exists in the database");
+                }
+            } else {
+                return ValidationResult.fail("Validaton Error : orderId is missing or blank");
             }
             return ValidationResult.ok();
         });
-
         return this;
     }
 
     public ValidationBuilder validateOrderType(){
 
         validations.add(body -> {
-            if (!body.containsKey("type") || body.getString("type").isBlank()){
-                return ValidationResult.fail("OrderType is missing or blank");
-            }
-            if (!ValidOrderTypes.contains(body.getString("type"))){
-                return ValidationResult.fail("Invalid Order Type : Must be a BUY or SELL");
+            if (!missingOrEmpty(body,"type")){
+                if (!ValidOrderTypes.contains(body.getString("type"))){
+                    return ValidationResult.fail("Invalid Order Type : Must be a BUY or SELL");
+                }
+            } else {
+                return ValidationResult.fail("Validation Error : order type is missing or blank");
             }
             return ValidationResult.ok();
         });
-
         return this;
     }
 
     public ValidationBuilder validateTicker(){
 
         validations.add(body -> {
-            if (!body.containsKey("ticker") || body.getString("ticker").isBlank()){
-                return ValidationResult.fail("Ticker is missing or blank");
-            }
-            if (!ValidTickers.contains(body.getString("ticker"))){
-                return ValidationResult.fail("Invalid Ticker : This is not traded");
+            if (!missingOrEmpty(body,"ticker")){
+                if (!ValidTickers.contains(body.getString("ticker"))){
+                    return ValidationResult.fail("Invalid Ticker : This is not traded");
+                }
+            } else {
+                return ValidationResult.fail("Validation Error : Ticker is missing or blank");
             }
             return ValidationResult.ok();
         });

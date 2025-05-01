@@ -2,6 +2,10 @@ package com.tradingplatform.orderprocessor.routers;
 
 import com.mongodb.client.model.Filters;
 import com.tradingplatform.orderprocessor.database.MongoClientConnection;
+import com.tradingplatform.orderprocessor.validations.Validation;
+import com.tradingplatform.orderprocessor.validations.ValidationBuilder;
+import com.tradingplatform.orderprocessor.validations.ValidationResult;
+
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
@@ -34,26 +38,46 @@ public class UsersRouter {
       .handler(BodyHandler.create())
       .handler(ctx -> {
         JsonObject body = ctx.body().asJsonObject();
-        String userId = body.getString("userId");
 
-        var usersCollection = MongoClientConnection.getCollection("users");
-        Document existingUser = usersCollection
-          .find(Filters.eq("userId", userId))
-          .first();
+        Validation validation = new ValidationBuilder()
+                                    .validateAttribute("userId")
+                                    .build();
 
-        if (existingUser != null) {
-          ctx.response().setStatusCode(409).end("User already exists");
-          return;
+        ValidationResult result = validation.validate(body);
+
+        try{
+            if (result.isValid){
+              var usersCollection = MongoClientConnection.getCollection("users");
+
+              Document newUserDoc = new Document()
+              .append("userId", body.getString("userId"))
+              .append("balance", 0)
+              .append("portfolio", Collections.emptyList());
+
+              usersCollection.insertOne(newUserDoc);
+
+              ctx
+                .response()
+                .setStatusCode(200)
+                .putHeader("Content-Type", "application/json")
+                .end("User created successfully");
+
+          } else {
+            ctx
+              .response()
+              .setStatusCode(400)
+              .putHeader("Content-Type", "application/json")
+              .end("Error while creating user : " + result.errorMessage);    
+          }
         }
-
-        Document newUserDoc = new Document()
-          .append("userId", userId)
-          .append("balance", 0)
-          .append("portfolio", Collections.emptyList());
-
-        usersCollection.insertOne(newUserDoc);
-
-        ctx.response().end("User created successfully.");
+        catch( Exception e){
+          e.printStackTrace();
+          ctx.response().
+          setStatusCode(500).
+          putHeader("Content-Type", "application/json").
+          end("Internal Server Error : Unexpected error while creating user - user could not be created.");
+        }
+ 
       });
 
     router
@@ -61,18 +85,36 @@ public class UsersRouter {
       .handler(BodyHandler.create())
       .handler(ctx -> {
         JsonObject body = ctx.body().asJsonObject();
-        if (
-          body == null ||
-          !body.containsKey("userId") ||
-          !body.containsKey("moneyAddedToBalance")
-        ) {
-          ctx.response().setStatusCode(400).end("Invalid request body");
-          return;
+
+        Validation validation = new ValidationBuilder()
+                                    .validateUserId()
+                                    .validateAttribute("moneyAddedToBalance")
+                                    .build();
+        ValidationResult result = validation.validate(body);
+        try{
+          if (result.isValid){
+            creditUser(body.getString("userId"), body.getDouble("moneyAddedToBalance"));
+            ctx
+            .response()
+            .setStatusCode(200)
+            .putHeader("Content-Type", "application/json")
+            .end("Balance updated successfully");
+          } else {
+            ctx
+            .response()
+            .setStatusCode(400)
+            .putHeader("Content-Type", "application/json")
+            .end("Error while updating user balance: " + result.errorMessage); 
+
+          }
         }
-        String userId = body.getString("userId");
-        double moneyAddedToBalance = body.getDouble("moneyAddedToBalance");
-        creditUser(userId, moneyAddedToBalance);
-        ctx.response().end("User balance updated successfully");
+        catch(Exception e){
+          e.printStackTrace();
+          ctx.response().
+          setStatusCode(500).
+          putHeader("Content-Type", "application/json").
+          end("Internal Server Error : Unexpected error while adding balance - balance was not updated.");
+        }
       });
 
     router

@@ -82,7 +82,7 @@ public class ValidationBuilderTest{
         ValidationResult result = validation.validate(requestBody);
 
         assertFalse(result.isValid);
-        assertEquals(result.errorMessage, "Ticker is missing or blank");
+        assertEquals(result.errorMessage, "Validation Error : Ticker is missing or blank");
     }
     @Test
     public void failOnInvalidTicker_TickerIsEmpty(){
@@ -92,7 +92,7 @@ public class ValidationBuilderTest{
         ValidationResult result = validation.validate(requestBody);
 
         assertFalse(result.isValid);
-        assertEquals(result.errorMessage,"Ticker is missing or blank");
+        assertEquals(result.errorMessage,"Validation Error : Ticker is missing or blank");
     }
 
     @Test
@@ -124,9 +124,8 @@ public class ValidationBuilderTest{
         ValidationResult result = validation.validate(requestBody);
 
         assertFalse(result.isValid);
-        assertEquals(result.errorMessage, "OrderType is missing or blank");
+        assertEquals(result.errorMessage, "Validation Error : order type is missing or blank");
     }
-    @Test
     public void failOnInvalidType_TypeIsEmpty(){
 
         requestBody.put("type", " ");
@@ -134,7 +133,7 @@ public class ValidationBuilderTest{
         ValidationResult result = validation.validate(requestBody);
 
         assertFalse(result.isValid);
-        assertEquals(result.errorMessage,"OrderType is missing or blank");
+        assertEquals(result.errorMessage,"Validation Error : order type is missing or blank");
     }
 
     @Test
@@ -166,7 +165,7 @@ public class ValidationBuilderTest{
             ValidationResult result = validation.validate(requestBody);
     
             assertFalse(result.isValid);
-            assertEquals(result.errorMessage, "orderId is missing or blank");
+            assertEquals(result.errorMessage, "Validaton Error : orderId is missing or blank");
         }
         @Test
         public void failOnInvalidOrderId_OrderIdIsEmpty(){
@@ -176,7 +175,7 @@ public class ValidationBuilderTest{
             ValidationResult result = validation.validate(requestBody);
     
             assertFalse(result.isValid);
-            assertEquals(result.errorMessage,"orderId is missing or blank");
+            assertEquals(result.errorMessage,"Validaton Error : orderId is missing or blank");
         }
 
 
@@ -219,7 +218,7 @@ public class ValidationBuilderTest{
             ValidationResult result = validation.validate(requestBody);
     
             assertFalse(result.isValid);
-            assertEquals(result.errorMessage, "userId is missing or blank");
+            assertEquals(result.errorMessage, "Validation Error : userId is missing or blank");
         }
 
         @Test
@@ -230,7 +229,7 @@ public class ValidationBuilderTest{
             ValidationResult result = validation.validate(requestBody);
     
             assertFalse(result.isValid);
-            assertEquals(result.errorMessage,"userId is missing or blank");
+            assertEquals(result.errorMessage,"Validation Error : userId is missing or blank");
         }
 
         @Test
@@ -261,6 +260,17 @@ public class ValidationBuilderTest{
 
             assertTrue(result.isValid);
             assertNull(result.errorMessage);   
+        }
+
+        @Test
+        public void failOnInvalidQuantity_QuantityisEmpty(){
+    
+            requestBody.put("quantity", " ");
+            Validation validation = new ValidationBuilder().validateQuantity().build();
+            ValidationResult result = validation.validate(requestBody);
+    
+            assertFalse(result.isValid);
+            assertEquals(result.errorMessage,"Validation Error : Quantity is missing or blank");
         }
 
 

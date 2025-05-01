@@ -101,7 +101,7 @@ public class OrdersRouter {
               ctx.response().
               setStatusCode(500).
               putHeader("Content-Type", "application/json").
-              end("Internal Server Error : if were here sthg has gone quite wrong");
+              end("Internal Server Error : Unexpected error while creating order - Order could not be placed.");
           }
       });
 
@@ -120,63 +120,71 @@ public class OrdersRouter {
                                     .build();
 
         ValidationResult result = validation.validate(body);
+        try{
+            if (result.isValid){
 
-        if (result.isValid){
+              var activeOrdersCollection = MongoClientConnection.getCollection(
+                "activeOrders"
+              );
+              
+              //Golden source of information
+              Document orderDoc = activeOrdersCollection
+              .find(Filters.eq("orderId", body.getString("orderId")))
+              .first();
 
-          var activeOrdersCollection = MongoClientConnection.getCollection(
-            "activeOrders"
-          );
-          
-          //Golden source of information
-          Document orderDoc = activeOrdersCollection
-          .find(Filters.eq("orderId", body.getString("orderId")))
-          .first();
+              String orderId = orderDoc.getString("orderId");
+              String userId = orderDoc.getString("userId");
+              String ticker = orderDoc.getString("ticker");
+              String type = orderDoc.getString("type");
+              
+              //remove order from OrderProcessor, so we dont match it
+              orderProcessorService.cancelOrder(orderId, ticker, type);
+              
+              //remove order fromactive orders collection
+              activeOrdersCollection.deleteOne(Filters.eq("orderId", orderId));
 
-          String orderId = orderDoc.getString("orderId");
-          String userId = orderDoc.getString("userId");
-          String ticker = orderDoc.getString("ticker");
-          String type = orderDoc.getString("type");
-          
-          //remove order from OrderProcessor, so we dont match it
-          orderProcessorService.cancelOrder(orderId, ticker, type);
-          
-          //remove order fromactive orders collection
-          activeOrdersCollection.deleteOne(Filters.eq("orderId", orderId));
+              // if it was a buy order we credit money back to the user
+              if (type.equals("BUY")) {
+                double amountToCreditBack = orderDoc.getDouble("price") * orderDoc.getInteger("quantity");
+                creditUser(userId, amountToCreditBack);
+              }
+              
+              //setting cancelled where we need to 
+              var orderHistoryCollection = MongoClientConnection.getCollection(
+                "orderHistory"
+              );
+      
+              if (previouslyPartiallyFilled(orderId)) {
+                orderHistoryCollection.updateOne(
+                  Filters.eq("orderId", orderId),
+                  new Document("$set", new Document("cancelled", true))
+                );
+              } else {
+                orderDoc.put("cancelled", true);
+                orderHistoryCollection.insertOne(orderDoc);
+              }
+      
+              ctx
+              .response()
+              .setStatusCode(200)
+              .putHeader("Content-Type","application/json")
+              .end("Order cancelled successfully");
 
-          // if it was a buy order we credit money back to the user
-          if (type.equals("BUY")) {
-            double amountToCreditBack = orderDoc.getDouble("price") * orderDoc.getInteger("quantity");
-            creditUser(userId, amountToCreditBack);
-          }
-          
-          //setting cancelled where we need to 
-          var orderHistoryCollection = MongoClientConnection.getCollection(
-            "orderHistory"
-          );
-  
-          if (previouslyPartiallyFilled(orderId)) {
-            orderHistoryCollection.updateOne(
-              Filters.eq("orderId", orderId),
-              new Document("$set", new Document("cancelled", true))
-            );
-          } else {
-            orderDoc.put("cancelled", true);
-            orderHistoryCollection.insertOne(orderDoc);
-          }
-  
-          ctx
-          .response()
-          .setStatusCode(200)
-          .putHeader("Content-Type","application/json")
-          .end("Order cancelled successfully");
+            } else {
+              ctx
+              .response()
+              .setStatusCode(404)
+              .putHeader("Content-Type", "application/json")
+              .end("Error cancelling order : " + result.errorMessage);
+              return;
+            }
+        } catch (Exception e){
+          e.printStackTrace();
+          ctx.response().
+          setStatusCode(500).
+          putHeader("Content-Type", "application/json").
+          end("Internal Server Error : Unexcpected error while cancelling order - Order could not be cancelled.");
 
-        } else {
-          ctx
-          .response()
-          .setStatusCode(404)
-          .putHeader("Content-Type", "application/json")
-          .end("Error cancelling order : " + result.errorMessage);
-          return;
         }
       });
   }
