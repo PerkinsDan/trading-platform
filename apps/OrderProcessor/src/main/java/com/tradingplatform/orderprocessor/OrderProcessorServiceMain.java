@@ -20,7 +20,6 @@ public class OrderProcessorServiceMain {
     Vertx vertx = Vertx.vertx();
     HttpServer server = vertx.createHttpServer();
 
-
     Router router = Router.router(vertx);
     router
       .route()
@@ -37,7 +36,5 @@ public class OrderProcessorServiceMain {
     server.requestHandler(router).listen(8080);
 
     if (!createConnection()) System.exit(-1);
-
-    System.out.println("Starting server...");
   }
 }
