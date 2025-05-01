@@ -62,9 +62,11 @@ public class OrdersRouter {
           //Create  and use POC validationBuilder object, we might wanna have validaions that
           //check that the price and quantity are valid too.
           Validation validation = new ValidationBuilder().
-                                      validateUserId().
+                                      validateQuantity().
+                                      validatePrice().
                                       validateOrderType().
                                       validateTicker().
+                                      validateUserId().
                                       validateUserBalanceAndPorfolio().
                                       build();
         
@@ -90,11 +92,13 @@ public class OrdersRouter {
                         .setStatusCode(200)
                         .putHeader("Content-Type", "application/json")
                         .end("Order created");
+                      return;
               } else {
                       ctx.response().
                       setStatusCode(400).
                       putHeader("Content-Type", "application/json").
                       end("Error - Validation Error : " + result.errorMessage);
+                      return;
               }
           } catch (Exception e) {
               e.printStackTrace();
@@ -102,6 +106,7 @@ public class OrdersRouter {
               setStatusCode(500).
               putHeader("Content-Type", "application/json").
               end("Internal Server Error : Unexpected error while creating order - Order could not be placed.");
+              return;
           }
       });
 
@@ -169,14 +174,15 @@ public class OrdersRouter {
               .setStatusCode(200)
               .putHeader("Content-Type","application/json")
               .end("Order cancelled successfully");
+              return;
 
             } else {
               ctx
-              .response()
-              .setStatusCode(404)
-              .putHeader("Content-Type", "application/json")
-              .end("Error cancelling order : " + result.errorMessage);
-              return;
+                .response()
+                .setStatusCode(404)
+                .putHeader("Content-Type", "application/json")
+                .end("Error cancelling order : " + result.errorMessage);
+                return;
             }
         } catch (Exception e){
           e.printStackTrace();
@@ -184,7 +190,7 @@ public class OrdersRouter {
           setStatusCode(500).
           putHeader("Content-Type", "application/json").
           end("Internal Server Error : Unexcpected error while cancelling order - Order could not be cancelled.");
-
+          return;
         }
       });
   }

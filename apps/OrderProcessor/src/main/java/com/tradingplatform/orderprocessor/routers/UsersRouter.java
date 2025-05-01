@@ -61,13 +61,14 @@ public class UsersRouter {
                 .setStatusCode(200)
                 .putHeader("Content-Type", "application/json")
                 .end("User created successfully");
-
+              return;
           } else {
             ctx
               .response()
               .setStatusCode(400)
               .putHeader("Content-Type", "application/json")
-              .end("Error while creating user : " + result.errorMessage);    
+              .end("Error while creating user : " + result.errorMessage);
+            return;    
           }
         }
         catch( Exception e){
@@ -76,8 +77,8 @@ public class UsersRouter {
           setStatusCode(500).
           putHeader("Content-Type", "application/json").
           end("Internal Server Error : Unexpected error while creating user - user could not be created.");
+        return;
         }
- 
       });
 
     router
@@ -95,16 +96,18 @@ public class UsersRouter {
           if (result.isValid){
             creditUser(body.getString("userId"), body.getDouble("moneyAddedToBalance"));
             ctx
-            .response()
-            .setStatusCode(200)
-            .putHeader("Content-Type", "application/json")
-            .end("Balance updated successfully");
+              .response()
+              .setStatusCode(200)
+              .putHeader("Content-Type", "application/json")
+              .end("Balance updated successfully");
+            return;
           } else {
             ctx
-            .response()
-            .setStatusCode(400)
-            .putHeader("Content-Type", "application/json")
-            .end("Error while updating user balance: " + result.errorMessage); 
+              .response()
+              .setStatusCode(400)
+              .putHeader("Content-Type", "application/json")
+              .end("Error while updating user balance: " + result.errorMessage);
+            return; 
 
           }
         } catch(Exception e){
@@ -142,17 +145,18 @@ public class UsersRouter {
               .forEach(doc -> activeOrders.add(new JsonObject(doc.toJson())));
     
             ctx
-              .response()
-              .setStatusCode(200)
-              .putHeader("Content-Type", "application/json")
+                .response()
+                .setStatusCode(200)
+                .putHeader("Content-Type", "application/json")
               .end(activeOrders.toString());
+            return;
 
           } else {
             ctx
-            .response()
-            .setStatusCode(400)
-            .putHeader("Content-Type", "application/json")
-            .end("Error while retrieving user positions: " + result.errorMessage);
+              .response()
+              .setStatusCode(400)
+              .putHeader("Content-Type", "application/json")
+              .end("Error while retrieving user positions: " + result.errorMessage);
             return;
           }
         } catch (Exception e){
@@ -186,7 +190,9 @@ public class UsersRouter {
               .first();
     
             if (userDoc == null) {
-              ctx.response().setStatusCode(204).end("User not found");
+              ctx.response()
+                .setStatusCode(204)
+                .end("User not found");
               return;
             }
     
@@ -203,10 +209,10 @@ public class UsersRouter {
 
           } else {
             ctx
-            .response()
-            .setStatusCode(400)
-            .putHeader("Content-Type", "application/json")
-            .end("Error while retrieving user positions: " + result.errorMessage);
+              .response()
+              .setStatusCode(400)
+              .putHeader("Content-Type", "application/json")
+              .end("Error while retrieving user positions: " + result.errorMessage);
             return;
           }
         } catch (Exception e) {
@@ -244,20 +250,23 @@ public class UsersRouter {
               .forEach(doc -> history.add(new JsonObject(doc.toJson())));
     
             if (history.isEmpty()) {
-              ctx.response().setStatusCode(204).end("No history found");
-              return;
+              ctx.response()
+              .setStatusCode(204)
+              .end("No history found");
+            return;
             }
     
             ctx
               .response()
               .putHeader("Content-Type", "application/json")
               .end(history.toString());
+            return;
           } else {
             ctx
-            .response()
-            .setStatusCode(400)
-            .putHeader("Content-Type", "application/json")
-            .end("Error while retrieving trade-history: " + result.errorMessage);
+              .response()
+              .setStatusCode(400)
+              .putHeader("Content-Type", "application/json")
+              .end("Error while retrieving trade-history: " + result.errorMessage);
             return;
           }
         } catch(Exception e){
