@@ -66,6 +66,7 @@ const Balance = () => {
     } catch (error) {
       console.error("Error updating balance:", error);
     }
+    fetchBalance();
   };
 
   useEffect(() => {
