@@ -55,12 +55,11 @@ public class DatabaseUtils {
       if (balance < totalPrice){
         return ValidationResult.fail("Insufficient funds to place thi order");
       } else {
-        ValidationResult.ok();
+        return ValidationResult.ok();
       }
     } else {
       return ValidationResult.fail("Order Type is not a BUY");
     }
-    return ValidationResult.fail("Unexpected error while validating user balance for buy order.");
   }
 
   public static ValidationResult userPortfolioIsSufficientForSell(JsonObject body){
@@ -91,12 +90,11 @@ public class DatabaseUtils {
       if (numStock < body.getInteger("quantity")){
         return ValidationResult.fail("Insufficient quantity of stock owned to place this order");
       } else {
-        ValidationResult.ok();
+        return ValidationResult.ok();
       }
     } else {
       return ValidationResult.fail(" Error validating quantity owned is sufficient : Order Type is not a SELL");
     }
-    return ValidationResult.fail("Unexpected error while validating users portfolio has sufficient stock to complete sell order.");
   }
 
   public static void updateCollectionsWithMatches(
