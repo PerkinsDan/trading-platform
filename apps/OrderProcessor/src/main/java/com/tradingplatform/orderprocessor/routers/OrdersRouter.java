@@ -1,6 +1,7 @@
 package com.tradingplatform.orderprocessor.routers;
 
 import static com.tradingplatform.orderprocessor.database.DatabaseUtils.*;
+import static com.tradingplatform.orderprocessor.orders.OrderType.BUY;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
@@ -78,6 +79,20 @@ public class OrdersRouter {
 
         if (!matchesFound.isEmpty()) {
           updateCollectionsWithMatches(matchesFound);
+        }
+
+        MongoCollection<Document> usersCollection =
+                MongoClientConnection.getCollection("users");
+
+        String userId = body.getString("userId");
+        double price = body.getDouble("price");
+        int quantity = body.getInteger("quantity");
+
+        if(order.getType() == BUY) {
+            usersCollection.updateOne(
+                    Filters.eq("userId", userId),
+                    new Document("$inc", new Document("balance", -price * quantity))
+            );
         }
 
         ctx
