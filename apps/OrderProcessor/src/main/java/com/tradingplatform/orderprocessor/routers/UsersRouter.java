@@ -46,7 +46,7 @@ public class UsersRouter {
 
         Document newUserDoc = new Document()
           .append("userId", userId)
-          .append("balance", 0)
+          .append("balance", 0.0)
           .append("portfolio", Collections.emptyList());
 
         usersCollection.insertOne(newUserDoc);
@@ -68,7 +68,7 @@ public class UsersRouter {
           return;
         }
         String userId = body.getString("userId");
-        int moneyAddedToBalance = body.getInteger("moneyAddedToBalance");
+        double moneyAddedToBalance = body.getDouble("moneyAddedToBalance");
         var usersCollection = MongoClientConnection.getCollection("users");
         usersCollection.updateOne(
           Filters.eq("userId", userId),

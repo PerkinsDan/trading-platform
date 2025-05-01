@@ -129,7 +129,7 @@ public class OrdersRouter {
         activeOrdersCollection.deleteOne(Filters.eq("orderId", orderId));
 
         if (order.getType() == OrderType.BUY) {
-          int amountToCreditBack = (int) order.getPrice() * order.getQuantity();
+          double amountToCreditBack = order.getPrice() * order.getQuantity();
 
           usersCollection.updateOne(
             Filters.eq("userId", userId),
