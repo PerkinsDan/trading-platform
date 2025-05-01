@@ -2,7 +2,9 @@ package com.tradingplatform.orderprocessor.routers;
 
 import com.mongodb.client.model.Filters;
 import com.tradingplatform.orderprocessor.database.MongoClientConnection;
+import com.tradingplatform.orderprocessor.orders.Ticker;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -127,9 +129,15 @@ public class UsersRouter {
         }
 
         int balance = userDoc.getInteger("balance", 0);
+        JsonArray portfolio = new JsonArray(
+                userDoc.getList("portfolio",
+                        Document.class,
+                        Collections.emptyList()));
+
         JsonObject response = new JsonObject()
           .put("userId", userId)
-          .put("balance", balance);
+          .put("balance", balance)
+          .put("portfolio", portfolio);
 
         ctx
           .response()
