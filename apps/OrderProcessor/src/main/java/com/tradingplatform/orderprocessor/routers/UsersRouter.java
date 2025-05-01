@@ -40,13 +40,14 @@ public class UsersRouter {
         JsonObject body = ctx.body().asJsonObject();
 
         Validation validation = new ValidationBuilder()
-                                    .validateAttribute("userId")
+                                    .validateUserId()
                                     .build();
 
         ValidationResult result = validation.validate(body);
 
         try{
-            if (result.isValid){
+            if (!result.isValid){
+              // usually we check thata userId does exist, in this case we want to be sure it doesnt, so NOT validUser
               var usersCollection = MongoClientConnection.getCollection("users");
 
               Document newUserDoc = new Document()
@@ -67,7 +68,7 @@ public class UsersRouter {
               .response()
               .setStatusCode(400)
               .putHeader("Content-Type", "application/json")
-              .end("Error while creating user : " + result.errorMessage);
+              .end("Error while creating user :  A user with this id already exists");
             return;    
           }
         }
