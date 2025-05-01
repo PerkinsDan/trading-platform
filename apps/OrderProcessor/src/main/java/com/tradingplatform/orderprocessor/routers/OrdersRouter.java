@@ -19,7 +19,6 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import org.bson.Document;
-import org.json.JSONObject;
 
 public class OrdersRouter {
 
@@ -105,7 +104,7 @@ public class OrdersRouter {
               end("Internal Server Error : if were here sthg has gone quite wrong");
           }
       });
-      
+
     router
       .post("/cancel")
       .handler(BodyHandler.create())

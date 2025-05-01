@@ -56,7 +56,7 @@ public class ValidationBuilder{
             }
             MongoCollection<Document> activeOrdersCollection =
             MongoClientConnection.getCollection("activeOrders");
-            if (activeOrdersCollection.find(Filters.eq("orderId", body.getString("orderId"))) == null){
+            if (activeOrdersCollection.find(Filters.eq("orderId", body.getString("orderId"))).first() == null){
                 return ValidationResult.fail("Invalid orderId : no such order exists in the database");
             }
             return ValidationResult.ok();
