@@ -5,6 +5,7 @@ import MyTrades from "./pages/MyTrades";
 import ProtectedRoute from "./components/Routes/ProtectedRoute";
 import UnprotectedRoute from "./components/Routes/UnprotectedRoute";
 import TickerTrades from "./pages/TickerTrades";
+import MyPortfolio from "./pages/MyPortfolio.tsx";
 
 function App() {
   return (
@@ -36,6 +37,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+      <Route
+          path="my-portfolio"
+          element={
+              <ProtectedRoute>
+                  <MyPortfolio />
+              </ProtectedRoute>
+          }
+      />
+
         <Route
           path="sign-in"
           element={

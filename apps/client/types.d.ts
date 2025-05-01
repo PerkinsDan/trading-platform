@@ -20,3 +20,9 @@ export enum Ticker {
   TSLA,
   META,
 }
+
+export interface Stock {
+  ticker: Ticker;
+  quantity: number;
+  //TODO add live price
+}
