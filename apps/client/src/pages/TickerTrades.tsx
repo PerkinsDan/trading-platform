@@ -16,6 +16,8 @@ import {
 } from "../constants/endpoints";
 import { auth } from "../firebaseConfig/firebase";
 import { Snapshot, Ticker } from "../../types";
+import TradeGraph from "../components/TradeGraph";
+import { fetchTimeSeries } from "../components/TradingCard";
 
 enum Direction {
   BUY = "BUY",
@@ -101,12 +103,20 @@ const TickerTrades = () => {
     }
   }, [ticker]);
 
+  const [timeSeries, setTimeSeries] = useState<number[]>([]);
+  const [timestamps, setTimestamps] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetchTimeSeries(ticker, setTimeSeries, setTimestamps);
+  }, [ticker]);
+
   return (
     <Stack
       sx={{
         backgroundColor: "#5533ff22",
         borderRadius: "2rem",
         boxShadow: 10,
+        maxHeight: "90vh",
       }}
     >
       <Stack
@@ -124,6 +134,13 @@ const TickerTrades = () => {
         >
           <CloseIcon />
         </IconButton>
+      </Stack>
+      <Stack maxWidth={"50rem"}>
+        <TradeGraph
+          stock={ticker}
+          timeSeries={timeSeries}
+          timestamps={timestamps}
+        />
       </Stack>
       <Stack spacing={2} padding="1rem">
         {error && (
