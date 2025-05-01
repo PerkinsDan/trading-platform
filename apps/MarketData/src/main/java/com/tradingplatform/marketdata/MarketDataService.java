@@ -3,6 +3,7 @@ package com.tradingplatform.marketdata;
 import com.tradingplatform.marketdata.constants.Ticker;
 import com.tradingplatform.marketdata.simulatedata.SimulateData;
 import com.tradingplatform.marketdata.simulatedata.Snapshot;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
@@ -11,8 +12,8 @@ public class MarketDataService {
   private final SimulateData simulateData;
   private static MarketDataService marketDataServiceHolder = null;
 
-  private final int ONE_MINUTE = 60 * 1000;
-  private final LocalTime MARKET_OPEN = LocalTime.of(9, 30);
+  private final int ONE_HOUR = 60 * 60 * 1000;
+  private final LocalTime PRE_MARKET_OPEN = LocalTime.of(9, 0);
 
   private MarketDataService() {
     this.simulateData = new SimulateData();
@@ -25,15 +26,19 @@ public class MarketDataService {
     return new Thread(() -> {
       boolean firstIteration = true;
 
+      long timeDifference = Math.abs(
+        Duration.between(LocalTime.now(), PRE_MARKET_OPEN).toMinutes()
+      );
+
       while (true) {
         try {
-          if (LocalTime.now().equals(MARKET_OPEN) || firstIteration) {
+          if (timeDifference <= 30 || firstIteration) {
             synchronized (simulateData) {
               simulateData.generateData();
               firstIteration = false;
             }
           }
-          Thread.sleep(ONE_MINUTE);
+          Thread.sleep(ONE_HOUR);
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
           break;
