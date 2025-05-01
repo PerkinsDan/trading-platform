@@ -19,6 +19,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import org.bson.Document;
+import org.json.JSONObject;
 
 public class OrdersRouter {
 
@@ -111,11 +112,13 @@ public class OrdersRouter {
       .handler(ctx -> {
         JsonObject body = ctx.body().asJsonObject();
 
-        Validation validation = new ValidationBuilder().
-                                    validateOrderId().
-                                    validateUserId().
-                                    validateOrderToCancelBelongsToUser().
-                                    build();
+        Validation validation = new ValidationBuilder()
+                                    .validateTicker()
+                                    .validateOrderType()
+                                    .validateOrderId()
+                                    .validateUserId()
+                                    .validateOrderToCancelBelongsToUser()
+                                    .build();
 
         ValidationResult result = validation.validate(body);
 
@@ -162,7 +165,11 @@ public class OrdersRouter {
             orderHistoryCollection.insertOne(orderDoc);
           }
   
-          ctx.response().setStatusCode(200);
+          ctx
+          .response()
+          .setStatusCode(200)
+          .putHeader("Content-Type","application/json")
+          .end("Order cancelled successfully");
 
         } else {
           ctx

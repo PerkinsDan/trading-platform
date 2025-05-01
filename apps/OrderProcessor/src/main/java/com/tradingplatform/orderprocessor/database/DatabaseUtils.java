@@ -53,7 +53,7 @@ public class DatabaseUtils {
 
     if (isBuy) {
       if (balance < totalPrice){
-        return ValidationResult.fail("Insufficient funds to place thi order");
+        return ValidationResult.fail("Insufficient funds to place this order");
       } else {
         return ValidationResult.ok();
       }

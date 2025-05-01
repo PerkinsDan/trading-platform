@@ -6,10 +6,14 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.bson.Document;
+
+import static com.tradingplatform.orderprocessor.database.DatabaseUtils.*;
 
 public class UsersRouter {
 
@@ -66,12 +70,8 @@ public class UsersRouter {
           return;
         }
         String userId = body.getString("userId");
-        int moneyAddedToBalance = body.getInteger("moneyAddedToBalance");
-        var usersCollection = MongoClientConnection.getCollection("users");
-        usersCollection.updateOne(
-          Filters.eq("userId", userId),
-          new Document("$inc", new Document("balance", moneyAddedToBalance))
-        );
+        double moneyAddedToBalance = body.getDouble("moneyAddedToBalance");
+        creditUser(userId, moneyAddedToBalance);
         ctx.response().end("User balance updated successfully");
       });
 

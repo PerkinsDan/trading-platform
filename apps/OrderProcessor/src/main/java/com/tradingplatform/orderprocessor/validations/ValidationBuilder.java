@@ -50,15 +50,13 @@ public class ValidationBuilder{
 
     public ValidationBuilder validateOrderId(){
         
-   
-
         validations.add(body -> {
             if (!body.containsKey("orderId") || body.getString("orderId").isBlank()){
                 return ValidationResult.fail("orderId is missing or blank");
             }
             MongoCollection<Document> activeOrdersCollection =
             MongoClientConnection.getCollection("activeOrders");
-            if (activeOrdersCollection.find(Filters.eq("orderId", body.getString("orderId"))).first() == null){
+            if (activeOrdersCollection.find(Filters.eq("orderId", body.getString("orderId"))) == null){
                 return ValidationResult.fail("Invalid orderId : no such order exists in the database");
             }
             return ValidationResult.ok();
