@@ -163,10 +163,10 @@ public class DatabaseUtils {
       .first();
 
     if (filled) {
+      partiallyFilledOrder.put("filled", true);
       if (previouslyPartiallyFilled(orderId)) {
         assert partiallyFilledOrder !=
         null : "Now-filled order has been partially filled before, but is not present in activeOrdersCollection";
-        partiallyFilledOrder.put("filled", true);
         orderHistoryCollection.updateOne(
                 Filters.eq("orderId", orderId),
                 new Document("$set", new Document("filled", true))
