@@ -8,8 +8,10 @@ import {
   Title,
   Tooltip,
   Legend,
+  TooltipItem,
 } from "chart.js";
 import { Stack } from "@mui/material";
+import { Ticker } from "../../types";
 
 // Register Chart.js components
 ChartJS.register(
@@ -24,7 +26,7 @@ ChartJS.register(
 interface TradingGraphProps {
   timeSeries: number[];
   timestamps: string[];
-  stock: string;
+  stock: Ticker;
 }
 
 function TradeGraph({ timeSeries, timestamps, stock }: TradingGraphProps) {
@@ -50,7 +52,7 @@ function TradeGraph({ timeSeries, timestamps, stock }: TradingGraphProps) {
       },
       tooltip: {
         callbacks: {
-          label: (context: any) => {
+          label: (context: TooltipItem<"line">) => {
             const value = context.raw;
             return `$${value}`;
           },

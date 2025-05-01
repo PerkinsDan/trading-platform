@@ -17,7 +17,7 @@ import {
 import { auth } from "../firebaseConfig/firebase";
 import { Snapshot, Ticker } from "../../types";
 import TradeGraph from "../components/TradeGraph";
-import { fetchTimeSeries } from "../components/TradingCard";
+import useFetchTimeSeries from "../hooks/useFetchTimeSeries";
 
 enum Direction {
   BUY = "BUY",
@@ -36,17 +36,21 @@ const TickerTrades = () => {
   const navigate = useNavigate();
   const params = useParams();
 
+  const ticker = params.ticker as unknown as Ticker;
+
+  const { timeSeries, timestamps } = useFetchTimeSeries(ticker);
+
   const [marketSnapshot, setMarketSnapshot] = useState<Snapshot | null>(null);
   const [tradeDetails, setTradeDetails] = useState<TradeDetails>({
     ticker: null,
     type: undefined,
     quantity: 0,
     price: 0,
-    userId: auth!!.currentUser?.uid || null,
+    userId: auth?.currentUser?.uid || null,
   });
   const [error, setError] = useState<string | null>(null);
 
-  const handleTrade = async (stock: string) => {
+  const handleTrade = async (stock: Ticker) => {
     if (!tradeDetails.type) {
       setError("Please select a trade type (Buy or Sell).");
       return;
@@ -86,8 +90,6 @@ const TickerTrades = () => {
     }
   };
 
-  const ticker = params.ticker || "";
-
   useEffect(() => {
     const getTickerData = async () => {
       try {
@@ -101,13 +103,6 @@ const TickerTrades = () => {
     if (ticker) {
       getTickerData();
     }
-  }, [ticker]);
-
-  const [timeSeries, setTimeSeries] = useState<number[]>([]);
-  const [timestamps, setTimestamps] = useState<string[]>([]);
-
-  useEffect(() => {
-    fetchTimeSeries(ticker, setTimeSeries, setTimestamps);
   }, [ticker]);
 
   return (
