@@ -107,8 +107,7 @@ public class UsersRouter {
             .end("Error while updating user balance: " + result.errorMessage); 
 
           }
-        }
-        catch(Exception e){
+        } catch(Exception e){
           e.printStackTrace();
           ctx.response().
           setStatusCode(500).
@@ -120,96 +119,155 @@ public class UsersRouter {
     router
       .get("/active-positions")
       .handler(ctx -> {
+        
         String userId = ctx.request().getParam("userId");
+        String jsonString = "{\"userId\":\"" + userId + "\"}";
+        JsonObject body = new JsonObject(jsonString);
 
-        if (userId == null) {
-          ctx
+        Validation validation = new ValidationBuilder()
+                                    .validateUserId()
+                                    .build();
+        ValidationResult result = validation.validate(body);
+
+        try{
+            if (result.isValid){
+            var activeOrdersCollection = MongoClientConnection.getCollection(
+              "activeOrders"
+            );
+    
+            ArrayList<JsonObject> activeOrders = new ArrayList<>();
+    
+            activeOrdersCollection
+              .find(Filters.eq("userId", userId))
+              .forEach(doc -> activeOrders.add(new JsonObject(doc.toJson())));
+    
+            ctx
+              .response()
+              .setStatusCode(200)
+              .putHeader("Content-Type", "application/json")
+              .end(activeOrders.toString());
+
+          } else {
+            ctx
             .response()
             .setStatusCode(400)
-            .end("Missing userId query parameter");
+            .putHeader("Content-Type", "application/json")
+            .end("Error while retrieving user positions: " + result.errorMessage);
+            return;
+          }
+        } catch (Exception e){
+          e.printStackTrace();
+          ctx.response().
+          setStatusCode(500).
+          putHeader("Content-Type", "application/json").
+          end("Internal Server Error : Unexpected error while retrieving active positions. Unable to retrieve positions.");
           return;
         }
 
-        var activeOrdersCollection = MongoClientConnection.getCollection(
-          "activeOrders"
-        );
-
-        ArrayList<JsonObject> activeOrders = new ArrayList<>();
-
-        activeOrdersCollection
-          .find(Filters.eq("userId", userId))
-          .forEach(doc -> activeOrders.add(new JsonObject(doc.toJson())));
-
-        ctx
-          .response()
-          .putHeader("Content-Type", "application/json")
-          .end(activeOrders.toString());
       });
 
     router
       .get("/account")
       .handler(ctx -> {
         String userId = ctx.request().getParam("userId");
-        if (userId == null) {
-          ctx
+        String jsonString = "{\"userId\":\"" + userId + "\"}";
+        JsonObject body = new JsonObject(jsonString);
+
+        Validation validation = new ValidationBuilder()
+                                    .validateUserId()
+                                    .build();
+        ValidationResult result = validation.validate(body);
+
+        try{
+          if (result.isValid){
+            var usersCollection = MongoClientConnection.getCollection("users");
+            Document userDoc = usersCollection
+              .find(Filters.eq("userId", userId))
+              .first();
+    
+            if (userDoc == null) {
+              ctx.response().setStatusCode(204).end("User not found");
+              return;
+            }
+    
+            int balance = userDoc.getInteger("balance", 0);
+            JsonObject response = new JsonObject()
+              .put("userId", userId)
+              .put("balance", balance);
+    
+            ctx
+              .response()
+              .putHeader("Content-Type", "application/json")
+              .end(response.encode());
+            return;
+
+          } else {
+            ctx
             .response()
             .setStatusCode(400)
-            .end("Missing userId query parameter");
+            .putHeader("Content-Type", "application/json")
+            .end("Error while retrieving user positions: " + result.errorMessage);
+            return;
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+          ctx.response().
+          setStatusCode(500).
+          putHeader("Content-Type", "application/json").
+          end("Internal Server Error : Unexpected error while retrieving active positions. Unable to retrieve positions.");
           return;
         }
-
-        var usersCollection = MongoClientConnection.getCollection("users");
-        Document userDoc = usersCollection
-          .find(Filters.eq("userId", userId))
-          .first();
-
-        if (userDoc == null) {
-          ctx.response().setStatusCode(204).end("User not found");
-          return;
-        }
-
-        int balance = userDoc.getInteger("balance", 0);
-        JsonObject response = new JsonObject()
-          .put("userId", userId)
-          .put("balance", balance);
-
-        ctx
-          .response()
-          .putHeader("Content-Type", "application/json")
-          .end(response.encode());
       });
 
     router
       .get("/trade-history")
       .handler(ctx -> {
         String userId = ctx.request().getParam("userId");
-        if (userId == null) {
-          ctx
+        String jsonString = "{\"userId\":\"" + userId + "\"}";
+        JsonObject body = new JsonObject(jsonString);
+
+        Validation validation = new ValidationBuilder()
+                                    .validateUserId()
+                                    .build();
+        ValidationResult result = validation.validate(body);
+        
+        try{
+          if(result.isValid){
+            var orderHistoryCollection = MongoClientConnection.getCollection(
+              "orderHistory"
+            );
+    
+            List<JsonObject> history = new ArrayList<>();
+    
+            orderHistoryCollection
+              .find(Filters.eq("userId", userId))
+              .forEach(doc -> history.add(new JsonObject(doc.toJson())));
+    
+            if (history.isEmpty()) {
+              ctx.response().setStatusCode(204).end("No history found");
+              return;
+            }
+    
+            ctx
+              .response()
+              .putHeader("Content-Type", "application/json")
+              .end(history.toString());
+          } else {
+            ctx
             .response()
             .setStatusCode(400)
-            .end("Missing userId query parameter");
+            .putHeader("Content-Type", "application/json")
+            .end("Error while retrieving trade-history: " + result.errorMessage);
+            return;
+          }
+        } catch(Exception e){
+          e.printStackTrace();
+          ctx.response().
+          setStatusCode(500).
+          putHeader("Content-Type", "application/json").
+          end("Internal Server Error : Unexpected error while retrieving active positions. Unable to retrieve positions.");
           return;
         }
-
-        var orderHistoryCollection = MongoClientConnection.getCollection(
-          "orderHistory"
-        );
-
-        List<JsonObject> history = new ArrayList<>();
-
-        orderHistoryCollection
-          .find(Filters.eq("userId", userId))
-          .forEach(doc -> history.add(new JsonObject(doc.toJson())));
-
-        if (history.isEmpty()) {
-          ctx.response().setStatusCode(204).end("No history found");
-          return;
-        }
-
-        ctx
-          .response()
-          .putHeader("Content-Type", "application/json")
-          .end(history.toString());
       });
   }
 }
