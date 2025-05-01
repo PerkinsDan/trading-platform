@@ -3,7 +3,7 @@ package com.tradingplatform.marketdata;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.tradingplatform.marketdata.constants.Tickers;
+import com.tradingplatform.marketdata.constants.Ticker;
 import com.tradingplatform.marketdata.simulatedata.Snapshot;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
@@ -25,24 +25,44 @@ public class MarketDataRouter {
 
   private void setupRoutes() {
     router
-      .route("/latest-snapshot/:ticker")
+      .route("/latest-snapshot")
       .handler(ctx -> {
-        String ticker = ctx.request().getParam("ticker");
+        String tickerInput = ctx.request().getParam("ticker");
 
-        Snapshot snapshot = marketDataService.getLatestSnapshot(
-          Tickers.valueOf(ticker)
-        );
+        if (tickerInput == null || tickerInput.isEmpty()) {
+          ctx
+            .response()
+            .setStatusCode(400)
+            .end("Ticker parameter is missing or invalid");
+          return;
+        }
+
+        Ticker ticker;
+
+        try {
+          ticker = Ticker.valueOf(tickerInput.toUpperCase());
+        } catch (IllegalArgumentException e) {
+          ctx
+            .response()
+            .setStatusCode(400)
+            .end("Ticker is invalid: " + tickerInput);
+          return;
+        }
+
+        System.out.println("Getting latest snapshot: " + ticker);
+
+        Snapshot snapshot = marketDataService.getLatestSnapshot(ticker);
 
         ObjectMapper objectMapper = new ObjectMapper()
           .registerModule(new JavaTimeModule());
 
-        String response = null;
         try {
-          response = objectMapper.writeValueAsString(snapshot);
+          String response = objectMapper.writeValueAsString(snapshot);
+          ctx.response().end(response);
         } catch (JsonProcessingException e) {
-          throw new RuntimeException(e);
+          System.out.println("Error processing object to json: " + e);
+          ctx.response().setStatusCode(500).end("Server error");
         }
-        ctx.response().end(response);
       });
 
     router
@@ -51,7 +71,7 @@ public class MarketDataRouter {
         String ticker = ctx.request().getParam("ticker");
 
         ArrayList<Snapshot> timeSeries = marketDataService.getTimeSeries(
-          Tickers.valueOf(ticker)
+          Ticker.valueOf(ticker)
         );
         sendJsonResponse(ctx, timeSeries);
       });

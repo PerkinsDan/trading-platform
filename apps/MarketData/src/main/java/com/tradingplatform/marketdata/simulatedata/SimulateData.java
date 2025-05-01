@@ -1,6 +1,6 @@
 package com.tradingplatform.marketdata.simulatedata;
 
-import com.tradingplatform.marketdata.constants.Tickers;
+import com.tradingplatform.marketdata.constants.Ticker;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -9,22 +9,22 @@ public class SimulateData {
   private final LocalTime marketOpenTime = LocalTime.of(9, 30, 0);
   private final LocalTime marketCloseTime = LocalTime.of(16, 0, 0);
 
-  private final Map<Tickers, TimeSeries> timeSeriesMap = new HashMap<>();
+  private final Map<Ticker, TimeSeries> timeSeriesMap = new HashMap<>();
 
   public SimulateData() {
-    for (Tickers ticker : Tickers.values()) {
+    for (Ticker ticker : Ticker.values()) {
       timeSeriesMap.put(ticker, new TimeSeries());
     }
   }
 
-  public TimeSeries getTimeSeries(Tickers ticker) {
+  public TimeSeries getTimeSeries(Ticker ticker) {
     return timeSeriesMap.get(ticker);
   }
 
   public void generateData() {
     System.out.println("Generating simulated data...");
 
-    for (Tickers ticker : timeSeriesMap.keySet()) {
+    for (Ticker ticker : timeSeriesMap.keySet()) {
       TimeSeries timeSeries = timeSeriesMap.get(ticker);
       LocalTime rollingTimeStamp = marketOpenTime;
 

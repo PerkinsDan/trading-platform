@@ -1,6 +1,6 @@
 package com.tradingplatform.marketdata;
 
-import com.tradingplatform.marketdata.constants.Tickers;
+import com.tradingplatform.marketdata.constants.Ticker;
 import com.tradingplatform.marketdata.simulatedata.SimulateData;
 import com.tradingplatform.marketdata.simulatedata.Snapshot;
 import java.time.LocalTime;
@@ -47,13 +47,13 @@ public class MarketDataService {
     return marketDataServiceHolder;
   }
 
-  public ArrayList<Snapshot> getTimeSeries(Tickers ticker) {
+  public ArrayList<Snapshot> getTimeSeries(Ticker ticker) {
     synchronized (simulateData) {
       return simulateData.getTimeSeries(ticker).getSnapshots();
     }
   }
 
-  public Snapshot getLatestSnapshot(Tickers ticker) {
+  public Snapshot getLatestSnapshot(Ticker ticker) {
     synchronized (simulateData) {
       return simulateData.getTimeSeries(ticker).getLatestSnapshot();
     }

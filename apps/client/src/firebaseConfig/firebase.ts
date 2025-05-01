@@ -15,10 +15,10 @@ const firebaseConfig = {
 
 let auth: Auth | undefined;
 try {
-    const app = initializeApp(firebaseConfig);
-    auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
 } catch (error) {
-    console.error("Error initializing Firebase:", error);
+  console.error("Error initializing Firebase:", error);
 }
 
 export { auth };
