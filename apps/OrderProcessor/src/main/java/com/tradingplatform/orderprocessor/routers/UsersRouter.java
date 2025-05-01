@@ -128,11 +128,10 @@ public class UsersRouter {
           return;
         }
 
-        int balance = userDoc.getInteger("balance", 0);
+        double balance = userDoc.getDouble("balance");
         JsonArray portfolio = new JsonArray(
-                userDoc.getList("portfolio",
-                        Document.class,
-                        Collections.emptyList()));
+          userDoc.getList("portfolio", Document.class, Collections.emptyList())
+        );
 
         JsonObject response = new JsonObject()
           .put("userId", userId)

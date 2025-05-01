@@ -5,7 +5,6 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
-import com.tradingplatform.orderprocessor.orders.Order;
 import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,7 @@ public class DatabaseUtils {
       .first();
 
     assert userDoc != null : "User document is null";
-    int balance = userDoc.getInteger("balance");
+    double balance = userDoc.getDouble("balance");
     if (isBuy && balance < totalPrice) {
       System.out.println(
         "INSUFFICIENT FUNDS. User is trying to place order for " +
