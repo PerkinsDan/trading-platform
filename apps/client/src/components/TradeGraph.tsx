@@ -72,8 +72,8 @@ function TradeGraph({ timeSeries, timestamps, stock }: TradingGraphProps) {
     },
   };
   return (
-    <Stack flex={1} padding="1rem">
-      <Line data={chartData} options={chartOptions} />
+    <Stack padding="1rem" flex={1}>
+      <Line data={chartData} height="100%" options={chartOptions} />
     </Stack>
   );
 }

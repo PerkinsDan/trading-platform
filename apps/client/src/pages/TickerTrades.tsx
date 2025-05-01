@@ -135,14 +135,14 @@ const TickerTrades = () => {
           <CloseIcon />
         </IconButton>
       </Stack>
-      <Stack maxWidth={"50rem"}>
+      <Stack maxHeight={"10%"} overflow={"hidden"}>
         <TradeGraph
           stock={ticker}
           timeSeries={timeSeries}
           timestamps={timestamps}
         />
       </Stack>
-      <Stack spacing={2} padding="1rem">
+      <Stack spacing={2} padding="1rem" flex={1} overflow="auto">
         {error && (
           <Typography color="error" variant="body2">
             {error}
