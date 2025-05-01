@@ -46,6 +46,7 @@ public class DatabaseUtils {
       .first();
 
     assert userDoc != null : "User document is null";
+
     double balance = userDoc.getDouble("balance");
     if (isBuy && balance < totalPrice) {
       System.out.println(
