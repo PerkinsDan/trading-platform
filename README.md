@@ -30,6 +30,7 @@ $ chmod ug+x .husky/*
 ### For development
 
 Inside `apps/client/.env :
+
 ```
 VITE_APP_FIREBASE_API_KEY = ######
 VITE_APP_ORDER_PROCESSOR_BASE_URL = http://localhost:8080
@@ -37,6 +38,7 @@ VITE_APP_MARKET_DATA_BASE_URL = http://localhost:12000
 ```
 
 Inside `apps/OrderProcessor/.env :
+
 ```
 DB_URI = #####
 ```

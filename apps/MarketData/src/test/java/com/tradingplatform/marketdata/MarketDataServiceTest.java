@@ -1,6 +1,6 @@
 package com.tradingplatform.marketdata;
 
-import static com.tradingplatform.marketdata.constants.Tickers.AAPL;
+import static com.tradingplatform.marketdata.constants.Ticker.AAPL;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.tradingplatform.marketdata.simulatedata.Snapshot;

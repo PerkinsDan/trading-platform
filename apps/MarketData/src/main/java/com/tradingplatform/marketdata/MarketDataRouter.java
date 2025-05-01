@@ -1,9 +1,8 @@
 package com.tradingplatform.marketdata;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.tradingplatform.marketdata.constants.Tickers;
+import com.tradingplatform.marketdata.constants.Ticker;
 import com.tradingplatform.marketdata.simulatedata.Snapshot;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
@@ -25,51 +24,70 @@ public class MarketDataRouter {
 
   private void setupRoutes() {
     router
-      .route("/latest-snapshot/:ticker")
+      .route("/latest-snapshot")
       .handler(ctx -> {
-        String ticker = ctx.request().getParam("ticker");
+        Ticker ticker = parseTicker(ctx);
+        if (ticker == null) return;
 
-        Snapshot snapshot = marketDataService.getLatestSnapshot(
-          Tickers.valueOf(ticker)
-        );
+        System.out.println("Getting latest snapshot: " + ticker);
 
-        ObjectMapper objectMapper = new ObjectMapper()
-          .registerModule(new JavaTimeModule());
+        Snapshot snapshot = marketDataService.getLatestSnapshot(ticker);
 
-        String response = null;
-        try {
-          response = objectMapper.writeValueAsString(snapshot);
-        } catch (JsonProcessingException e) {
-          throw new RuntimeException(e);
-        }
-        ctx.response().end(response);
+        sendResponse(ctx, snapshot);
       });
 
     router
-      .route("/time-series/:ticker")
+      .route("/time-series")
       .handler(ctx -> {
-        String ticker = ctx.request().getParam("ticker");
+        Ticker ticker = parseTicker(ctx);
+        if (ticker == null) return;
+
+        System.out.println("Getting latest time series: " + ticker);
 
         ArrayList<Snapshot> timeSeries = marketDataService.getTimeSeries(
-          Tickers.valueOf(ticker)
+          ticker
         );
-        sendJsonResponse(ctx, timeSeries);
+
+        sendResponse(ctx, timeSeries);
       });
   }
 
-  private void sendJsonResponse(RoutingContext ctx, Object data) {
+  private Ticker parseTicker(RoutingContext ctx) {
+    String tickerInput = ctx.request().getParam("ticker");
+
+    if (tickerInput == null || tickerInput.isEmpty()) {
+      ctx
+        .response()
+        .setStatusCode(400)
+        .end("Ticker parameter is missing or invalid");
+      return null;
+    }
+
     try {
-      ObjectMapper objectMapper = new ObjectMapper();
+      return Ticker.valueOf(tickerInput.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      ctx
+        .response()
+        .setStatusCode(400)
+        .end("Ticker is invalid: " + tickerInput);
+      return null;
+    }
+  }
+
+  private void sendResponse(RoutingContext ctx, Object data) {
+    try {
+      ObjectMapper objectMapper = new ObjectMapper()
+        .registerModule(new JavaTimeModule());
 
       String response = objectMapper.writeValueAsString(data);
       ctx.response().end(response);
     } catch (Exception e) {
-      sendErrorResponse(ctx);
+      System.out.println(JSON_ERROR_MESSAGE + e);
+      ctx
+        .response()
+        .setStatusCode(500)
+        .end(MarketDataRouter.JSON_ERROR_MESSAGE);
     }
-  }
-
-  private void sendErrorResponse(RoutingContext ctx) {
-    ctx.response().setStatusCode(500).end(MarketDataRouter.JSON_ERROR_MESSAGE);
   }
 
   public Router getRouter() {
