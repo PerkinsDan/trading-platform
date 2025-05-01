@@ -5,8 +5,6 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
-import com.tradingplatform.orderprocessor.orders.Order;
-import com.tradingplatform.orderprocessor.orders.Ticker;
 import com.tradingplatform.orderprocessor.validations.ValidationResult;
 
 import io.vertx.core.json.JsonObject;
@@ -20,7 +18,7 @@ public class DatabaseUtils {
   public static void creditUser(String userId, double amountToAdd){
     
     var usersCollection = MongoClientConnection.getCollection("users"); 
-    
+
     usersCollection.updateOne(
       Filters.eq("userId", userId),
       new Document("$inc", new Document("balance", amountToAdd))

@@ -13,8 +13,6 @@ import com.tradingplatform.orderprocessor.validations.Validation;
 import com.tradingplatform.orderprocessor.validations.ValidationBuilder;
 import com.tradingplatform.orderprocessor.validations.ValidationResult;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -60,10 +58,6 @@ public class OrdersRouter {
 
           MongoCollection<Document> activeOrdersCollection =
                   MongoClientConnection.getCollection("activeOrders");
-          MongoCollection<Document> orderHistoryCollection =
-                  MongoClientConnection.getCollection("orderHistory");
-          MongoCollection<Document> usersCollection =
-                  MongoClientConnection.getCollection("users");
 
           //Create  and use POC validationBuilder object, we might wanna have validaions that
           //check that the price and quantity are valid too.
