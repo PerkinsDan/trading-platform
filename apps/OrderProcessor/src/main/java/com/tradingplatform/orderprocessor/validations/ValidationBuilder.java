@@ -40,33 +40,21 @@ public class ValidationBuilder{
             return false;
     }
 
-    public ValidationBuilder validateAttribute(String attribute){
-        // wrapper to access missingOrEmpty outside the Builder class
+    public ValidationBuilder validateDouble(String attribute){
         validations.add(body -> {
-            if (!missingOrEmpty(body, attribute)){
-                return ValidationResult.ok();
-            } else {
-                return ValidationResult.fail("Validation Error : " + attribute + " is missing or blank");
-            }
-        });
-        return this;
-    }
-
-    public ValidationBuilder validatePrice(){
-        validations.add(body -> {
-            if(!missingOrEmpty(body, "price"))
+            if(!missingOrEmpty(body, attribute))
                 try {
-                    Double price = Double.parseDouble(body.getString("price"));
-                    if (price <= 0){
-                        return ValidationResult.fail("Price cannot be equal to or less than 0.");
+                    Double attributeValue = Double.parseDouble(body.getString(attribute));
+                    if (attributeValue <= 0){
+                        return ValidationResult.fail(attribute + " cannot be equal to or less than 0.");
                     }
                 } catch (Exception e) {
                     if (e instanceof NumberFormatException){
-                        return ValidationResult.fail("Validation Error : Price is invalid.");
+                        return ValidationResult.fail("Validation Error : " + attribute + " Price is invalid.");
                     }
                 }
             else{
-                return ValidationResult.fail("Validation Error : Price is missing or blank");
+                return ValidationResult.fail("Validation Error : " + attribute + " is missing or blank");
 
             }
 

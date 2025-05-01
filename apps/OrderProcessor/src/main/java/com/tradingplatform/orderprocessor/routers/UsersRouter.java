@@ -90,7 +90,7 @@ public class UsersRouter {
 
         Validation validation = new ValidationBuilder()
                                     .validateUserId()
-                                    .validateAttribute("moneyAddedToBalance")
+                                    .validateDouble("moneyAddedToBalance")
                                     .build();
         ValidationResult result = validation.validate(body);
         try{
@@ -146,12 +146,11 @@ public class UsersRouter {
               .forEach(doc -> activeOrders.add(new JsonObject(doc.toJson())));
     
             ctx
-                .response()
-                .setStatusCode(200)
-                .putHeader("Content-Type", "application/json")
+              .response()
+              .setStatusCode(200)
+              .putHeader("Content-Type", "application/json")
               .end(activeOrders.toString());
             return;
-
           } else {
             ctx
               .response()
@@ -197,7 +196,7 @@ public class UsersRouter {
               return;
             }
     
-            int balance = userDoc.getInteger("balance", 0);
+            double balance = userDoc.getDouble("balance");
             JsonObject response = new JsonObject()
               .put("userId", userId)
               .put("balance", balance);
@@ -207,13 +206,12 @@ public class UsersRouter {
               .putHeader("Content-Type", "application/json")
               .end(response.encode());
             return;
-
           } else {
             ctx
               .response()
               .setStatusCode(400)
               .putHeader("Content-Type", "application/json")
-              .end("Error while retrieving user positions: " + result.errorMessage);
+              .end("Error while retrieving account: " + result.errorMessage);
             return;
           }
         } catch (Exception e) {
@@ -221,7 +219,7 @@ public class UsersRouter {
           ctx.response().
           setStatusCode(500).
           putHeader("Content-Type", "application/json").
-          end("Internal Server Error : Unexpected error while retrieving active positions. Unable to retrieve positions.");
+          end("Internal Server Error : Unexpected error while retrieving account. Unable to retrieve =account.");
           return;
         }
       });

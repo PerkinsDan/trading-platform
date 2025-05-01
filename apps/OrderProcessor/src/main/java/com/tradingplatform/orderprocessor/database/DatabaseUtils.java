@@ -152,24 +152,36 @@ public class DatabaseUtils {
       .find(Filters.eq("orderId", orderId))
       .first();
 
+    // if (!filled) {
+    //   if (previouslyPartiallyFilled(orderId)) {
+    //     if (partiallyFilledOrder != null){
+    //       partiallyFilledOrder.put("filled", true);
+    //       orderHistoryCollection.insertOne(partiallyFilledOrder);
+    //     }
+    //   } else {
+    //     orderHistoryCollection.updateOne(
+    //       Filters.eq("orderId", orderId),
+    //       new Document("$set", new Document("filled", true))
+    //     );
+    //   }
+
+    //   activeOrdersCollection.deleteOne(Filters.eq("orderId", orderId));
+    // } else {
+    //   if (previouslyPartiallyFilled(orderId)) {
+    //     if(partiallyFilledOrder!= null){
+    //       orderHistoryCollection.insertOne(partiallyFilledOrder);
+    //     }
+    //   }
     if (filled) {
       if (previouslyPartiallyFilled(orderId)) {
-        assert partiallyFilledOrder !=
-        null : "Now-filled order has been partially filled before, but is not present in activeOrdersCollection";
-        partiallyFilledOrder.put("filled", true);
-        orderHistoryCollection.insertOne(partiallyFilledOrder);
+        if(partiallyFilledOrder != null){
+          partiallyFilledOrder.put("filled", true);
+          orderHistoryCollection.updateOne(
+                  Filters.eq("orderId", orderId),
+                  new Document("$set", new Document("filled", true))
+          );
+        }
       } else {
-        orderHistoryCollection.updateOne(
-          Filters.eq("orderId", orderId),
-          new Document("$set", new Document("filled", true))
-        );
-      }
-
-      activeOrdersCollection.deleteOne(Filters.eq("orderId", orderId));
-    } else {
-      if (previouslyPartiallyFilled(orderId)) {
-        assert partiallyFilledOrder !=
-        null : "Partially-filled order has been partially filled before, but is not present in activeOrdersCollection";
         orderHistoryCollection.insertOne(partiallyFilledOrder);
       }
 

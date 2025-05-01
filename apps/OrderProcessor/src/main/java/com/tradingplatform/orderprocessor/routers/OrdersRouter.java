@@ -63,7 +63,7 @@ public class OrdersRouter {
           //check that the price and quantity are valid too.
           Validation validation = new ValidationBuilder().
                                       validateQuantity().
-                                      validatePrice().
+                                      validateDouble("price").
                                       validateOrderType().
                                       validateTicker().
                                       validateUserId().
