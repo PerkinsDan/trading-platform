@@ -49,7 +49,7 @@ public class DatabaseUtils {
       .projection(Projections.include("balance"))
       .first();
 
-    int balance = userDoc.getInteger("balance");
+    double balance = userDoc.getDouble("balance");
 
     if (isBuy) {
       if (balance < totalPrice){
