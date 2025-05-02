@@ -44,7 +44,7 @@ public class OrderPoster{
             client = HttpClient.newHttpClient();
             long start = System.currentTimeMillis();
             try {
-                HttpRequest request = createRequestForRandomOrder(ticker)
+                HttpRequest request = createRequestForRandomOrder(ticker);
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
                 if(response.statusCode() == 201){
                     System.out.println("Sucessfully placed order: " +request);
