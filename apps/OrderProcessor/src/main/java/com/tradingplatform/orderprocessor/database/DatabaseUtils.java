@@ -5,6 +5,8 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
+import com.tradingplatform.orderprocessor.validations.ValidationResult;
+
 import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,16 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 public class DatabaseUtils {
+
+  public static void creditUser(String userId, double amountToAdd){
+    
+    var usersCollection = MongoClientConnection.getCollection("users"); 
+
+    usersCollection.updateOne(
+      Filters.eq("userId", userId),
+      new Document("$inc", new Document("balance", amountToAdd))
+    );
+  }
 
   public static boolean previouslyPartiallyFilled(String orderId) {
     MongoCollection<Document> orderHistoryCollection =
@@ -23,55 +35,52 @@ public class DatabaseUtils {
 
     return previouslyPartiallyFilled != null;
   }
+  
 
-  public static String passValidations(JsonObject body) {
-    //TODO SPLIT INTO METHODS
-
+  public static ValidationResult userBalanceIsSufficientForBuy(JsonObject body){
     MongoCollection<Document> usersCollection =
-      MongoClientConnection.getCollection("users");
+    MongoClientConnection.getCollection("users");
 
-    System.out.println(body);
-
-    String typeStr = body.getString("type");
-    boolean isBuy = typeStr.equals("BUY");
-    String userId = body.getString("userId");
-    String tickerStr = body.getString("ticker");
-    double price = body.getDouble("price");
-    int quantity = body.getInteger("quantity");
-    int totalPrice = (int) (price * quantity);
+    boolean isBuy = body.getString("type").equals("BUY");
+    double totalPrice = (body.getDouble("price") * body.getInteger("quantity"));
 
     Document userDoc = usersCollection
-      .find(Filters.eq("userId", userId))
+      .find(Filters.eq("userId", body.getString("userId")))
       .projection(Projections.include("balance"))
       .first();
 
-    assert userDoc != null : "User document is null";
-
     double balance = userDoc.getDouble("balance");
-    if (isBuy && balance < totalPrice) {
-      System.out.println(
-        "INSUFFICIENT FUNDS. User is trying to place order for " +
-        totalPrice +
-        ". Balance is " +
-        balance
-      );
-      return (
-        "INSUFFICIENT FUNDS. User is trying to place order for " +
-        totalPrice +
-        ". Balance is " +
-        balance
-      );
+
+    if (isBuy) {
+      if (balance < totalPrice){
+        return ValidationResult.fail("Insufficient funds to place this order");
+      } else {
+        return ValidationResult.ok();
+      }
+    } else {
+      return ValidationResult.fail("Order Type is not a BUY");
     }
+  }
+
+  public static ValidationResult userPortfolioIsSufficientForSell(JsonObject body){
+
+    boolean isSell = body.getString("type").equals("SELL");
+    
+    if(!isSell){
+      return ValidationResult.fail(" Error validating quantity owned is sufficient : Order Type is not a SELL");
+    }
+    MongoCollection<Document> usersCollection =
+    MongoClientConnection.getCollection("users");
 
     Bson stockInUsersPortfolio = Projections.elemMatch(
       "portfolio",
-      Filters.eq("ticker", tickerStr)
+      Filters.eq("ticker", body.getString("ticker"))
     );
 
     Document doc = usersCollection
-      .find(Filters.eq("userId", userId))
-      .projection(stockInUsersPortfolio)
-      .first();
+    .find(Filters.eq("userId", body.getString("userId")))
+    .projection(stockInUsersPortfolio)
+    .first();
 
     int numStock = 0;
     if (doc != null && doc.containsKey("portfolio")) {
@@ -80,31 +89,14 @@ public class DatabaseUtils {
         numStock = portfolio.getFirst().getInteger("quantity", 0);
       }
     }
-
-    if (!isBuy && numStock < quantity) {
-      System.out.println(
-        "ACCOUNT DOES NOT POSSESS SUFFICIENT STOCKS. User is trying to sell " +
-        quantity +
-        " " +
-        tickerStr +
-        " but owns " +
-        numStock +
-        " " +
-        tickerStr
-      );
-      return (
-        "ACCOUNT DOES NOT POSSESS SUFFICIENT STOCKS. User is trying to sell " +
-        quantity +
-        " " +
-        tickerStr +
-        " but owns " +
-        numStock +
-        " " +
-        tickerStr
-      );
+    
+    if (numStock < body.getInteger("quantity")){
+      return ValidationResult.fail("Insufficient quantity of stock owned to place this order");
     }
-
-    return "PASSED VALIDATIONS";
+      
+    return ValidationResult.ok();
+    
+  
   }
 
   public static void updateCollectionsWithMatches(
