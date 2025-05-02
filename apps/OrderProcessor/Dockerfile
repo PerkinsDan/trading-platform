@@ -6,7 +6,7 @@ WORKDIR /app
 RUN apk add --no-cache maven
 
 # Copy the entire project
-COPY ../api /app/apps
+COPY . /app/apps/OrderProcessor
 
 # Build the trading-platform-api module
 WORKDIR /app/apps/OrderProcessor

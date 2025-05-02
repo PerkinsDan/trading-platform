@@ -1,6 +1,6 @@
 package com.tradingplatform.marketdata.constants;
 
-public enum Tickers {
+public enum Ticker {
   AAPL,
   MSFT,
   GOOGL,

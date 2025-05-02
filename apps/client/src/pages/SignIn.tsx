@@ -2,15 +2,27 @@ import { Button, Container, Typography, Box } from "@mui/material";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../firebaseConfig/firebase";
 import { useNavigate } from "react-router-dom";
+import {
+  CREATE_USER_ENDPOINT,
+  LATEST_SNAPSHOT_ENDPOINT,
+} from "../constants/endpoints";
 
 function SignIn() {
   const navigate = useNavigate();
 
   const handleGoogleSignIn = async () => {
+    // This is test code to check that the endpoint is working, even if firebase fails.
+    try {
+      await fetch(LATEST_SNAPSHOT_ENDPOINT + "AAPL");
+    } catch (error) {
+      console.error("Error fetching ticker data:", error);
+    }
+
     const provider = new GoogleAuthProvider();
     provider.addScope("profile");
     provider.addScope("email");
     try {
+      if (!auth) throw new Error("Firebase auth is not initialized");
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       const token = await user.getIdToken();
@@ -22,21 +34,17 @@ function SignIn() {
       };
 
       // API call to add/get user
-      const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/create-user`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ userId: userData.uid }),
+      const response = await fetch(CREATE_USER_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({ userId: userData.uid }),
+      });
 
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error("Failed to add/get user from the database");
-      }
 
       console.log("User added/retrieved successfully:", userData);
       navigate("/my-trades"); // Redirect after successful sign-in

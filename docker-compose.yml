@@ -1,5 +1,7 @@
 services:
-  api:
+  orderprocessor:
+    env_file:
+      - apps/OrderProcessor/.env
     build:
       context: ./apps/OrderProcessor
       dockerfile: Dockerfile
@@ -23,5 +25,5 @@ services:
       - "5173:5173"
     restart: always
     depends_on:
-      - api
+      - orderprocessor
       - marketdata

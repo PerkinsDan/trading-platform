@@ -1,8 +1,10 @@
-import { getAuth } from "firebase/auth";
+import { Auth, getAuth } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_APP_FIREBASE_API_KEY,
+  apiKey:
+    import.meta.env.VITE_APP_FIREBASE_API_KEY ||
+    process.env.VITE_APP_FIREBASE_API_KEY,
   authDomain: "tradingplatform-bc1a7.firebaseapp.com",
   projectId: "tradingplatform-bc1a7",
   storageBucket: "tradingplatform-bc1a7.firebasestorage.app",
@@ -11,7 +13,12 @@ const firebaseConfig = {
   measurementId: "G-GGS7RV3PCV",
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+let auth: Auth | undefined;
+try {
+  const app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+} catch (error) {
+  console.error("Error initializing Firebase:", error);
+}
 
 export { auth };

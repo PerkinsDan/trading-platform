@@ -2,7 +2,10 @@ import { Button } from "@mui/material";
 import BalanceSummary from "./BalanceSummary";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
-import { USER_ACCOUNT_ENDPOINT } from "../constants/endpoints";
+import {
+  UPDATE_USER_BALANCE_ENDPOINT,
+  USER_ACCOUNT_ENDPOINT,
+} from "../constants/endpoints";
 
 const Balance = () => {
   const [totalBalance, setTotalBalance] = useState(0);
@@ -46,19 +49,16 @@ const Balance = () => {
     }
 
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/update-user-balance`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId,
-            moneyAddedToBalance: 100,
-          }),
+      const response = await fetch(UPDATE_USER_BALANCE_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          userId,
+          moneyAddedToBalance: 100,
+        }),
+      });
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Failed to update user balance: ${errorText}`);
@@ -66,6 +66,7 @@ const Balance = () => {
     } catch (error) {
       console.error("Error updating balance:", error);
     }
+    fetchBalance();
   };
 
   useEffect(() => {

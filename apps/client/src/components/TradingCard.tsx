@@ -1,14 +1,18 @@
 import { Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
-import { Snapshot } from "../../types";
+import { Snapshot, Ticker } from "../../types";
+import TradeGraph from "./TradeGraph";
+import useFetchTimeSeries from "../hooks/useFetchTimeSeries";
 
 interface TradingCardProps {
-  stock: string;
+  stock: Ticker;
   snapshot?: Snapshot;
 }
 
 function TradingCard({ stock, snapshot }: TradingCardProps) {
   const navigate = useNavigate();
+
+  const { timeSeries, timestamps } = useFetchTimeSeries(stock);
 
   return (
     <Stack
@@ -31,6 +35,11 @@ function TradingCard({ stock, snapshot }: TradingCardProps) {
         <Typography variant="h5">{stock}</Typography>
         {snapshot && <Typography>${snapshot.price}</Typography>}
       </Stack>
+      <TradeGraph
+        timeSeries={timeSeries}
+        timestamps={timestamps}
+        stock={stock}
+      />
     </Stack>
   );
 }

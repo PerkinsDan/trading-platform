@@ -1,6 +1,7 @@
 package com.tradingplatform.orderprocessor.routers;
 
 import static com.tradingplatform.orderprocessor.database.DatabaseUtils.*;
+import static com.tradingplatform.orderprocessor.orders.OrderType.BUY;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;

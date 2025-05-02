@@ -1,0 +1,35 @@
+steps:
+  # Build client image
+  - name: "gcr.io/cloud-builders/docker"
+    dir: "apps/client"
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/client", "."]
+
+  # OrderProcessor image
+  - name: "gcr.io/cloud-builders/docker"
+    dir: "apps/OrderProcessor"
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/orderprocessor", "."]
+
+  # Build marketdata image
+  - name: "gcr.io/cloud-builders/docker"
+    dir: "apps/MarketData"
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/marketdata", "."]
+
+  # Run client container
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["run", "--rm", "gcr.io/$PROJECT_ID/client"]
+
+  # Run OrderProcessor container
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["run", "--rm", "gcr.io/$PROJECT_ID/orderprocessor"]
+
+  # Step 6: Run marketdata container
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["run", "--rm", "gcr.io/$PROJECT_ID/marketdata"]
+
+images:
+  - "gcr.io/$PROJECT_ID/client"
+  - "gcr.io/$PROJECT_ID/orderprocessor"
+  - "gcr.io/$PROJECT_ID/marketdata"
+
+options:
+  logging: CLOUD_LOGGING_ONLY

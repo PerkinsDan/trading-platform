@@ -7,6 +7,7 @@ import com.tradingplatform.orderprocessor.validations.ValidationBuilder;
 import com.tradingplatform.orderprocessor.validations.ValidationResult;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
