@@ -46,3 +46,20 @@ Inside `apps/OrderProcessor/.env :
 ```
 DB_URI = #####
 ```
+
+
+
+## TO TEST
+
+To test you can try complete these trades. We have put in sell orders to ensure that your trades are fulfilled
+
+Anything other than the trades below will go into pending unless another account goes to do an order at the same price in the opposite direction
+
+AAPL: BUY 50 Shares @ $100
+
+AMZN: BUY 50 Shares @ $100
+
+MSFT: BUY 50 Shares @ $100
+
+
+
