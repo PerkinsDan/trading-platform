@@ -49,7 +49,7 @@ public class ToggleLoopServer extends AbstractVerticle{
                     request.response().setStatusCode(404).end("Invlaid adress homie");
                 }
             })
-            .listen(8888g, http -> {
+            .listen(8888, http -> {
                 if(http.succeeded()){
                     System.out.println("Http server started on port 8888");
                 } else {

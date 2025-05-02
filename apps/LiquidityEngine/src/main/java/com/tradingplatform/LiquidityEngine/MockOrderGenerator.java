@@ -1,10 +1,6 @@
 package com.tradingplatform.LiquidityEngine;
 
-import orderProcessor.Order;
-import orderProcessor.OrderType;
-import orderProcessor.Ticker;
-
-import com.setap.marketdata.MarketDataService;
+import com.tradingplatform.orderprocessor.orders.*;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,6 +22,7 @@ public class MockOrderGenerator{
     }
     
     private double randomPrice(double rootPrice){
+        // TODO: hit market data endpoint  and return double for current price
         return new NormalDistribution(rootPrice, 0.25*rootPrice).sample();
     }
         

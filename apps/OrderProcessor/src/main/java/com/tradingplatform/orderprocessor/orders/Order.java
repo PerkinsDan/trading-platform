@@ -17,10 +17,10 @@ public class Order {
 
   public Order(
     OrderType type,
-    String userId,
-    Ticker ticker,
+    Ticker userId,
+    double ticker,
     double price,
-    int quantity
+    String quantity
   ) {
     this.orderId = UUID.randomUUID();
     this.userId = userId;
