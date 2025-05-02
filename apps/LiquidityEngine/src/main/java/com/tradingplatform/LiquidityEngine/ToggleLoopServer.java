@@ -25,7 +25,7 @@ public class ToggleLoopServer extends AbstractVerticle{
                 } else {
                     try {
                         System.out.println("Liquidity Engine thread is toggled to off");
-                        Thread.sleep(10000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         break;

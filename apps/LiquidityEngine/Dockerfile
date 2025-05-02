@@ -1,20 +1,28 @@
+# Use an official Maven image to build the Java projects
 FROM eclipse-temurin:23-jdk-alpine
 
-WORKDIR /app
-
-# Install Maven
 RUN apk add --no-cache maven
 
-# Copy the entire project
-COPY . /app/apps/LiquidityEngine
+# Create working directory
+WORKDIR /build
 
-# Build the trading-platform-api module
-WORKDIR /app/apps/LiquidityEngine
+# Copy both projects into the image
+COPY ../OrderProcessor /build/OrderProcessor
+COPY . /build/LiquidityEngine
+
+# First, build and install OrderProcessor into the local Maven repo
+WORKDIR /build/OrderProcessor
+RUN mvn clean install -DskipTests
+
+# Now build LiquidityEngine (which can now use OrderProcessor as a dependency)
+WORKDIR /build/LiquidityEngine
 RUN mvn clean package -DskipTests
 
-# Copy the built JAR to the final location
-RUN cp target/LiquidityEngine-1.0-SNAPSHOT.jar /app/app.jar
+# Set working directory
+WORKDIR /app
 
-EXPOSE 8888
+# Copy the JAR from the build stage
+COPY  /build/LiquidityEngine/target/LiquidityEngine-*.jar app.jar
 
-CMD ["java", "-jar", "/app/app.jar"]
+# Run the app
+ENTRYPOINT ["java", "-jar", "app.jar"]

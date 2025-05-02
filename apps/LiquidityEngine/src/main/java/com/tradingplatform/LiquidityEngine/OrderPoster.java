@@ -9,6 +9,8 @@ import java.util.Random;
 
 import com.tradingplatform.orderprocessor.orders.Ticker;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class OrderPoster{
 
     private final Random random = new Random();
@@ -29,9 +31,10 @@ public class OrderPoster{
     }
 
     private HttpRequest createRequestForRandomOrder(String ticker){ 
-
+        Dotenv dotenv = Dotenv.load();
+        String url = dotenv.get("BASE_URL_DEV") + "orders/create" ;
         return HttpRequest.newBuilder()
-            .uri(URI.create(System.getenv("BASE_URL" + "orders/create")))
+            .uri(URI.create(dotenv.get("BASE_URL_DEV") + "orders/create"))
             .POST(HttpRequest.BodyPublishers.ofString(generator.generateMockOrderAsJson(ticker)))
             .build();      
     }

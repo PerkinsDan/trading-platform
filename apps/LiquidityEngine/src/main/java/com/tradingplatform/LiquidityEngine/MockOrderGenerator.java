@@ -5,15 +5,13 @@ import com.tradingplatform.orderprocessor.orders.*;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.Arrays;
 import java.util.Random;
-import java.util.List;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import com.tradingplatform.orderprocessor.orders.Ticker;
 
 public class MockOrderGenerator{
     
@@ -51,11 +49,6 @@ public class MockOrderGenerator{
         // TODO: hit market data endpoint  and return double for current price
         return new NormalDistribution(rootPrice, 0.25*rootPrice).sample();
     }
-        
-    private Ticker randomTicker(){
-        Ticker[] tickers = Ticker.values();
-        return tickers[random.nextInt(tickers.length)];
-    }
 
     private String randomUser(){
         String[] users = {"userA","userB"};
@@ -66,13 +59,13 @@ public class MockOrderGenerator{
         return random.nextInt(500)+1;
     }
 
-    public String generateMockOrderAsJson(String Ticker){
-        Double rootPrice = pingMarketDataForPrice(Ticker);
+    public String generateMockOrderAsJson(String ticker){
+        Double rootPrice = pingMarketDataForPrice(ticker);
         if (rootPrice == -1){
             System.out.println("MarketData is flopping rn icl cant publish order via liquidity engine");
         }
 
-        Order order  = new Order(randomOrderType(), randomUser(), randomTicker(), randomPrice(rootPrice),randomQuantity());
+        Order order  = new Order(randomOrderType(), randomUser(), Ticker.valueOf(ticker), randomPrice(rootPrice),randomQuantity());
         System.out.println("Mock order created:" + order.toString());
         ObjectMapper mapper = new ObjectMapper();
         try {
