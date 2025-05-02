@@ -129,21 +129,18 @@ public class DatabaseUtils {
         match.getDouble("price") * match.getInteger("quantityChange");
 
       if (isBuy) {
-        double signedBalanceChange = -netBalanceChange;
         int signedQuantityChange = match.getInteger("quantityChange");
 
         updatePortfolio(match, users, signedQuantityChange);
-        updateBalance(match.getString("userId"), users, signedBalanceChange);
 
         if (match.getBoolean("filled")) {
           moveToHistory(orderDoc, orderHistory, activeOrders);
         }
       } else {
-        double signedBalanceChange = netBalanceChange;
         int signedQuantityChange = -match.getInteger("quantityChange");
 
         updatePortfolio(match, users, signedQuantityChange);
-        updateBalance(match.getString("userId"), users, signedBalanceChange);
+        updateBalance(match.getString("userId"), users, netBalanceChange);
 
         if (match.getBoolean("filled")) {
           moveToHistory(orderDoc, orderHistory, activeOrders);
