@@ -107,54 +107,65 @@ public class DatabaseUtils {
     return "PASSED VALIDATIONS";
   }
 
-  public static void updateCollectionsWithMatches(ArrayList<String> matchesFound){
-
+  public static void updateCollectionsWithMatches(
+    ArrayList<String> matchesFound
+  ) {
     ArrayList<Document> matchesAsDocs = convertMatchesToDocs(matchesFound);
-    MongoCollection<Document> activeOrders = MongoClientConnection.getCollection("activeOrders");
-    MongoCollection<Document> orderHistory = MongoClientConnection.getCollection("orderHistory");
-    MongoCollection<Document> users = MongoClientConnection.getCollection("users");
-    Boolean isBuy = true;
+    MongoCollection<Document> activeOrders =
+      MongoClientConnection.getCollection("activeOrders");
+    MongoCollection<Document> orderHistory =
+      MongoClientConnection.getCollection("orderHistory");
+    MongoCollection<Document> users = MongoClientConnection.getCollection(
+      "users"
+    );
+    boolean isBuy = true;
 
-    for( Document match : matchesAsDocs){
-      
-      Document orderDoc = getDocByOrderId(match.getString("orderId"), activeOrders);
-      double netBalanceChange = match.getDouble("price") * match.getInteger("quantity");
-      
-      if(isBuy){
+    for (Document match : matchesAsDocs) {
+      Document orderDoc = getDocByOrderId(
+        match.getString("orderID"),
+        activeOrders
+      );
+      double netBalanceChange =
+        match.getDouble("price") * match.getInteger("quantityChange");
+
+      if (isBuy) {
         double signedBalanceChange = -netBalanceChange;
         int signedQuantityChange = match.getInteger("quantityChange");
-        
+
         updatePortfolio(match, users, signedQuantityChange);
         updateBalance(match.getString("userId"), users, signedBalanceChange);
 
-        if(match.getBoolean("filled")){
-          moveToHistory(orderDoc,activeOrders, orderHistory);
+        if (match.getBoolean("filled")) {
+          moveToHistory(orderDoc, orderHistory, activeOrders);
         }
-
       } else {
-        // its the sell side 
         double signedBalanceChange = netBalanceChange;
         int signedQuantityChange = -match.getInteger("quantityChange");
 
         updatePortfolio(match, users, signedQuantityChange);
         updateBalance(match.getString("userId"), users, signedBalanceChange);
-        
-        if(match.getBoolean("filled")){
+
+        if (match.getBoolean("filled")) {
           moveToHistory(orderDoc, orderHistory, activeOrders);
-        } 
+        }
       }
 
       isBuy = !isBuy;
-
     }
-
   }
-  
-  private static Document getDocByOrderId(String orderId, MongoCollection<Document> collection){
+
+  private static Document getDocByOrderId(
+    String orderId,
+    MongoCollection<Document> collection
+  ) {
     return collection.find(Filters.eq("orderId", orderId)).first();
   }
 
-  private static void updatePortfolio(Document match, MongoCollection<Document> usersCollection, double signedQuantityChange){
+  private static void updatePortfolio(
+    Document match,
+    MongoCollection<Document> usersCollection,
+    int signedQuantityChange
+  ) {
     String userId = match.getString("userId");
     String ticker = match.getString("ticker");
     UpdateResult updateResult = usersCollection.updateOne(
@@ -164,29 +175,38 @@ public class DatabaseUtils {
       ),
       Updates.inc("portfolio.$.quantity", signedQuantityChange)
     );
-    
+
     if (updateResult.getMatchedCount() == 0) {
       usersCollection.updateOne(
         Filters.eq("userId", userId),
         Updates.push(
           "portfolio",
-          new Document("ticker", ticker)
-              .append("quantity", signedQuantityChange)
+          new Document("ticker", ticker).append(
+            "quantity",
+            signedQuantityChange
+          )
         )
       );
     }
-    
   }
 
-  private static void updateBalance(String userId, MongoCollection<Document> collection, double signedBalanceChange){
+  private static void updateBalance(
+    String userId,
+    MongoCollection<Document> collection,
+    double signedBalanceChange
+  ) {
     collection.updateOne(
       Filters.eq("userId", userId),
-      new Document("$inc", new Document("quantity",signedBalanceChange))
+      new Document("$inc", new Document("balance", signedBalanceChange))
     );
   }
 
-  private static void moveToHistory(Document Order, MongoCollection<Document> orderHistory, MongoCollection<Document> activeOrders){
-    activeOrders.deleteOne(Filters.eq("orderId", Order.getString("orderId")));
+  private static void moveToHistory(
+    Document Order,
+    MongoCollection<Document> orderHistory,
+    MongoCollection<Document> activeOrders
+  ) {
+    activeOrders.deleteOne(Filters.eq("orderId", Order.getString("orderID")));
     Order.put("filled", true);
     orderHistory.insertOne(Order);
   }
@@ -203,5 +223,4 @@ public class DatabaseUtils {
 
     return docs;
   }
-
 }
