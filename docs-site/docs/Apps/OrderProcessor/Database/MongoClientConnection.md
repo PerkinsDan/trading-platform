@@ -1,43 +1,37 @@
-# Database Utils
+# Mongo Client Connection
 
-**Filename**: `DatabaseUtils.java`
+Filename: `MongoClientConnection.java`
 
 ## What does it do
 
-`DatabaseUtils` contains methods useful for manipulating our MongoDB database to reflect users creating accounts, orders being made, trades being executed and any other interaction that requires the database to be updated.
+`MongoClientConnection` is a singleton-style class that
 
-## When do we use it?
-
-The methods contained in this class are used by the Vert.x API's endpoints.
+- Reads the MongoDB connection string from the `DB_URI` environment variable.
+- Builds a `MongoClient` for Server API v1.
+- Connects to the tradingPlatform database and verifies the link with a `ping`.
+- Provides a method for retrieving collections.
 
 ## Methods
 
-### `MarketDataRouter(Vertx vertx, MarketDataService marketDataService)`
+### `createConnection()`
 
-- **Constructor**: Initializes `router` and `marketDataService`.
+- Purpose: Ensures that the driver is initialised once.
+- Behaviour:
+  1. If `mongoClient` is `null`, invokes `initClient()`.
+  2. Returns `true` to signal that a (shared) connection is now ready.
 
-### `setupRoutes()`
+---
 
-Defines two routes. Each route extracts the `ticker` parameter from the URL, calls the appropriate method in `marketDataService`, and sends the response as JSON.
+### `getCollection(String collection)`
 
-- **`/latest-snapshot?ticker=`**: Fetches the latest market data snapshot for a given ticker symbol.
-- **`/time-series?ticker=`**: Fetches a time series of market data for a given ticker symbol.
+- Parameters: `collection` - the name of the desired collection.
+- Returns: `MongoCollection<Document>` bound to the current database.
 
-### `parseTicker()`
+---
 
-Validates the ticker provided:
+### `initClient()` <sub>(private)</sub>
 
-- A string is provided
-- It is present in `Ticker`
-
-It then returns the equivalent `Ticker`
-
-### `sendResponse(RoutingContext ctx, Object data)`
-
-- Converts the given `data` object to a JSON string using Jackson's `ObjectMapper`.
-- Sends the JSON response back to the client.
-- If JSON conversion fails, it sends a `500 Internal Server Error` response with the `JSON_ERROR_MESSAGE`.
-
-### `getRouter()`
-
-- Exposes the `router` instance so it can be used elsewhere in the application.
+- Pulls `DB_URI` from the .env; throws an `IllegalStateException` if absent.
+- Builds `MongoClientSettings` with `ServerApiVersion.V1`.
+- Creates the `MongoClient`, selects the tradingPlatform database, and issues a `ping`.
+- Logs _“Successfully connected to MongoDB!”_ on success or prints the stack‑trace on failure.
