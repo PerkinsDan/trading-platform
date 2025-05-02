@@ -13,10 +13,15 @@ export interface Snapshot {
 }
 
 export enum Ticker {
-  AAPL,
-  MSFT,
-  GOOGL,
-  AMZN,
-  TSLA,
-  META,
+  AAPL = "AAPL",
+  MSFT = "MSFT",
+  GOOGL = "GOOGL",
+  AMZN = "AMZN",
+  TSLA = "TSLA",
+  META = "META",
+}
+
+export interface Stock {
+  ticker: Ticker;
+  quantity: number;
 }

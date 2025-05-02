@@ -16,6 +16,8 @@ import {
 } from "../constants/endpoints";
 import { auth } from "../firebaseConfig/firebase";
 import { Snapshot, Ticker } from "../../types";
+import TradeGraph from "../components/TradeGraph";
+import useFetchTimeSeries from "../hooks/useFetchTimeSeries";
 
 enum Direction {
   BUY = "BUY",
@@ -34,17 +36,21 @@ const TickerTrades = () => {
   const navigate = useNavigate();
   const params = useParams();
 
+  const ticker = params.ticker as unknown as Ticker;
+
+  const { timeSeries, timestamps } = useFetchTimeSeries(ticker);
+
   const [marketSnapshot, setMarketSnapshot] = useState<Snapshot | null>(null);
   const [tradeDetails, setTradeDetails] = useState<TradeDetails>({
     ticker: null,
     type: undefined,
     quantity: 0,
     price: 0,
-    userId: auth!!.currentUser?.uid || null,
+    userId: auth?.currentUser?.uid || null,
   });
   const [error, setError] = useState<string | null>(null);
 
-  const handleTrade = async (stock: string) => {
+  const handleTrade = async (stock: Ticker) => {
     if (!tradeDetails.type) {
       setError("Please select a trade type (Buy or Sell).");
       return;
@@ -84,8 +90,6 @@ const TickerTrades = () => {
     }
   };
 
-  const ticker = params.ticker || "";
-
   useEffect(() => {
     const getTickerData = async () => {
       try {
@@ -107,6 +111,7 @@ const TickerTrades = () => {
         backgroundColor: "#5533ff22",
         borderRadius: "2rem",
         boxShadow: 10,
+        maxHeight: "90vh",
       }}
     >
       <Stack
@@ -125,7 +130,14 @@ const TickerTrades = () => {
           <CloseIcon />
         </IconButton>
       </Stack>
-      <Stack spacing={2} padding="1rem">
+      <Stack maxHeight={"10%"} overflow={"hidden"}>
+        <TradeGraph
+          stock={ticker}
+          timeSeries={timeSeries}
+          timestamps={timestamps}
+        />
+      </Stack>
+      <Stack spacing={2} padding="1rem" flex={1} overflow="auto">
         {error && (
           <Typography color="error" variant="body2">
             {error}

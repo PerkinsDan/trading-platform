@@ -53,6 +53,20 @@ function NavBar() {
         <Typography>My Trades</Typography>
       </Button>
       <Button
+        onClick={() => {
+          navigate("/my-portfolio");
+        }}
+        sx={{
+          flexDirection: "column",
+          width: "80%",
+          color: currentPage === "my-portfolio" ? "ffffff" : "#7e7e7e",
+        }}
+      >
+        <Schedule sx={{ width: "3rem", height: "3rem" }} />
+        <Typography>My Portfolio</Typography>
+      </Button>
+
+      <Button
         onClick={async () => {
           await signOut(auth!!);
           navigate("/sign-in");
