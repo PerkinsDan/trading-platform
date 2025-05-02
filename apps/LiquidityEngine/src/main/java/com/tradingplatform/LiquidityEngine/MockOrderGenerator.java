@@ -63,7 +63,7 @@ public class MockOrderGenerator{
     }
 
     private int randomQuantity(){
-        return random.nextInt(5000)+1;
+        return random.nextInt(500)+1;
     }
 
     public String generateMockOrderAsJson(String Ticker){
