@@ -1,0 +1,666 @@
+{
+  "allContent": {
+    "docusaurus-plugin-content-docs": {
+      "default": {
+        "loadedVersions": [
+          {
+            "versionName": "current",
+            "label": "Next",
+            "banner": null,
+            "badge": false,
+            "noIndex": false,
+            "className": "docs-version-current",
+            "path": "/docs",
+            "tagsPath": "/docs/tags",
+            "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs",
+            "editUrlLocalized": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/i18n/en/docusaurus-plugin-content-docs/current",
+            "isLast": true,
+            "routePriority": -1,
+            "sidebarFilePath": "/Users/danperkins/Documents/GitHub/trading-platform/documentation/sidebars.ts",
+            "contentPath": "/Users/danperkins/Documents/GitHub/trading-platform/documentation/docs",
+            "contentPathLocalized": "/Users/danperkins/Documents/GitHub/trading-platform/documentation/i18n/en/docusaurus-plugin-content-docs/current",
+            "docs": [
+              {
+                "id": "Apps/MarketData/Constants/Ticker",
+                "title": "Ticker Enum",
+                "description": "Filename: constants/Ticker.java",
+                "source": "@site/docs/Apps/MarketData/Constants/Ticker.md",
+                "sourceDirName": "Apps/MarketData/Constants",
+                "slug": "/Apps/MarketData/Constants/Ticker",
+                "permalink": "/docs/Apps/MarketData/Constants/Ticker",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/MarketData/Constants/Ticker.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": { "title": "Intro", "permalink": "/docs/intro" },
+                "next": {
+                  "title": "Market Data Router",
+                  "permalink": "/docs/Apps/MarketData/MarketDataRouter"
+                }
+              },
+              {
+                "id": "Apps/MarketData/MarketDataRouter",
+                "title": "Market Data Router",
+                "description": "Filename: MarketDataRouter.java",
+                "source": "@site/docs/Apps/MarketData/MarketDataRouter.md",
+                "sourceDirName": "Apps/MarketData",
+                "slug": "/Apps/MarketData/MarketDataRouter",
+                "permalink": "/docs/Apps/MarketData/MarketDataRouter",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/MarketData/MarketDataRouter.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "Ticker Enum",
+                  "permalink": "/docs/Apps/MarketData/Constants/Ticker"
+                },
+                "next": {
+                  "title": "Market Data Service",
+                  "permalink": "/docs/Apps/MarketData/MarketDataService"
+                }
+              },
+              {
+                "id": "Apps/MarketData/MarketDataService",
+                "title": "Market Data Service",
+                "description": "Filename: MarketDataService.java",
+                "source": "@site/docs/Apps/MarketData/MarketDataService.md",
+                "sourceDirName": "Apps/MarketData",
+                "slug": "/Apps/MarketData/MarketDataService",
+                "permalink": "/docs/Apps/MarketData/MarketDataService",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/MarketData/MarketDataService.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "Market Data Router",
+                  "permalink": "/docs/Apps/MarketData/MarketDataRouter"
+                },
+                "next": {
+                  "title": "Market Data Service Main",
+                  "permalink": "/docs/Apps/MarketData/MarketDataServiceMain"
+                }
+              },
+              {
+                "id": "Apps/MarketData/MarketDataServiceMain",
+                "title": "Market Data Service Main",
+                "description": "Filename: MarketDataServiceMain.java",
+                "source": "@site/docs/Apps/MarketData/MarketDataServiceMain.md",
+                "sourceDirName": "Apps/MarketData",
+                "slug": "/Apps/MarketData/MarketDataServiceMain",
+                "permalink": "/docs/Apps/MarketData/MarketDataServiceMain",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/MarketData/MarketDataServiceMain.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "Market Data Service",
+                  "permalink": "/docs/Apps/MarketData/MarketDataService"
+                },
+                "next": {
+                  "title": "Simulate Data",
+                  "permalink": "/docs/Apps/MarketData/Simulate Data/SimulateData"
+                }
+              },
+              {
+                "id": "Apps/MarketData/Simulate Data/SimulateData",
+                "title": "Simulate Data",
+                "description": "Filename: simulatedata/SimulateData.java",
+                "source": "@site/docs/Apps/MarketData/Simulate Data/SimulateData.md",
+                "sourceDirName": "Apps/MarketData/Simulate Data",
+                "slug": "/Apps/MarketData/Simulate Data/SimulateData",
+                "permalink": "/docs/Apps/MarketData/Simulate Data/SimulateData",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/MarketData/Simulate Data/SimulateData.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "Market Data Service Main",
+                  "permalink": "/docs/Apps/MarketData/MarketDataServiceMain"
+                },
+                "next": {
+                  "title": "Snapshot",
+                  "permalink": "/docs/Apps/MarketData/Simulate Data/Snapshot"
+                }
+              },
+              {
+                "id": "Apps/MarketData/Simulate Data/Snapshot",
+                "title": "Snapshot",
+                "description": "Filename: Snapshot.java",
+                "source": "@site/docs/Apps/MarketData/Simulate Data/Snapshot.md",
+                "sourceDirName": "Apps/MarketData/Simulate Data",
+                "slug": "/Apps/MarketData/Simulate Data/Snapshot",
+                "permalink": "/docs/Apps/MarketData/Simulate Data/Snapshot",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/MarketData/Simulate Data/Snapshot.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "Simulate Data",
+                  "permalink": "/docs/Apps/MarketData/Simulate Data/SimulateData"
+                },
+                "next": {
+                  "title": "Time Series",
+                  "permalink": "/docs/Apps/MarketData/Simulate Data/TimeSeries"
+                }
+              },
+              {
+                "id": "Apps/MarketData/Simulate Data/TimeSeries",
+                "title": "Time Series",
+                "description": "Filename: simulatedata/TimeSeries.java",
+                "source": "@site/docs/Apps/MarketData/Simulate Data/TimeSeries.md",
+                "sourceDirName": "Apps/MarketData/Simulate Data",
+                "slug": "/Apps/MarketData/Simulate Data/TimeSeries",
+                "permalink": "/docs/Apps/MarketData/Simulate Data/TimeSeries",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/MarketData/Simulate Data/TimeSeries.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "Snapshot",
+                  "permalink": "/docs/Apps/MarketData/Simulate Data/Snapshot"
+                },
+                "next": {
+                  "title": "OrderProcessor",
+                  "permalink": "/docs/Apps/OrderProcessor/"
+                }
+              },
+              {
+                "id": "Apps/OrderProcessor/MatchingDetails",
+                "title": "MatchingDetails",
+                "description": "Filename: MatchingDetails.java",
+                "source": "@site/docs/Apps/OrderProcessor/MatchingDetails.md",
+                "sourceDirName": "Apps/OrderProcessor",
+                "slug": "/Apps/OrderProcessor/MatchingDetails",
+                "permalink": "/docs/Apps/OrderProcessor/MatchingDetails",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/OrderProcessor/MatchingDetails.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "OrderProcessor",
+                  "permalink": "/docs/Apps/OrderProcessor/"
+                },
+                "next": {
+                  "title": "MatchingEngine",
+                  "permalink": "/docs/Apps/OrderProcessor/MatchingEngine"
+                }
+              },
+              {
+                "id": "Apps/OrderProcessor/MatchingEngine",
+                "title": "MatchingEngine",
+                "description": "Filename: MatchingEngine.java",
+                "source": "@site/docs/Apps/OrderProcessor/MatchingEngine.md",
+                "sourceDirName": "Apps/OrderProcessor",
+                "slug": "/Apps/OrderProcessor/MatchingEngine",
+                "permalink": "/docs/Apps/OrderProcessor/MatchingEngine",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/OrderProcessor/MatchingEngine.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "MatchingDetails",
+                  "permalink": "/docs/Apps/OrderProcessor/MatchingDetails"
+                },
+                "next": {
+                  "title": "Order",
+                  "permalink": "/docs/Apps/OrderProcessor/Order"
+                }
+              },
+              {
+                "id": "Apps/OrderProcessor/Order",
+                "title": "Order",
+                "description": "Filename: Order.java",
+                "source": "@site/docs/Apps/OrderProcessor/Order.md",
+                "sourceDirName": "Apps/OrderProcessor",
+                "slug": "/Apps/OrderProcessor/Order",
+                "permalink": "/docs/Apps/OrderProcessor/Order",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/OrderProcessor/Order.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "MatchingEngine",
+                  "permalink": "/docs/Apps/OrderProcessor/MatchingEngine"
+                },
+                "next": {
+                  "title": "OrderComparator",
+                  "permalink": "/docs/Apps/OrderProcessor/OrderComparator"
+                }
+              },
+              {
+                "id": "Apps/OrderProcessor/OrderComparator",
+                "title": "OrderComparator",
+                "description": "Filename: OrderComparator.java",
+                "source": "@site/docs/Apps/OrderProcessor/OrderComparator.md",
+                "sourceDirName": "Apps/OrderProcessor",
+                "slug": "/Apps/OrderProcessor/OrderComparator",
+                "permalink": "/docs/Apps/OrderProcessor/OrderComparator",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/OrderProcessor/OrderComparator.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "Order",
+                  "permalink": "/docs/Apps/OrderProcessor/Order"
+                },
+                "next": {
+                  "title": "OrderType",
+                  "permalink": "/docs/Apps/OrderProcessor/OrderType"
+                }
+              },
+              {
+                "id": "Apps/OrderProcessor/OrderProcessor",
+                "title": "OrderProcessor",
+                "description": "Filename: OrderProcessor.java",
+                "source": "@site/docs/Apps/OrderProcessor/OrderProcessor.md",
+                "sourceDirName": "Apps/OrderProcessor",
+                "slug": "/Apps/OrderProcessor/",
+                "permalink": "/docs/Apps/OrderProcessor/",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/OrderProcessor/OrderProcessor.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "Time Series",
+                  "permalink": "/docs/Apps/MarketData/Simulate Data/TimeSeries"
+                },
+                "next": {
+                  "title": "MatchingDetails",
+                  "permalink": "/docs/Apps/OrderProcessor/MatchingDetails"
+                }
+              },
+              {
+                "id": "Apps/OrderProcessor/OrderType",
+                "title": "OrderType",
+                "description": "Filename: OrderType.java",
+                "source": "@site/docs/Apps/OrderProcessor/OrderType.md",
+                "sourceDirName": "Apps/OrderProcessor",
+                "slug": "/Apps/OrderProcessor/OrderType",
+                "permalink": "/docs/Apps/OrderProcessor/OrderType",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/OrderProcessor/OrderType.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "OrderComparator",
+                  "permalink": "/docs/Apps/OrderProcessor/OrderComparator"
+                },
+                "next": {
+                  "title": "Ticker",
+                  "permalink": "/docs/Apps/OrderProcessor/Ticker"
+                }
+              },
+              {
+                "id": "Apps/OrderProcessor/Ticker",
+                "title": "Ticker",
+                "description": "Filename: Ticker.java",
+                "source": "@site/docs/Apps/OrderProcessor/Ticker.md",
+                "sourceDirName": "Apps/OrderProcessor",
+                "slug": "/Apps/OrderProcessor/Ticker",
+                "permalink": "/docs/Apps/OrderProcessor/Ticker",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/OrderProcessor/Ticker.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "OrderType",
+                  "permalink": "/docs/Apps/OrderProcessor/OrderType"
+                },
+                "next": {
+                  "title": "TradeBook",
+                  "permalink": "/docs/Apps/OrderProcessor/TradeBook"
+                }
+              },
+              {
+                "id": "Apps/OrderProcessor/TradeBook",
+                "title": "TradeBook",
+                "description": "Filename: TradeBook.java",
+                "source": "@site/docs/Apps/OrderProcessor/TradeBook.md",
+                "sourceDirName": "Apps/OrderProcessor",
+                "slug": "/Apps/OrderProcessor/TradeBook",
+                "permalink": "/docs/Apps/OrderProcessor/TradeBook",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/OrderProcessor/TradeBook.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "Ticker",
+                  "permalink": "/docs/Apps/OrderProcessor/Ticker"
+                },
+                "next": {
+                  "title": "Architecture",
+                  "permalink": "/docs/Diagrams/architecture"
+                }
+              },
+              {
+                "id": "Diagrams/architecture",
+                "title": "Architecture",
+                "description": "",
+                "source": "@site/docs/Diagrams/architecture.md",
+                "sourceDirName": "Diagrams",
+                "slug": "/Diagrams/architecture",
+                "permalink": "/docs/Diagrams/architecture",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Diagrams/architecture.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "TradeBook",
+                  "permalink": "/docs/Apps/OrderProcessor/TradeBook"
+                },
+                "next": {
+                  "title": "Business Flows",
+                  "permalink": "/docs/Diagrams/businessFlows"
+                }
+              },
+              {
+                "id": "Diagrams/businessFlows",
+                "title": "Business Flows",
+                "description": "",
+                "source": "@site/docs/Diagrams/businessFlows.md",
+                "sourceDirName": "Diagrams",
+                "slug": "/Diagrams/businessFlows",
+                "permalink": "/docs/Diagrams/businessFlows",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Diagrams/businessFlows.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "Architecture",
+                  "permalink": "/docs/Diagrams/architecture"
+                },
+                "next": {
+                  "title": "Market Data",
+                  "permalink": "/docs/Diagrams/marketData"
+                }
+              },
+              {
+                "id": "Diagrams/marketData",
+                "title": "Market Data",
+                "description": "",
+                "source": "@site/docs/Diagrams/marketData.md",
+                "sourceDirName": "Diagrams",
+                "slug": "/Diagrams/marketData",
+                "permalink": "/docs/Diagrams/marketData",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Diagrams/marketData.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "Business Flows",
+                  "permalink": "/docs/Diagrams/businessFlows"
+                },
+                "next": {
+                  "title": "Order Processor",
+                  "permalink": "/docs/Diagrams/orderProcessor"
+                }
+              },
+              {
+                "id": "Diagrams/orderProcessor",
+                "title": "Order Processor",
+                "description": "",
+                "source": "@site/docs/Diagrams/orderProcessor.md",
+                "sourceDirName": "Diagrams",
+                "slug": "/Diagrams/orderProcessor",
+                "permalink": "/docs/Diagrams/orderProcessor",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Diagrams/orderProcessor.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "Market Data",
+                  "permalink": "/docs/Diagrams/marketData"
+                },
+                "next": {
+                  "title": "Order Matching Explained",
+                  "permalink": "/docs/OrderMatchingExplained"
+                }
+              },
+              {
+                "id": "intro",
+                "title": "Intro",
+                "description": "This is the documention for the Trading Platform.",
+                "source": "@site/docs/intro.md",
+                "sourceDirName": ".",
+                "slug": "/intro",
+                "permalink": "/docs/intro",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/intro.md",
+                "tags": [],
+                "version": "current",
+                "sidebarPosition": 1,
+                "frontMatter": { "sidebar_position": 1 },
+                "sidebar": "tutorialSidebar",
+                "next": {
+                  "title": "Ticker Enum",
+                  "permalink": "/docs/Apps/MarketData/Constants/Ticker"
+                }
+              },
+              {
+                "id": "OrderMatchingExplained",
+                "title": "Order Matching Explained",
+                "description": "The way order matching engines work in general is quite a deep topic. Refer to these links to learn further:",
+                "source": "@site/docs/OrderMatchingExplained.md",
+                "sourceDirName": ".",
+                "slug": "/OrderMatchingExplained",
+                "permalink": "/docs/OrderMatchingExplained",
+                "draft": false,
+                "unlisted": false,
+                "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/OrderMatchingExplained.md",
+                "tags": [],
+                "version": "current",
+                "frontMatter": {},
+                "sidebar": "tutorialSidebar",
+                "previous": {
+                  "title": "Order Processor",
+                  "permalink": "/docs/Diagrams/orderProcessor"
+                }
+              }
+            ],
+            "drafts": [],
+            "sidebars": {
+              "tutorialSidebar": [
+                { "type": "doc", "id": "intro" },
+                {
+                  "type": "category",
+                  "label": "Apps",
+                  "collapsible": true,
+                  "collapsed": true,
+                  "items": [
+                    {
+                      "type": "category",
+                      "label": "MarketData",
+                      "collapsible": true,
+                      "collapsed": true,
+                      "items": [
+                        {
+                          "type": "category",
+                          "label": "Constants",
+                          "collapsible": true,
+                          "collapsed": true,
+                          "items": [
+                            {
+                              "type": "doc",
+                              "id": "Apps/MarketData/Constants/Ticker"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "doc",
+                          "id": "Apps/MarketData/MarketDataRouter"
+                        },
+                        {
+                          "type": "doc",
+                          "id": "Apps/MarketData/MarketDataService"
+                        },
+                        {
+                          "type": "doc",
+                          "id": "Apps/MarketData/MarketDataServiceMain"
+                        },
+                        {
+                          "type": "category",
+                          "label": "Simulate Data",
+                          "collapsible": true,
+                          "collapsed": true,
+                          "items": [
+                            {
+                              "type": "doc",
+                              "id": "Apps/MarketData/Simulate Data/SimulateData"
+                            },
+                            {
+                              "type": "doc",
+                              "id": "Apps/MarketData/Simulate Data/Snapshot"
+                            },
+                            {
+                              "type": "doc",
+                              "id": "Apps/MarketData/Simulate Data/TimeSeries"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "category",
+                      "label": "OrderProcessor",
+                      "collapsible": true,
+                      "collapsed": true,
+                      "items": [
+                        {
+                          "type": "doc",
+                          "id": "Apps/OrderProcessor/MatchingDetails"
+                        },
+                        {
+                          "type": "doc",
+                          "id": "Apps/OrderProcessor/MatchingEngine"
+                        },
+                        { "type": "doc", "id": "Apps/OrderProcessor/Order" },
+                        {
+                          "type": "doc",
+                          "id": "Apps/OrderProcessor/OrderComparator"
+                        },
+                        {
+                          "type": "doc",
+                          "id": "Apps/OrderProcessor/OrderType"
+                        },
+                        { "type": "doc", "id": "Apps/OrderProcessor/Ticker" },
+                        { "type": "doc", "id": "Apps/OrderProcessor/TradeBook" }
+                      ],
+                      "link": {
+                        "type": "doc",
+                        "id": "Apps/OrderProcessor/OrderProcessor"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "category",
+                  "label": "Diagrams",
+                  "collapsible": true,
+                  "collapsed": true,
+                  "items": [
+                    { "type": "doc", "id": "Diagrams/architecture" },
+                    { "type": "doc", "id": "Diagrams/businessFlows" },
+                    { "type": "doc", "id": "Diagrams/marketData" },
+                    { "type": "doc", "id": "Diagrams/orderProcessor" }
+                  ]
+                },
+                { "type": "doc", "id": "OrderMatchingExplained" }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "docusaurus-plugin-content-blog": {
+      "default": {
+        "blogSidebarTitle": "Recent posts",
+        "blogPosts": [],
+        "blogListPaginated": [],
+        "blogTags": {},
+        "blogTagsListPath": "/blog/tags"
+      }
+    },
+    "docusaurus-plugin-content-pages": {
+      "default": [
+        {
+          "type": "jsx",
+          "permalink": "/",
+          "source": "@site/src/pages/index.tsx"
+        },
+        {
+          "type": "mdx",
+          "permalink": "/markdown-page",
+          "source": "@site/src/pages/markdown-page.md",
+          "title": "Markdown page example",
+          "description": "You don't need React to write simple standalone pages.",
+          "frontMatter": { "title": "Markdown page example" },
+          "unlisted": false
+        }
+      ]
+    },
+    "docusaurus-plugin-debug": {},
+    "docusaurus-plugin-svgr": {},
+    "docusaurus-theme-classic": {},
+    "docusaurus-theme-mermaid": {},
+    "docusaurus-bootstrap-plugin": {},
+    "docusaurus-mdx-fallback-plugin": {}
+  }
+}

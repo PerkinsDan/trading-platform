@@ -1,0 +1,24 @@
+{
+  "id": "Apps/MarketData/MarketDataService",
+  "title": "Market Data Service",
+  "description": "Filename: MarketDataService.java",
+  "source": "@site/docs/Apps/MarketData/MarketDataService.md",
+  "sourceDirName": "Apps/MarketData",
+  "slug": "/Apps/MarketData/MarketDataService",
+  "permalink": "/docs/Apps/MarketData/MarketDataService",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/MarketData/MarketDataService.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Market Data Router",
+    "permalink": "/docs/Apps/MarketData/MarketDataRouter"
+  },
+  "next": {
+    "title": "Market Data Service Main",
+    "permalink": "/docs/Apps/MarketData/MarketDataServiceMain"
+  }
+}

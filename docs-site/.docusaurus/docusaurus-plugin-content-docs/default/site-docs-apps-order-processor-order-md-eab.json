@@ -1,0 +1,24 @@
+{
+  "id": "Apps/OrderProcessor/Order",
+  "title": "Order",
+  "description": "Filename: Order.java",
+  "source": "@site/docs/Apps/OrderProcessor/Order.md",
+  "sourceDirName": "Apps/OrderProcessor",
+  "slug": "/Apps/OrderProcessor/Order",
+  "permalink": "/docs/Apps/OrderProcessor/Order",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/OrderProcessor/Order.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "MatchingEngine",
+    "permalink": "/docs/Apps/OrderProcessor/MatchingEngine"
+  },
+  "next": {
+    "title": "OrderComparator",
+    "permalink": "/docs/Apps/OrderProcessor/OrderComparator"
+  }
+}

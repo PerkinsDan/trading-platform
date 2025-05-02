@@ -1,0 +1,24 @@
+{
+  "id": "Apps/OrderProcessor/Ticker",
+  "title": "Ticker",
+  "description": "Filename: Ticker.java",
+  "source": "@site/docs/Apps/OrderProcessor/Ticker.md",
+  "sourceDirName": "Apps/OrderProcessor",
+  "slug": "/Apps/OrderProcessor/Ticker",
+  "permalink": "/docs/Apps/OrderProcessor/Ticker",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/OrderProcessor/Ticker.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "OrderType",
+    "permalink": "/docs/Apps/OrderProcessor/OrderType"
+  },
+  "next": {
+    "title": "TradeBook",
+    "permalink": "/docs/Apps/OrderProcessor/TradeBook"
+  }
+}

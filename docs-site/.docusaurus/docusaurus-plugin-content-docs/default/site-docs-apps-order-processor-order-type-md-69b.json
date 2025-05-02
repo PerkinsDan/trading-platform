@@ -1,0 +1,24 @@
+{
+  "id": "Apps/OrderProcessor/OrderType",
+  "title": "OrderType",
+  "description": "Filename: OrderType.java",
+  "source": "@site/docs/Apps/OrderProcessor/OrderType.md",
+  "sourceDirName": "Apps/OrderProcessor",
+  "slug": "/Apps/OrderProcessor/OrderType",
+  "permalink": "/docs/Apps/OrderProcessor/OrderType",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/OrderProcessor/OrderType.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "OrderComparator",
+    "permalink": "/docs/Apps/OrderProcessor/OrderComparator"
+  },
+  "next": {
+    "title": "Ticker",
+    "permalink": "/docs/Apps/OrderProcessor/Ticker"
+  }
+}
