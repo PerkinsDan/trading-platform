@@ -4,7 +4,7 @@
     
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>group-project-trading-platform</groupId>
+    <groupId>com.tradingplatform</groupId>
     <artifactId>LiquidityEngine</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -45,11 +45,16 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-           <groupId>group-project-trading-platform</groupId>
-           <artifactId>OrderProcessor</artifactId>
+           <groupId>com.tradingplatform</groupId>
+           <artifactId>order-processor</artifactId>
            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
+    <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-web</artifactId>
+            <version>4.5.14</version>
+        </dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>3.6.1</version>
