@@ -18,7 +18,7 @@ const config: Config = {
   url: "https://your-docusaurus-site.example.com",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/documentation/",
+  baseUrl: "/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -41,7 +41,7 @@ const config: Config = {
       "classic",
       {
         docs: {
-          routeBasePath: "/documentation",
+          path: "documentation/docs",
           sidebarPath: "./sidebars.ts",
           editUrl:
             "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/",
