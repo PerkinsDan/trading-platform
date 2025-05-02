@@ -38,7 +38,7 @@ public class ToggleLoopServer extends AbstractVerticle{
 
         vertx.createHttpServer()
             .requestHandler(request -> {
-                if("/LiquidiyEngine/toggle".equals(request.path())){
+                if("/LiquidityEngine/toggle".equals(request.path())){
                     boolean newState = !running.get();
                     running.set(newState);
                     request.response()
@@ -49,8 +49,8 @@ public class ToggleLoopServer extends AbstractVerticle{
                     request.response().setStatusCode(404).end("Invlaid adress homie");
                 }
             })
-            .listen(88889, http -> {
-                if(https.succeeded()){
+            .listen(8888g, http -> {
+                if(http.succeeded()){
                     System.out.println("Http server started on port 8888");
                 } else {
                     System.out.println("Https server failed to start - Error : " + http.cause());
