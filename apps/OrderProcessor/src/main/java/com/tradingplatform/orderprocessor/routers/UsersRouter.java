@@ -196,7 +196,10 @@ public class UsersRouter {
             }
 
             double balance = userDoc.getDouble("balance");
-            List<Document> portfolio = userDoc.getList("portfolio", Document.class);
+            List<Document> portfolio = userDoc.getList(
+              "portfolio",
+              Document.class
+            );
 
             JsonObject response = new JsonObject()
               .put("userId", userId)
