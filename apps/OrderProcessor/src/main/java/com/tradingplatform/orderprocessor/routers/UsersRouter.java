@@ -8,7 +8,6 @@ import com.tradingplatform.orderprocessor.validations.Validation;
 import com.tradingplatform.orderprocessor.validations.ValidationBuilder;
 import com.tradingplatform.orderprocessor.validations.ValidationResult;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -45,7 +44,7 @@ public class UsersRouter {
 
         try {
           if (!result.isValid) {
-            // usually we check thata userId does exist, in this case we want to be sure it doesnt, so NOT validUser
+            // usually we check that userId does exist, in this case we want to be sure it doesnt, so NOT validUser
             var usersCollection = MongoClientConnection.getCollection("users");
 
             Document newUserDoc = new Document()
@@ -60,7 +59,6 @@ public class UsersRouter {
               .setStatusCode(200)
               .putHeader("Content-Type", "application/json")
               .end("User created successfully");
-            return;
           } else {
             ctx
               .response()
@@ -69,7 +67,6 @@ public class UsersRouter {
               .end(
                 "Error while creating user :  A user with this id already exists"
               );
-            return;
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -80,7 +77,6 @@ public class UsersRouter {
             .end(
               "Internal Server Error : Unexpected error while creating user - user could not be created."
             );
-          return;
         }
       });
 
@@ -154,7 +150,6 @@ public class UsersRouter {
               .setStatusCode(200)
               .putHeader("Content-Type", "application/json")
               .end(activeOrders.toString());
-            return;
           } else {
             ctx
               .response()
@@ -284,7 +279,6 @@ public class UsersRouter {
             .end(
               "Internal Server Error : Unexpected error while retrieving active positions. Unable to retrieve positions."
             );
-          return;
         }
       });
   }

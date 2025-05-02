@@ -112,6 +112,7 @@ public class DatabaseUtils {
     MongoCollection<Document> users = MongoClientConnection.getCollection(
       "users"
     );
+
     boolean isBuy = true;
 
     for (Document match : matchesAsDocs) {
@@ -197,7 +198,7 @@ public class DatabaseUtils {
     MongoCollection<Document> orderHistory,
     MongoCollection<Document> activeOrders
   ) {
-    activeOrders.deleteOne(Filters.eq("orderId", Order.getString("orderID")));
+    activeOrders.deleteOne(Filters.eq("orderId", Order.getString("orderId")));
     Order.put("filled", true);
     orderHistory.insertOne(Order);
   }
