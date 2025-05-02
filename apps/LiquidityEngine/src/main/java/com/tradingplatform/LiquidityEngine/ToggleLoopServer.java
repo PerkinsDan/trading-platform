@@ -1,5 +1,6 @@
 package com.tradingplatform.LiquidityEngine;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
@@ -15,16 +16,15 @@ public class ToggleLoopServer extends AbstractVerticle{
         workerThread = new Thread(()->{
             while(true){
                 if (running.get()){
-                    System.out.println("Daemon Loop toggle to on");
+                    OrderPoster poster = new OrderPoster(20);
                     try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
+                        poster.startOrderStream();
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
                     }
                 } else {
                     try {
-                        System.out.println("Daemon thread is toggled to off");
+                        System.out.println("Liquidity Engine thread is toggled to off");
                         Thread.sleep(10000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
