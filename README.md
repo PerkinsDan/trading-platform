@@ -47,8 +47,6 @@ Inside `apps/OrderProcessor/.env :
 DB_URI = #####
 ```
 
-
-
 ## TO TEST
 
 To test you can try complete these trades. We have put in sell orders to ensure that your trades are fulfilled
@@ -60,6 +58,3 @@ AAPL: BUY 50 Shares @ $100
 AMZN: BUY 50 Shares @ $100
 
 MSFT: BUY 50 Shares @ $100
-
-
-

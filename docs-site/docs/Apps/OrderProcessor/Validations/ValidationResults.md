@@ -12,7 +12,7 @@
 
 - Used by each `Validation` to indicate whether the input is valid.
 - Helps to implement a fail-fast effect for `ValidationBuilder` if a failure occurs.
--A failed `Validation` will stop further validations from being done which could cause errors.
+  -A failed `Validation` will stop further validations from being done which could cause errors.
 
 ## Attributes
 
