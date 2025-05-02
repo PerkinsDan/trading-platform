@@ -37,6 +37,8 @@ const Portfolio = () => {
 
       const json = await response.json();
 
+      console.log("Portfolio data:", json.portfolio);
+
       setPortfolio(json.portfolio);
     };
 

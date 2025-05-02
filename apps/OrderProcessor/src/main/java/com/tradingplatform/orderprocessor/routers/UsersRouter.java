@@ -106,14 +106,12 @@ public class UsersRouter {
               .setStatusCode(200)
               .putHeader("Content-Type", "application/json")
               .end("Balance updated successfully");
-            return;
           } else {
             ctx
               .response()
               .setStatusCode(400)
               .putHeader("Content-Type", "application/json")
               .end("Error while updating user balance: " + result.errorMessage);
-            return;
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -165,7 +163,6 @@ public class UsersRouter {
               .end(
                 "Error while retrieving user positions: " + result.errorMessage
               );
-            return;
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -176,7 +173,6 @@ public class UsersRouter {
             .end(
               "Internal Server Error : Unexpected error while retrieving active positions. Unable to retrieve positions."
             );
-          return;
         }
       });
 
@@ -205,22 +201,23 @@ public class UsersRouter {
             }
 
             double balance = userDoc.getDouble("balance");
+            List<Document> portfolio = userDoc.getList("portfolio", Document.class);
+
             JsonObject response = new JsonObject()
               .put("userId", userId)
-              .put("balance", balance);
+              .put("balance", balance)
+              .put("portfolio", portfolio);
 
             ctx
               .response()
               .putHeader("Content-Type", "application/json")
               .end(response.encode());
-            return;
           } else {
             ctx
               .response()
               .setStatusCode(400)
               .putHeader("Content-Type", "application/json")
               .end("Error while retrieving account: " + result.errorMessage);
-            return;
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -231,7 +228,6 @@ public class UsersRouter {
             .end(
               "Internal Server Error : Unexpected error while retrieving account. Unable to retrieve =account."
             );
-          return;
         }
       });
 
