@@ -1,0 +1,24 @@
+{
+  "id": "Apps/MarketData/Constants/Ticker",
+  "title": "Ticker Enum",
+  "description": "Filename: constants/Ticker.java",
+  "source": "@site/docs/Apps/MarketData/Constants/Ticker.md",
+  "sourceDirName": "Apps/MarketData/Constants",
+  "slug": "/Apps/MarketData/Constants/Ticker",
+  "permalink": "/docs/Apps/MarketData/Constants/Ticker",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/MarketData/Constants/Ticker.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Intro",
+    "permalink": "/docs/intro"
+  },
+  "next": {
+    "title": "Market Data Router",
+    "permalink": "/docs/Apps/MarketData/MarketDataRouter"
+  }
+}

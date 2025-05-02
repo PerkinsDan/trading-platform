@@ -6,7 +6,6 @@ import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 import com.tradingplatform.orderprocessor.validations.ValidationResult;
-
 import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +14,8 @@ import org.bson.conversions.Bson;
 
 public class DatabaseUtils {
 
-  public static void creditUser(String userId, double amountToAdd){
-    
-    var usersCollection = MongoClientConnection.getCollection("users"); 
+  public static void creditUser(String userId, double amountToAdd) {
+    var usersCollection = MongoClientConnection.getCollection("users");
 
     usersCollection.updateOne(
       Filters.eq("userId", userId),
@@ -35,11 +33,12 @@ public class DatabaseUtils {
 
     return previouslyPartiallyFilled != null;
   }
-  
 
-  public static ValidationResult userBalanceIsSufficientForBuy(JsonObject body){
+  public static ValidationResult userBalanceIsSufficientForBuy(
+    JsonObject body
+  ) {
     MongoCollection<Document> usersCollection =
-    MongoClientConnection.getCollection("users");
+      MongoClientConnection.getCollection("users");
 
     boolean isBuy = body.getString("type").equals("BUY");
     double totalPrice = (body.getDouble("price") * body.getInteger("quantity"));
@@ -52,7 +51,7 @@ public class DatabaseUtils {
     double balance = userDoc.getDouble("balance");
 
     if (isBuy) {
-      if (balance < totalPrice){
+      if (balance < totalPrice) {
         return ValidationResult.fail("Insufficient funds to place this order");
       } else {
         return ValidationResult.ok();
@@ -62,15 +61,18 @@ public class DatabaseUtils {
     }
   }
 
-  public static ValidationResult userPortfolioIsSufficientForSell(JsonObject body){
-
+  public static ValidationResult userPortfolioIsSufficientForSell(
+    JsonObject body
+  ) {
     boolean isSell = body.getString("type").equals("SELL");
-    
-    if(!isSell){
-      return ValidationResult.fail(" Error validating quantity owned is sufficient : Order Type is not a SELL");
+
+    if (!isSell) {
+      return ValidationResult.fail(
+        " Error validating quantity owned is sufficient : Order Type is not a SELL"
+      );
     }
     MongoCollection<Document> usersCollection =
-    MongoClientConnection.getCollection("users");
+      MongoClientConnection.getCollection("users");
 
     Bson stockInUsersPortfolio = Projections.elemMatch(
       "portfolio",
@@ -78,9 +80,9 @@ public class DatabaseUtils {
     );
 
     Document doc = usersCollection
-    .find(Filters.eq("userId", body.getString("userId")))
-    .projection(stockInUsersPortfolio)
-    .first();
+      .find(Filters.eq("userId", body.getString("userId")))
+      .projection(stockInUsersPortfolio)
+      .first();
 
     int numStock = 0;
     if (doc != null && doc.containsKey("portfolio")) {
@@ -89,14 +91,14 @@ public class DatabaseUtils {
         numStock = portfolio.getFirst().getInteger("quantity", 0);
       }
     }
-    
-    if (numStock < body.getInteger("quantity")){
-      return ValidationResult.fail("Insufficient quantity of stock owned to place this order");
+
+    if (numStock < body.getInteger("quantity")) {
+      return ValidationResult.fail(
+        "Insufficient quantity of stock owned to place this order"
+      );
     }
-      
+
     return ValidationResult.ok();
-    
-  
   }
 
   public static void updateCollectionsWithMatches(

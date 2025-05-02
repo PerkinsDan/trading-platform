@@ -1,0 +1,24 @@
+{
+  "id": "Apps/OrderProcessor/TradeBook",
+  "title": "TradeBook",
+  "description": "Filename: TradeBook.java",
+  "source": "@site/docs/Apps/OrderProcessor/TradeBook.md",
+  "sourceDirName": "Apps/OrderProcessor",
+  "slug": "/Apps/OrderProcessor/TradeBook",
+  "permalink": "/docs/Apps/OrderProcessor/TradeBook",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/OrderProcessor/TradeBook.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Ticker",
+    "permalink": "/docs/Apps/OrderProcessor/Ticker"
+  },
+  "next": {
+    "title": "Architecture",
+    "permalink": "/docs/Diagrams/architecture"
+  }
+}

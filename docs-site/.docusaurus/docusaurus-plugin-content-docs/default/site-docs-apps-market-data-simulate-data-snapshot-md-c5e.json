@@ -1,0 +1,24 @@
+{
+  "id": "Apps/MarketData/Simulate Data/Snapshot",
+  "title": "Snapshot",
+  "description": "Filename: Snapshot.java",
+  "source": "@site/docs/Apps/MarketData/Simulate Data/Snapshot.md",
+  "sourceDirName": "Apps/MarketData/Simulate Data",
+  "slug": "/Apps/MarketData/Simulate Data/Snapshot",
+  "permalink": "/docs/Apps/MarketData/Simulate Data/Snapshot",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/docs/Apps/MarketData/Simulate Data/Snapshot.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Simulate Data",
+    "permalink": "/docs/Apps/MarketData/Simulate Data/SimulateData"
+  },
+  "next": {
+    "title": "Time Series",
+    "permalink": "/docs/Apps/MarketData/Simulate Data/TimeSeries"
+  }
+}

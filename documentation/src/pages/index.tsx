@@ -3,6 +3,7 @@ import clsx from "clsx";
 import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
+import HomepageFeatures from "@site/src/components/HomepageFeatures";
 import Heading from "@theme/Heading";
 
 import styles from "./index.module.css";
@@ -21,25 +22,7 @@ function HomepageHeader() {
             className="button button--secondary button--lg"
             to="/docs/intro"
           >
-            To the docs!
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
-
-function LinkToSite() {
-  return (
-    <header className={clsx("hero hero--secondary", styles.heroBanner)}>
-      <div className="container">
-        <p className="hero__subtitle">Fancy a look at the final product?</p>
-        <div className={styles.buttons}>
-          <Link
-            className="button button--primary "
-            to="https://trading-platform-rose.vercel.app"
-          >
-            Take me to the live site!
+            Link to documentation
           </Link>
         </div>
       </div>
@@ -55,7 +38,9 @@ export default function Home(): ReactNode {
       description="Description will go into a meta tag in <head />"
     >
       <HomepageHeader />
-      <LinkToSite />
+      <main>
+        <HomepageFeatures />
+      </main>
     </Layout>
   );
 }

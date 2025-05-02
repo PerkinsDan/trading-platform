@@ -37,14 +37,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-      <Route
+        <Route
           path="my-portfolio"
           element={
-              <ProtectedRoute>
-                  <MyPortfolio />
-              </ProtectedRoute>
+            <ProtectedRoute>
+              <MyPortfolio />
+            </ProtectedRoute>
           }
-      />
+        />
 
         <Route
           path="sign-in"
