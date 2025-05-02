@@ -65,3 +65,7 @@ Private bootstrap that attaches both route handlers:
 3. Credits user balance if the order being cancelled was a **BUY**.
 4. Marks the order as `cancelled` in **`orderHistory`** (or inserts it if it was never filled).
 5. Respond codes: **200 OK**, **404** on validation failure, **500** on exceptions.
+
+**When do we use it?**
+
+Used by `MasterRouter`.
