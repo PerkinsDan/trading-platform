@@ -41,7 +41,7 @@ const config: Config = {
       "classic",
       {
         docs: {
-          path: "/",
+          path: "docs",
           sidebarPath: "./sidebars.ts",
           editUrl:
             "https://github.com/PerkinsDan/trading-platform/tree/main/documentation/docs/",
