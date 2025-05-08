@@ -6,6 +6,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Random;
 import java.io.IOException;
@@ -17,31 +18,33 @@ import java.net.http.HttpResponse;
 public class MockOrderGenerator{
     
     private final Random random = new Random();
+    private final ObjectMapper mapper = new ObjectMapper();
 
 
     protected MockOrderGenerator(){
     }
 
     private double pingMarketDataForPrice(String ticker){
-        // Dotenv dotenv = Dotenv.configure().directory("/home/asad/IOT/trading-platform/apps/LiquidityEngine/.env").load();
-        // String url = dotenv.get("BASE_URL_MARKET_DATA_DEV") + "latest-snapshot?ticker=" + ticker;
-        // HttpRequest request = HttpRequest.newBuilder()
-        //                                 .uri(URI.create(url)) // Set the URL
-        //                                 .GET() // Specify this as a GET request
-        //                                 .build();
-        // // Create an HttpClient
-        // HttpClient client = HttpClient.newHttpClient();
+        Dotenv dotenv = Dotenv.configure().directory("/home/asad/IOT/trading-platform/apps/LiquidityEngine/.env").load();
+        String url = dotenv.get("BASE_URL_MARKET_DATA_DEV") + "latest-snapshot?ticker=" + ticker;
+        HttpRequest request = HttpRequest.newBuilder()
+                                        .uri(URI.create(url)) // Set the URL
+                                        .GET() // Specify this as a GET request
+                                        .build();
+        // Create an HttpClient
+        HttpClient client = HttpClient.newHttpClient();
 
-        // // Send the GET request and get the response
-        // try {
-        //     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        //     return Double.parseDouble(response.body());
-        // } catch (IOException | InterruptedException e) {
-        //     // TODO Auto-generated catch block
-        //     e.printStackTrace();
-        //     return 100;
-        // }
-        return 100;
+        // Send the GET request and get the response
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            String reponseString = response.body();
+            JsonNode node = mapper.readTree(reponseString);
+            return Double.parseDouble(node.get("price").asText());
+        } catch (IOException | InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return 100;
+        }
     }
 
     private OrderType randomOrderType(){

@@ -1,6 +1,5 @@
 package com.tradingplatform.LiquidityEngine;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;

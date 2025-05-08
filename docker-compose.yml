@@ -17,13 +17,13 @@ services:
       - "12000:12000"
     restart: always
 
-  client:
-    build:
-      context: ./apps/client
-      dockerfile: Dockerfile
-    ports:
-      - "5173:5173"
-    restart: always
-    depends_on:
-      - orderprocessor
-      - marketdata
+  # client:
+  #   build:
+  #     context: ./apps/client
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5173:5173"
+  #   restart: always
+  #   depends_on:
+  #     - orderprocessor
+  #     - marketdata
