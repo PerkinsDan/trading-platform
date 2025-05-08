@@ -6,7 +6,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 
 public class ToggleLoopServer extends AbstractVerticle{
-    private final AtomicBoolean running = new AtomicBoolean(false);
+    private AtomicBoolean running = new AtomicBoolean(false);
     private Thread workerThread;
 
     @Override
@@ -14,22 +14,23 @@ public class ToggleLoopServer extends AbstractVerticle{
         Vertx vertx = getVertx();
 
         workerThread = new Thread(()->{
+            OrderPoster poster = new OrderPoster(60);
             while(true){
                 if (running.get()){
-                    OrderPoster poster = new OrderPoster(20);
-                    try {
-                        poster.startOrderStream();
-                    } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                        try {
+                            poster.postOrder();
+                        } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                 } else {
-                    try {
                         System.out.println("Liquidity Engine thread is toggled to off");
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
             }
         });
