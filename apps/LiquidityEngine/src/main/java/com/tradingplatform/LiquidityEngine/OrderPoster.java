@@ -6,7 +6,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.tradingplatform.orderprocessor.orders.Ticker;
 
@@ -15,6 +14,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class OrderPoster{
 
     private final Random random = new Random();
+    Dotenv dotenv = Dotenv.configure().directory("/home/asad/IOT/trading-platform/apps/LiquidityEngine/.env").load();
 
     private MockOrderGenerator generator;
     private int frequency; // number of orders submitted per minute
@@ -32,14 +32,13 @@ public class OrderPoster{
     }
 
     private HttpRequest createRequestForRandomOrder(String ticker){ 
-        Dotenv dotenv = Dotenv.configure().directory("/home/asad/IOT/trading-platform/apps/LiquidityEngine/.env").load();
         return HttpRequest.newBuilder()
             .uri(URI.create(dotenv.get("BASE_URL_DEV") + "orders/create"))
             .POST(HttpRequest.BodyPublishers.ofString(generator.generateMockOrderAsJson(ticker)))
             .build();      
     }
 
-    public void postOrder() throws InterruptedException{
+    public void postOrder(){
             String ticker = randomTicker().toString();
             client = HttpClient.newHttpClient();
             long start = System.currentTimeMillis();
@@ -50,7 +49,7 @@ public class OrderPoster{
                     System.out.println("Sucessfully placed order: " +request);
                 }
             } catch (IOException | InterruptedException e) {
-                System.out.println("Http request experienced an error");
+                System.out.println("Http request experienced an error while submitting order");
                 e.printStackTrace();
             }
             long end = System.currentTimeMillis();

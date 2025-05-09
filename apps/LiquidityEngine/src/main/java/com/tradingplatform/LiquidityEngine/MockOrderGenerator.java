@@ -43,7 +43,7 @@ public class MockOrderGenerator{
         } catch (IOException | InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            return 100;
+            return -1;
         }
     }
 
@@ -52,7 +52,7 @@ public class MockOrderGenerator{
     }
     
     private double randomPrice(double rootPrice){
-        // TODO: hit market data endpoint  and return double for current price
+        // TODO: hit markuet data endpoint  and return double for current price
         return new NormalDistribution(rootPrice, 0.25*rootPrice).sample();
     }
 
@@ -66,9 +66,11 @@ public class MockOrderGenerator{
     }
 
     public String generateMockOrderAsJson(String ticker){
+
         Double rootPrice = pingMarketDataForPrice(ticker);
+
         if (rootPrice == -1){
-            System.out.println("MarketData is flopping rn icl cant publish order via liquidity engine");
+            return "Could not retrieve market price form market data service";
         }
 
         Order order  = new Order(randomOrderType(), randomUser(), Ticker.valueOf(ticker), randomPrice(rootPrice),randomQuantity());
@@ -77,8 +79,7 @@ public class MockOrderGenerator{
         try {
             return mapper.writeValueAsString(order);
         } catch (JsonProcessingException e) {
-            System.out.println("Error convering to JSON");
-            return "";
+            return "Error convering to JSON"    ;
         }
     }
 
