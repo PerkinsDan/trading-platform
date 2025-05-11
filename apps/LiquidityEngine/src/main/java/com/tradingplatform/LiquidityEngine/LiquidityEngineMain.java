@@ -1,16 +1,14 @@
 package com.tradingplatform.LiquidityEngine;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 
-public class LiquidityEngineMain extends AbstractVerticle{
-    private AtomicBoolean running = new AtomicBoolean(false);
-    private Thread workerThread;
+public class LiquidityEngineMain {
+    private static AtomicBoolean running = new AtomicBoolean(false);
+    private static Thread workerThread;
 
-    @Override
-    public void start(){
-        Vertx vertx = getVertx();
+    public static void startServer(){
+        Vertx vertx = Vertx.vertx();
 
         workerThread = new Thread(()->{
             OrderPoster poster = new OrderPoster(60);
@@ -19,7 +17,6 @@ public class LiquidityEngineMain extends AbstractVerticle{
                         try {
                             poster.postOrder();
                         } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
                 } else {
@@ -28,7 +25,6 @@ public class LiquidityEngineMain extends AbstractVerticle{
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -60,7 +56,7 @@ public class LiquidityEngineMain extends AbstractVerticle{
 
     public static void main(String[] args){
         System.out.println("Working directory: " + System.getProperty("user.dir"));
-        Vertx.vertx().deployVerticle(new LiquidityEngineMain());                
+        startServer();          
     }
 
 }
