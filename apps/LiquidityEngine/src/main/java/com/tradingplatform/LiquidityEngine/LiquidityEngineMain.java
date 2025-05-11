@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 
-public class ToggleLoopServer extends AbstractVerticle{
+public class LiquidityEngineMain extends AbstractVerticle{
     private AtomicBoolean running = new AtomicBoolean(false);
     private Thread workerThread;
 
@@ -59,7 +59,8 @@ public class ToggleLoopServer extends AbstractVerticle{
     }
 
     public static void main(String[] args){
-        Vertx.vertx().deployVerticle(new ToggleLoopServer());                
+        System.out.println("Working directory: " + System.getProperty("user.dir"));
+        Vertx.vertx().deployVerticle(new LiquidityEngineMain());                
     }
 
 }

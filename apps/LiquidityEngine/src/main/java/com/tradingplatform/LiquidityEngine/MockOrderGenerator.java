@@ -19,30 +19,26 @@ public class MockOrderGenerator{
     
     private final Random random = new Random();
     private final ObjectMapper mapper = new ObjectMapper();
+    private static final HttpClient client = HttpClient.newHttpClient();
 
 
     protected MockOrderGenerator(){
     }
 
     private double pingMarketDataForPrice(String ticker){
-        Dotenv dotenv = Dotenv.configure().directory("/home/asad/IOT/trading-platform/apps/LiquidityEngine/.env").load();
+        Dotenv dotenv = Dotenv.configure().load();
         String url = dotenv.get("BASE_URL_MARKET_DATA_DEV") + "latest-snapshot?ticker=" + ticker;
         HttpRequest request = HttpRequest.newBuilder()
-                                        .uri(URI.create(url)) // Set the URL
-                                        .GET() // Specify this as a GET request
+                                        .uri(URI.create(url))
+                                        .GET() 
                                         .build();
-        // Create an HttpClient
-        HttpClient client = HttpClient.newHttpClient();
 
-        // Send the GET request and get the response
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             String reponseString = response.body();
             JsonNode node = mapper.readTree(reponseString);
             return Double.parseDouble(node.get("price").asText());
         } catch (IOException | InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
             return -1;
         }
     }
@@ -52,7 +48,6 @@ public class MockOrderGenerator{
     }
     
     private double randomPrice(double rootPrice){
-        // TODO: hit markuet data endpoint  and return double for current price
         return new NormalDistribution(rootPrice, 0.25*rootPrice).sample();
     }
 
@@ -70,7 +65,7 @@ public class MockOrderGenerator{
         Double rootPrice = pingMarketDataForPrice(ticker);
 
         if (rootPrice == -1){
-            return "Could not retrieve market price form market data service";
+            return "Error while retrieving market price from MarketData.";
         }
 
         Order order  = new Order(randomOrderType(), randomUser(), Ticker.valueOf(ticker), randomPrice(rootPrice),randomQuantity());
@@ -79,7 +74,7 @@ public class MockOrderGenerator{
         try {
             return mapper.writeValueAsString(order);
         } catch (JsonProcessingException e) {
-            return "Error convering to JSON"    ;
+            return "Error while converting to JSON"    ;
         }
     }
 
