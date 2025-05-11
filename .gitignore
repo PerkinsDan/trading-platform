@@ -2,14 +2,3 @@ node_modules
 .idea
 .vscode/
 .env
-com.mongodb.client.MongoCollection
-com.mongodb.client.model.Filters
-com.mongodb.client.model.Projections
-com.mongodb.client.model.Updates
-com.mongodb.client.result.UpdateResult
-com.tradingplatform.orderprocessor.validations.ValidationResult
-io.vertx.core.json.JsonObject
-java.util.ArrayList
-java.util.List
-org.bson.Document
-org.bson.conversions.Bson
