@@ -61,8 +61,8 @@ MSFT: BUY 50 Shares @ $100
 
 After you have bought these stocks you can try selling them as well. To ensure that the sells are filled you will have to sell for very cheap: we recommend $1.
 
-AAPL: BUY 10 Shares @ $1
+AAPL: SELL 10 Shares @ $1
 
-AMZN: BUY 10 Shares @ $1
+AMZN: SELL 10 Shares @ $1
 
-MSFT: BUY 10 Shares @ $1
+MSFT: SELL 10 Shares @ $1
